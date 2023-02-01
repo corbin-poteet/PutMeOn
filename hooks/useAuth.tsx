@@ -67,6 +67,13 @@ export const AuthProvider = ({ children }) => {
     setToken("");
   }
 
+  // only re-render if token changes
+  const memoizedValue = React.useMemo(() => ({ 
+    signInWithSpotify, 
+    token, 
+    logout }), 
+  [token]);
+
   return (
     <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout }}>
       {children}

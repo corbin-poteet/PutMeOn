@@ -1,27 +1,35 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useAuth from '../hooks/useAuth';
 import { ResponseType, useAuthRequest } from "expo-auth-session";
-
-const discovery = {
-  authorizationEndpoint: 
-  "https://accounts.spotify.com/authorize",
-  tokenEndpoint: 
-  "https://accounts.spotify.com/api/token",
-};
+import { useNavigation } from '@react-navigation/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const LoginScreen = () => {
 
- 
+  const navigation = useNavigation();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
+
 
   const { token, signInWithSpotify } = useAuth();
 
 
   return (
-    <View>
-      <Text>Login to Spotify</Text>
-      <Button title="Login" onPress={signInWithSpotify} />
-      {token && <Text>{token}</Text>}
+    <View className='flex-1 justify-center'>
+      <LinearGradient colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
+        <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 rounded-3xl" onPress={signInWithSpotify}>
+          <FontAwesome className='p-5' name="spotify" size={24} color="white"  />
+          <Text className="text-white text-l px-5 py-2 text-1 font-semibold">Sign in with Spotify</Text>
+        </TouchableOpacity>
+
+      </LinearGradient>
     </View>
   )
 }
