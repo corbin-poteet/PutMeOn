@@ -10,7 +10,7 @@ const HomeScreen = () => {
     <View>
       <Text>I am the Home Screen</Text>
       <Button 
-        title="Login" 
+        title="Go to Chat Screen" 
         onPress={() => navigation.navigate('Chat')}
       />
     </View>

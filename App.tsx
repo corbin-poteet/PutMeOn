@@ -1,14 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { AuthProvider } from "./hooks/useAuth";
 import StackNavigator from "./StackNavigator";
 
 import "./styles";
 
 export default function App() {
   return (
-    <>
-    <StackNavigator />
-    <StatusBar style="auto" />
-    </>
+    <AuthProvider>
+      <StackNavigator />
+      <StatusBar style="auto" />
+    </AuthProvider>
+
   );
 }

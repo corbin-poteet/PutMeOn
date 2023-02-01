@@ -1,30 +1,75 @@
 import { View, Text } from 'react-native'
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import * as WebBrowser from 'expo-web-browser';
+import { ResponseType, useAuthRequest } from 'expo-auth-session';
 
-const AuthContext = createContext({});
+const discovery = {
+  authorizationEndpoint:
+    "https://accounts.spotify.com/authorize",
+  tokenEndpoint:
+    "https://accounts.spotify.com/api/token",
+};
+
+
+
+const AuthContext = createContext({
+  signInWithSpotify: () => {
+    return new Promise((resolve, reject) => {
+      resolve(null);
+    });
+  },
+
+  token: "",
+
+
+
+});
 
 export const AuthProvider = ({ children }) => {
 
-    const signInWithSpotify = async () => {
-        try {
-            const result = await WebBrowser.openAuthSessionAsync(
-                'https://accounts.spotify.com/authorize?client_id=2c2d3b2e2d3b2e2d3b2e2d3b2e2d3b2e&response_type=code&redirect_uri=https://www.google.com/&scope=user-read-private%20user-read-email&state=34fFs29kd09',
-                'https://localhost:19000'
-            );
-            console.log(result)
-        } catch (error) {
-            console.log(error)
-        }
+  const [token, setToken] = useState("");
+
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      responseType: ResponseType.Token,
+      clientId: '0876b3cbdd284d49ac26ded9817b6d6d',
+      scopes: [
+        "user-read-currently-playing",
+        "user-read-recently-played",
+        "user-read-playback-state",
+        "user-top-read",
+        "user-modify-playback-state",
+        "streaming",
+        "user-read-email",
+        "user-read-private",
+      ],
+      usePKCE: false,
+      redirectUri: 'exp://127.0.0.1:19000/',
+    },
+    discovery
+  );
+
+  const signInWithSpotify = async () => {
+
+    const result = await promptAsync();
+    if (result.type === "success") {
+      const { access_token } = result.params;
+      console.log("access_token", access_token);
+      setToken(access_token);
+      return access_token;
+    } else {
+      return null;
     }
 
+  }
+
   return (
-    <AuthContext.Provider value={null}>
+    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export default function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }

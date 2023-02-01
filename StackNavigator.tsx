@@ -10,13 +10,12 @@ const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
 
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   return (
     <NavigationContainer>
-      <AuthProvider>
         <Stack.Navigator>
-          {user ? (
+          {token ? (
             <>
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Chat" component={ChatScreen} />
@@ -25,7 +24,6 @@ const StackNavigator = () => {
             <Stack.Screen name="Login" component={LoginScreen} />
           )}
         </Stack.Navigator>
-      </AuthProvider>
     </NavigationContainer>
   )
 }
