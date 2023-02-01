@@ -21,6 +21,8 @@ const AuthContext = createContext({
 
   token: "",
 
+  logout: () => { },
+
 
 
 });
@@ -50,7 +52,6 @@ export const AuthProvider = ({ children }) => {
   );
 
   const signInWithSpotify = async () => {
-
     const result = await promptAsync();
     if (result.type === "success") {
       const { access_token } = result.params;
@@ -60,11 +61,14 @@ export const AuthProvider = ({ children }) => {
     } else {
       return null;
     }
+  }
 
+  const logout = () => {
+    setToken("");
   }
 
   return (
-    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token }}>
+    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout }}>
       {children}
     </AuthContext.Provider>
   );
