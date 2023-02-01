@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import React, { createContext, useContext, useState } from 'react'
 import * as WebBrowser from 'expo-web-browser';
 import { ResponseType, useAuthRequest } from 'expo-auth-session';
+import SpotifyWebApi from 'spotify-web-api-js';
 
 const discovery = {
   authorizationEndpoint:
@@ -23,6 +24,12 @@ const AuthContext = createContext({
 
   logout: () => { },
 
+  spotify: new SpotifyWebApi(),
+
+  user: null,
+
+
+
 
 
 });
@@ -30,7 +37,8 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState("");
-
+  const [user, setUser] = useState({});
+  const [spotify, setSpotify] = useState(new SpotifyWebApi());
   const [request, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
@@ -57,6 +65,13 @@ export const AuthProvider = ({ children }) => {
       const { access_token } = result.params;
       console.log("access_token", access_token);
       setToken(access_token);
+      spotify.setAccessToken(access_token);
+      setSpotify(spotify);
+      spotify.getMe().then((user) => {
+        console.log("user", user);
+        setUser(user);
+      });
+
       return access_token;
     } else {
       return null;
@@ -68,14 +83,17 @@ export const AuthProvider = ({ children }) => {
   }
 
   // only re-render if token changes
-  const memoizedValue = React.useMemo(() => ({ 
-    signInWithSpotify, 
-    token, 
-    logout }), 
-  [token]);
+  const memoizedValue = React.useMemo(() => ({
+    signInWithSpotify,
+    token,
+    logout,
+    spotify,
+    user
+  }),
+    [token]);
 
   return (
-    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout }}>
+    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout, spotify: spotify, user: user }}>
       {children}
     </AuthContext.Provider>
   );

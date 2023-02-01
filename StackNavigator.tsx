@@ -14,7 +14,11 @@ const StackNavigator = () => {
 
   return (
     <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={
+          {
+            headerShown: false,
+          }
+        }>
           {token ? (
             <>
               <Stack.Screen name="Home" component={HomeScreen} />
