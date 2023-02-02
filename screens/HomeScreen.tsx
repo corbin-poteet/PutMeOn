@@ -30,8 +30,18 @@ const HomeScreen = () => {
     if (loaded) {
       return;
     }
+
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 3 }).then(
+      function (data) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err) {
+        console.error(err);
+      }
+    ) as string[];
+
     spotify.getRecommendations({
-      seed_artists: ['3TVXtAsR1Inumwj472S9r4', '5K4W6rqBFWDnAN6FQUkS6x', '1URnnhqYAYcrqrcwql10ft'],
+      seed_artists: topArtistsIds,
       limit: 100,
     }).then(
       function (data) {
