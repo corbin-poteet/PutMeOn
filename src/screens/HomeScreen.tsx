@@ -54,7 +54,9 @@ const HomeScreen = () => {
     );
   }
 
-  getTracks();
+  React.useEffect(() => {
+    getTracks();
+  }, [user, spotify]);
 
   async function playPreview(cardIndex: number) {
     const currentTrack = tracks[cardIndex];

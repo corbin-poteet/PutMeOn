@@ -13,6 +13,8 @@ const UserScreen = () => {
     navigation.setOptions({
       headerShown: true,
       headerTitle: user?.display_name || 'User',
+      //TODO: Figure out how to make this swipe from the left
+      
     });
   }, [navigation]);
 
