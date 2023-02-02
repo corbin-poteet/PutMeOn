@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '../hooks/useAuth';
@@ -10,24 +10,18 @@ import Swiper from 'react-native-deck-swiper';
 const HomeScreen = () => {
 
   const navigation = useNavigation();
-
-
-
-
   const { logout, spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const [tracks, setTracks] = React.useState<any[]>([]);
 
-  // get Elvis' albums, using Promises through Promise, Q or when
-  spotify.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
+  spotify.searchTracks('Paramore').then(
     function (data) {
-      setTracks(data.items);
+      setTracks(data.tracks.items);
     },
     function (err) {
       console.error(err);
     }
   );
-
 
   React.useEffect(() => {
     if (user) {
@@ -59,12 +53,24 @@ const HomeScreen = () => {
         <Swiper
           cards={tracks}
           containerStyle={{ backgroundColor: "transparent" }}
+          stackSize={3}
+          cardIndex={0}
+          cardVerticalMargin={80}
+          animateCardOpacity
+          animateOverlayLabelsOpacity
+          verticalSwipe={false}
+          onSwipedLeft={(cardIndex) => { console.log(cardIndex) }}
+          onSwipedRight={(cardIndex) => { console.log(cardIndex) }}
+          onSwiped={(cardIndex) => { console.log(cardIndex) }}
+          onSwipedAll={() => { console.log('onSwipedAll') }}
+          
           renderCard={(card?) => {
             return (
-              <View key={card?.id} className='justify-center items-center bg-red-500 h-3/4 rounded-xl'>
-                <Image source={{ uri: card?.images[0].url }} className="w-64 h-64" />
+              <View key={card?.id} style={styles.cardShadow} className='relative justify-center items-center bg-white h-3/4 rounded-xl'>
+                <Image source={{ uri: card?.album.images[0].url }} className="w-64 h-64" />
                 <Text className='text-2xl font-semibold'>{card?.name}</Text>
-                <Text className='text-xl'>{card?.release_date}</Text>
+                <Text className='text-xl'>{card?.artists[0].name}</Text>
+                <Text className='text-xl'>{card?.album.name}</Text>
               </View>
             )
           }}
@@ -77,4 +83,17 @@ const HomeScreen = () => {
   )
 }
 
-export default HomeScreen
+export default HomeScreen;
+
+const styles = StyleSheet.create({
+  cardShadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }
+})
