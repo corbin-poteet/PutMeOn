@@ -5,23 +5,75 @@ import useAuth from '../hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
-
+import { Audio } from 'expo-av';
 
 const HomeScreen = () => {
+
+  const [sound, setSound] = React.useState<Audio.Sound | null>(null);
 
   const navigation = useNavigation();
   const { logout, spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const [tracks, setTracks] = React.useState<any[]>([]);
+  const [loaded, setLoaded] = React.useState<boolean>(false);
 
-  spotify.searchTracks('Paramore').then(
-    function (data) {
-      setTracks(data.tracks.items);
-    },
-    function (err) {
-      console.error(err);
+  // spotify.searchTracks('Paramore').then(
+  //   function (data) {
+  //     setTracks(data.tracks.items);
+  //   },
+  //   function (err) {
+  //     console.error(err);
+  //   }
+  // );
+
+  async function getTracks() {
+    if (loaded) {
+      return;
     }
-  );
+    spotify.getRecommendations({
+      seed_artists: ['3TVXtAsR1Inumwj472S9r4', '5K4W6rqBFWDnAN6FQUkS6x', '1URnnhqYAYcrqrcwql10ft'],
+      limit: 100,
+    }).then(
+      function (data) {
+        setTracks(data.tracks);
+        setLoaded(true);
+      },
+      function (err) {
+        console.error(err);
+      }
+    );
+  }
+
+  getTracks();
+
+  async function playPreview(cardIndex: number) {
+    const currentTrack = tracks[cardIndex];
+
+    if (currentTrack.preview_url === null) {
+      return;
+    }
+
+    if (this.sound) {
+      await this.sound.unloadAsync().catch((error) => console.log(error));
+    }
+
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: currentTrack.preview_url },
+      { shouldPlay: true }
+    );
+    if (sound) {
+      setSound(sound);
+      await sound.playAsync().catch((error) => console.log(error));
+    }
+  }
+
+  React.useEffect(() => {
+    return sound
+      ? () => {
+        sound.unloadAsync().catch((error) => console.log(error));
+      }
+      : undefined;
+  }, [sound]);
 
   React.useEffect(() => {
     if (user) {
@@ -59,11 +111,18 @@ const HomeScreen = () => {
           animateCardOpacity
           animateOverlayLabelsOpacity
           verticalSwipe={false}
-          onSwipedLeft={(cardIndex) => { console.log(cardIndex) }}
-          onSwipedRight={(cardIndex) => { console.log(cardIndex) }}
-          onSwiped={(cardIndex) => { console.log(cardIndex) }}
+          onSwipedLeft={(cardIndex) => { console.log("dislike") }}
+          onSwipedRight={(cardIndex) => { console.log("like") }}
+          onSwiped={(cardIndex) => {
+            console.log(tracks[cardIndex].artists[0].name + " - " + tracks[cardIndex].name);
+            
+            playPreview(cardIndex + 1);
+
+          }}
           onSwipedAll={() => { console.log('onSwipedAll') }}
+          onTapCard={(cardIndex) => { console.log(cardIndex) }}
           
+
           renderCard={(card?) => {
             return (
               <View key={card?.id} style={styles.cardShadow} className='relative justify-center items-center bg-white h-3/4 rounded-xl'>
@@ -75,6 +134,17 @@ const HomeScreen = () => {
             )
           }}
         />
+      </View>
+
+      <View className='flex-row justify-center items-center'>
+        <TouchableOpacity className='flex-row items-center justify-center bg-red-500 px-5 rounded-3xl'>
+          <AntDesign name="close" size={24} color="white" />
+          <Text className='text-white text-xl font-semibold'>Nope</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-5 rounded-3xl'>
+          <Entypo name="check" size={24} color="white" />
+          <Text className='text-white text-xl font-semibold'>Like</Text>
+        </TouchableOpacity>
       </View>
 
 
