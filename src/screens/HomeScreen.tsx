@@ -102,7 +102,7 @@ const HomeScreen = () => {
           <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
         </TouchableOpacity>
         <TouchableOpacity >
-          <Image source={require('../Logo_512.png')} style={{
+          <Image source={require('../../assets/Logo_512.png')} style={{
             width: 128,
             height: 65,
             transform: [{ translateX: -6 }],
@@ -131,6 +131,49 @@ const HomeScreen = () => {
           }}
           onSwipedAll={() => { console.log('onSwipedAll') }}
           onTapCard={(cardIndex) => { console.log(cardIndex) }}
+          onSwipedTop={() => { console.log('onSwipedTop') }}
+          onSwipedBottom={() => { console.log('onSwipedBottom') }}
+          cardStyle={{ backgroundColor: "transparent" }}
+          overlayLabels={{
+            left: {
+              title: 'NOPE',
+              style: {
+                label: {
+                  backgroundColor: 'red',
+                  borderColor: 'red',
+                  color: 'white',
+                  borderWidth: 1
+                },
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                  justifyContent: 'flex-start',
+                  marginTop: 30,
+                  marginLeft: -30
+                }
+              }
+            },
+            right: {
+              title: 'LIKE',
+              style: {
+                label: {
+                  backgroundColor: 'green',
+                  borderColor: 'green',
+                  color: 'white',
+                  borderWidth: 1
+                },
+                wrapper: {
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  justifyContent: 'flex-start',
+                  marginTop: 30,
+                  marginLeft: 30
+                }
+              }
+            }
+          }}
+          
+
           
 
           renderCard={(card?) => {
