@@ -98,7 +98,11 @@ const HomeScreen = () => {
   return (
     <SafeAreaView className='flex-1'>
       <View className='items-center relative'>
-        <TouchableOpacity className='absolute left-5 top-3'>
+        <TouchableOpacity className='absolute left-5 top-3' onPress={
+          () => {
+            navigation.navigate('User')
+          }
+        }>
           <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
         </TouchableOpacity>
         <TouchableOpacity >
