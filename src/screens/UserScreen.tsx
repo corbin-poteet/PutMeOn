@@ -20,8 +20,17 @@ const UserScreen = () => {
 
   return (
     <View>
-      <Button title="Logout" onPress={logout} color="red" />
+      <View>
+        <Button title="Logout" onPress={logout} color="red" />
+      </View>
+      <View>
+        <Text>Display Name: {[user.display_name]}</Text>
+        <Text>Country: {user.country}</Text>
+        <Text>Email: {user.email}</Text>
+        <Text>Subscription Type: {user.product}</Text>
+      </View>
     </View>
+    
   )
 }
 
