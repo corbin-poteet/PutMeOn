@@ -39,6 +39,7 @@ const UserScreen = () => {
         <Text className='text-xl'>Subscription Type: {user.product}</Text>
       </View>
     </View>
+    
   )
 }
 
