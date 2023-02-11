@@ -26,11 +26,17 @@ const UserScreen = () => {
           <Text className='text-white text-xl px-5 py-2 text-1 font-semibold'>Logout</Text>
         </TouchableOpacity>
       </View>
-    <View>
-        <Text>Display Name: {[user.display_name]}</Text>
-        <Text>Country: {user.country}</Text>
-        <Text>Email: {user.email}</Text>
-        <Text>Subscription Type: {user.product}</Text>
+      <View className='flex-row justify-center items-center'>
+        <Text className='text-xl'>Display Name: {[user.display_name]}</Text>
+      </View>
+      <View className='flex-row justify-center items-center'>
+        <Text className='text-xl'>Country: {user.country}</Text>
+      </View>
+      <View className='flex-row justify-center items-center'>
+        <Text className='text-xl'>Email: {user.email}</Text>
+      </View>
+      <View className='flex-row justify-center items-center'>
+        <Text className='text-xl'>Subscription Type: {user.product}</Text>
       </View>
     </View>
   )
