@@ -115,7 +115,11 @@ const HomeScreen = () => {
               </View>
           }
         </TouchableOpacity>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={
+          () => {
+            navigation.navigate('Menu')
+          }
+        }>
           <Image source={require('../../assets/Logo_512.png')} style={{
             width: 128,
             height: 65,
