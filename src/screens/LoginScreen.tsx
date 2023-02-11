@@ -30,7 +30,7 @@ const LoginScreen = () => {
         />
         <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 rounded-3xl" onPress={signInWithSpotify}>
           <FontAwesome className='p-5' name="spotify" size={24} color="white" />
-          <Text className="text-white text-l px-5 py-2 text-1 font-semibold">Sign in with Spotify</Text>
+          <Text className="text-white text-xl px-5 py-2 text-1 font-semibold">Sign in with Spotify</Text>
         </TouchableOpacity>
       </LinearGradient>
     </View>
