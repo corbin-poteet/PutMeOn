@@ -19,18 +19,20 @@ const UserScreen = () => {
   }, [navigation]);
 
   return (
-
-    //Logout button functionality
-
-    <View className='flex-row justify-center items-center'> 
+    //Logout button functionality, user details
+    <View>
+      <View className='flex-row justify-center items-center'> 
         <TouchableOpacity className='flex-row items-center justify-center bg-red-500 px-20 py-15 rounded-3xl absolute top-80' onPress={logout}>
           <Text className='text-white text-xl px-5 py-2 text-1 font-semibold'>Logout</Text>
         </TouchableOpacity>
+      </View>
+    <View>
+        <Text>Display Name: {[user.display_name]}</Text>
+        <Text>Country: {user.country}</Text>
+        <Text>Email: {user.email}</Text>
+        <Text>Subscription Type: {user.product}</Text>
+      </View>
     </View>
-    
-    //<View>
-      //<Button title="Logout" onPress={logout} color="red" />
-    //</View>
   )
 }
 
