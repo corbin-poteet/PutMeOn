@@ -105,7 +105,15 @@ const HomeScreen = () => {
             navigation.navigate('User')
           }
         }>
-          <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
+          {
+            userImage !== null 
+            ? 
+              <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
+            :
+              <View>
+                <Image source={require('../../assets/blank_user.png')} className="w-10 h-10 rounded-full"/>
+              </View>
+          }
         </TouchableOpacity>
         <TouchableOpacity >
           <Image source={require('../../assets/Logo_512.png')} style={{
