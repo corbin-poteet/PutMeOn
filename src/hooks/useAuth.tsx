@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 import { ResponseType, useAuthRequest } from 'expo-auth-session';
 import SpotifyWebApi from 'spotify-web-api-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // this is the config for the spotify auth request
 const config = {
@@ -84,6 +86,8 @@ export const AuthProvider = ({ children }) => {
       // set access token and pass to spotify api
       setToken(access_token);
       spotify.setAccessToken(access_token);
+      //store the token in async storage
+      await AsyncStorage.setItem('token', access_token);
 
       // now we can get user info from the spotify api
       spotify.getMe().then((user) => {
@@ -109,6 +113,21 @@ export const AuthProvider = ({ children }) => {
     user
   }),
     [token]);
+
+  React.useEffect(() => {
+    // check if there is a token stored in async storage
+    AsyncStorage.getItem('token').then((token) => {
+      if (token) {
+        // if there is a token, set it and pass it to the spotify api
+        setToken(token);
+        spotify.setAccessToken(token);
+        // now we can get user info from the spotify api
+        spotify.getMe().then((user) => {
+          setUser(user);
+        });
+      }
+    });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout, spotify: spotify, user: user }}>
