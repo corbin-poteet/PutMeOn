@@ -47,7 +47,10 @@ const config = {
 };
 
 
-// i think these are like the default values for the AuthContext object we use
+/**
+ * This is the context that we will use to store the auth state
+ * We use a context because we want to be able to access the auth state from anywhere in the app
+ */
 const AuthContext = createContext({
   signInWithSpotify: () => {
     return new Promise((resolve, reject) => {
@@ -60,11 +63,19 @@ const AuthContext = createContext({
   user: null,
 });
 
-// this is the actual hook that we use to get the auth context
+/**
+ * This is the hook that we will use to access the auth state
+ * We use a hook because we want to be able to access the auth state from anywhere in the app
+ * @returns the auth state
+ */
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});
+
+  // this is the spotify api object
   const [spotify, setSpotify] = useState(new SpotifyWebApi());
+
+  // this is the auth request hook from expo-auth-session
   const [request, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
@@ -148,7 +159,13 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout, spotify: spotify, user: user }}>
+    <AuthContext.Provider value={{
+      signInWithSpotify: signInWithSpotify,
+      token: token,
+      logout: logout,
+      spotify: spotify,
+      user: user
+    }}>
       {children}
     </AuthContext.Provider>
   );
