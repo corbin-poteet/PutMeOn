@@ -76,36 +76,8 @@ export const AuthProvider = ({ children }) => {
     config.discovery
   );
 
-  // called when user clicks login button
-  const signInWithSpotify = async () => {
-    const result = await promptAsync();
-    if (result.type === "success") {
-      // get access token
-      const { access_token } = result.params;
-
-      // set access token and pass to spotify api
-      setToken(access_token);
-      spotify.setAccessToken(access_token);
-      //store the token in async storage
-      await AsyncStorage.setItem('token', access_token);
-
-      // now we can get user info from the spotify api
-      spotify.getMe().then((user) => {
-        setUser(user);
-      });
-    }
-  }
-
-  // logout function that can be called from anywhere
-  // currently unused
-  const logout = () => {
-    setToken("");
-    setUser({});
-    spotify.setAccessToken("");
-  }
-
   // only re-render if token changes
-  const memoizedValue = React.useMemo(() => ({
+  React.useMemo(() => ({
     signInWithSpotify,
     token,
     logout,
@@ -128,6 +100,52 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
+
+  /**
+   * Prompts the user to log in with spotify
+   * Called when the user presses the login button
+   */
+  async function signInWithSpotify() {
+    const result = await promptAsync();
+    if (result.type === "success") {
+      const { access_token } = result.params;
+      setAccessToken(access_token);
+    }
+  }
+
+  /**
+   * Sets the access token and saves it to async storage
+   * If there is a token, also sets the user info from the spotify api
+   * @param token the access token to set
+   */
+  async function setAccessToken(token: string) {
+    setToken(token);
+    spotify.setAccessToken(token);
+    await AsyncStorage.setItem('token', token);
+
+    if (token) {
+      spotify.getMe().then((user) => {
+        setUser(user);
+      });
+    } else {
+      setUser({});
+    }
+  }
+
+  /**
+   * Clears the access token and user info
+   */
+  function clearAccessToken() {
+    setAccessToken("");
+  }
+
+  /**
+   * Clears the access token and user info
+   * Called when the user presses the logout button
+   */
+  function logout() {
+    clearAccessToken();
+  }
 
   return (
     <AuthContext.Provider value={{ signInWithSpotify: signInWithSpotify, token: token, logout: logout, spotify: spotify, user: user }}>
