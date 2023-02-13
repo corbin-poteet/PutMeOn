@@ -16,6 +16,7 @@ const HomeScreen = () => {
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
 
   // spotify.searchTracks('Paramore').then(
   //   function (data) {
@@ -26,12 +27,23 @@ const HomeScreen = () => {
   //   }
   // );
 
+  async function getRecentlyPlayedTracks() {
+    const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
+      function(data){
+        console.log("Here are your 15 recently played tracks: \n");
+        data.items.forEach(element => {
+          console.log(element.track.name);
+        });
+      }
+    )
+  }
+
   async function getTracks() {
     if (loaded) {
       return;
     }
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 3 }).then(
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
       function (data) {
         return data.items.map((artist: any) => artist.id);
       },
@@ -56,6 +68,10 @@ const HomeScreen = () => {
 
   React.useEffect(() => {
     getTracks();
+  }, [user, spotify]);
+
+  React.useEffect(() => {
+    getRecentlyPlayedTracks();
   }, [user, spotify]);
 
   async function playPreview(cardIndex: number) {
