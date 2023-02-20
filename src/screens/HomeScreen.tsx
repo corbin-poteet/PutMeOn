@@ -33,7 +33,6 @@ const HomeScreen = () => {
     const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: historyLimit }).then(
       function(data){
         data.items.forEach(element => {
-          // console.log(element.track.name);
           recentTrackIds.push(element.track.id);
         });
       }
@@ -75,9 +74,9 @@ const HomeScreen = () => {
     getTracks();
   }, [user, spotify]);
 
-  // React.useEffect(() => {
-  //   getRecentlyPlayedTracks(10);
-  // }, [user, spotify]);
+  React.useEffect(() => {
+    getRecentlyPlayedTracks(50);
+  }, []);
 
 
 
