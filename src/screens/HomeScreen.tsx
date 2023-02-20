@@ -16,7 +16,7 @@ const HomeScreen = () => {
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
+  const [recentlyPlayedTrackIds, setRecentlyPlayedTrackIds] = React.useState<string[]>([]);
 
   // spotify.searchTracks('Paramore').then(
   //   function (data) {
@@ -27,15 +27,19 @@ const HomeScreen = () => {
   //   }
   // );
 
-  async function getRecentlyPlayedTracks() {
-    const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
+  // function that returns an array of recently played song ids, taking in a parameter of the limit.
+  async function getRecentlyPlayedTracks(historyLimit) {
+    const recentTrackIds = [] as string[];
+    const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: historyLimit }).then(
       function(data){
-        console.log("Here are your 15 recently played tracks: \n");
         data.items.forEach(element => {
-          console.log(element.track.name);
+          recentTrackIds.push(element.track.id);
         });
       }
     )
+    setRecentlyPlayedTrackIds(recentTrackIds)
+    recentTrackIds.length = 0
+    return recentlyPlayedTrackIds;
   }
 
   async function getTracks() {
@@ -43,7 +47,7 @@ const HomeScreen = () => {
       return;
     }
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 2 }).then(
       function (data) {
         return data.items.map((artist: any) => artist.id);
       },
@@ -71,8 +75,10 @@ const HomeScreen = () => {
   }, [user, spotify]);
 
   React.useEffect(() => {
-    getRecentlyPlayedTracks();
-  }, [user, spotify]);
+    getRecentlyPlayedTracks(50);
+  }, []);
+
+
 
   async function playPreview(cardIndex: number) {
     const currentTrack = tracks[cardIndex];
