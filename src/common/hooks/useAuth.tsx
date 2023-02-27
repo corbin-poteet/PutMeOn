@@ -32,9 +32,8 @@ const config = {
   // also we need to add this uri to the list of redirect uris on the spotify developer dashboard
   // also this is the reason authentication doesn't work on the web version of the app currently, need to figure that out
   // TODO: change this so the web version of the app works too
-  redirectUri: makeRedirectUri({
-    native: "put-me-on://",
-  }),
+  redirectUri: 'exp://127.0.0.1:19000/',
+
 
   // this is the discovery document for spotify's oauth2 api
   discovery: {
@@ -105,9 +104,9 @@ export const AuthProvider = ({ children }) => {
     [token]);
 
   React.useEffect(() => {
-    setAccessToken("BQCMf-L4QDdZ171gR7Js_qigb--9Hd0YISYa9Wcx-goXDDkoR0F0ArAGfkfj2mJw0G7UfU-66cglzzwEzZ_3kYMG00bssGQ5TeEl8OZlqgvlcB98YcN2StJsMFMF9_pe-2YWADVQ7czjhJ-3a1SV2Y6I7w0fzZVRUT4psuQsqYRr7whbzS2dPBSA0ugA_h4InuaVqDAvicYLOtbCrdP0Xa8LXdghs3jIQD1q4wKH6wvWt544Bw4eeEkMSsgUsJW9NcQuZtRp4JKp2yqiGAz5GN1JKZooGRGQTzb_G4WI")
+    //setAccessToken("BQCMf-L4QDdZ171gR7Js_qigb--9Hd0YISYa9Wcx-goXDDkoR0F0ArAGfkfj2mJw0G7UfU-66cglzzwEzZ_3kYMG00bssGQ5TeEl8OZlqgvlcB98YcN2StJsMFMF9_pe-2YWADVQ7czjhJ-3a1SV2Y6I7w0fzZVRUT4psuQsqYRr7whbzS2dPBSA0ugA_h4InuaVqDAvicYLOtbCrdP0Xa8LXdghs3jIQD1q4wKH6wvWt544Bw4eeEkMSsgUsJW9NcQuZtRp4JKp2yqiGAz5GN1JKZooGRGQTzb_G4WI")
 
-    return;
+    //return;
     // check if there is a token stored in async storage
     AsyncStorage.getItem('token').then((token) => {
       if (token) {
