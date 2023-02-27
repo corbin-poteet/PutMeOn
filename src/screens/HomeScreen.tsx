@@ -94,9 +94,9 @@ const HomeScreen = () => {
 
   async function getRecentlyPlayedTracks() {
     const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
-      function (data) {
+      function (data: { items: any[]; }) {
         console.log("Here are your 15 recently played tracks: \n");
-        data.items.forEach(element => {
+        data.items.forEach((element: { track: { name: any; }; }) => {
           console.log(element.track.name);
         });
       }
@@ -109,10 +109,10 @@ const HomeScreen = () => {
     }
 
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data) {
+      function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
       },
-      function (err) {
+      function (err: any) {
         console.error(err);
       }
     ) as string[];
@@ -121,11 +121,11 @@ const HomeScreen = () => {
       seed_artists: topArtistsIds,
       limit: 100,
     }).then(
-      function (data) {
+      function (data: { tracks: React.SetStateAction<any[]>; }) {
         setTracks(data.tracks);
         setLoaded(true);
       },
-      function (err) {
+      function (err: any) {
         console.error(err);
       }
     );
@@ -216,8 +216,14 @@ const HomeScreen = () => {
                   <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'>
 
                     <View className='absolute left-4 right-4 top-8 bottom-0 bg-blue-500 opacity-50 '>
-                      <View className='flex-1 bg-red-500'>
-                        <Image source={require('@assets/icon.png')} className="w-full aspect-square" resizeMode='contain' />
+                      <View className='flex-1 bg-red-500 justify-start items-start'>
+                          <View className='relative justify-center items-center bg-blue-500 w-full aspect-square justify-start'>
+                            <Image source={card.src} className='absolute w-full h-full' />
+                          </View>
+                          <View className='w-full bg-green-500 justify-start items-start'>
+                            <Text className='text-white text-2xl font-bold'>Gabby</Text>
+                          </View>
+                          
                       </View>
                     </View>
 
