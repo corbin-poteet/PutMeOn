@@ -8,6 +8,9 @@ import Swiper from 'react-native-deck-swiper';
 import { Audio } from 'expo-av';
 import TinderCard from 'react-tinder-card';
 import CardsSwipe from 'react-native-cards-swipe';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const db = [
   {
@@ -213,22 +216,35 @@ const HomeScreen = () => {
             <CardsSwipe cards={cardsData} renderCard={(card: any) => {
               return (
                 <View className='relative w-full h-full rounded-2xl bg-blue-500 '>
-                  <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'>
 
-                    <View className='absolute left-4 right-4 top-8 bottom-0 bg-blue-500 opacity-50 '>
+                  
+                  <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'>
+                    <View className='absolute left-4 right-4 top-8 bottom-0 bg-blue-500 opacity-100 '>
                       <View className='flex-1 bg-red-500 justify-start items-start'>
-                          <View className='relative justify-center items-center bg-blue-500 w-full aspect-square justify-start'>
-                            <Image source={card.src} className='absolute w-full h-full' />
+                        <View className='relative justify-center items-center bg-blue-500 w-full aspect-square justify-start'>
+                          <Image source={card.src} className='absolute w-full h-full' />
+                        </View>
+                        <View className='py-2 px-1 w-full bg-green-500 justify-start items-start'>
+                          <View className='flex-row items-end'>
+                            <Text className='text-white text-5xl font-bold'>Gabby</Text>
+                            <Text className='text-white text-2xl px-1'>22</Text>
                           </View>
-                          <View className='w-full bg-green-500 justify-start items-start'>
-                            <Text className='text-white text-2xl font-bold'>Gabby</Text>
+                          <View className='flex-row items-center'>
+                            <FontAwesome5 name="user-alt" size={16} color="white" />
+                            <Text className='px-2 text-white text-xl'>Artist Name</Text>
                           </View>
-                          
+                          <View className='flex-row items-center'>
+                            <FontAwesome5 name="compact-disc" size={16} color="white" />
+                            <Text className='px-2 text-white text-xl'>Album Title</Text>
+                          </View>
+                        </View>
+
                       </View>
                     </View>
 
 
                   </ImageBackground>
+                  
                 </View>
               )
             }} />
