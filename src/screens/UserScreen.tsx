@@ -1,7 +1,7 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
-import useAuth from '../hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 
 const UserScreen = () => {

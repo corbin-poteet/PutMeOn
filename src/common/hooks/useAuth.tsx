@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import { ResponseType, useAuthRequest } from 'expo-auth-session';
+import { makeRedirectUri, ResponseType, useAuthRequest } from 'expo-auth-session';
 import SpotifyWebApi from 'spotify-web-api-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -32,7 +32,9 @@ const config = {
   // also we need to add this uri to the list of redirect uris on the spotify developer dashboard
   // also this is the reason authentication doesn't work on the web version of the app currently, need to figure that out
   // TODO: change this so the web version of the app works too
-  redirectUri: 'exp://127.0.0.1:19000/',
+  redirectUri: makeRedirectUri({
+    native: "put-me-on://",
+  }),
 
   // this is the discovery document for spotify's oauth2 api
   discovery: {
@@ -69,6 +71,10 @@ const AuthContext = createContext({
  * @returns the auth state
  */
 export const AuthProvider = ({ children }) => {
+
+  console.log("redirect uri: ", config.redirectUri)
+
+
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});
 
@@ -87,6 +93,7 @@ export const AuthProvider = ({ children }) => {
     config.discovery
   );
 
+
   // only re-render if token changes
   React.useMemo(() => ({
     signInWithSpotify,
@@ -98,12 +105,18 @@ export const AuthProvider = ({ children }) => {
     [token]);
 
   React.useEffect(() => {
+    setAccessToken("BQCMf-L4QDdZ171gR7Js_qigb--9Hd0YISYa9Wcx-goXDDkoR0F0ArAGfkfj2mJw0G7UfU-66cglzzwEzZ_3kYMG00bssGQ5TeEl8OZlqgvlcB98YcN2StJsMFMF9_pe-2YWADVQ7czjhJ-3a1SV2Y6I7w0fzZVRUT4psuQsqYRr7whbzS2dPBSA0ugA_h4InuaVqDAvicYLOtbCrdP0Xa8LXdghs3jIQD1q4wKH6wvWt544Bw4eeEkMSsgUsJW9NcQuZtRp4JKp2yqiGAz5GN1JKZooGRGQTzb_G4WI")
+
+    return;
     // check if there is a token stored in async storage
     AsyncStorage.getItem('token').then((token) => {
       if (token) {
         // if there is a token, set it and pass it to the spotify api
         setToken(token);
         spotify.setAccessToken(token);
+
+        console.log("token: ", token);
+
         // now we can get user info from the spotify api
         spotify.getMe().then((user) => {
           setUser(user);

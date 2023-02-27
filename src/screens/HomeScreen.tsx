@@ -1,13 +1,48 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native'
+import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import useAuth from '../hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 import { Audio } from 'expo-av';
+import TinderCard from 'react-tinder-card';
+import CardsSwipe from 'react-native-cards-swipe';
+
+const db = [
+  {
+    name: 'Richard Hendricks',
+    img: require('@assets/icon.png')
+  },
+  {
+    name: 'Erlich Bachman',
+    img: require('@assets/icon.png')
+  },
+  {
+    name: 'Monica Hall',
+    img: require('@assets/icon.png')
+  },
+  {
+    name: 'Jared Dunn',
+    img: require('@assets/icon.png')
+  },
+  {
+    name: 'Dinesh Chugtai',
+    img: require('@assets/icon.png')
+  }
+]
+
+const alreadyRemoved: string[] = []
+let charactersState = db // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+
 
 const HomeScreen = () => {
+
+  const [characters, setCharacters] = useState(db)
+  const [lastDirection, setLastDirection] = useState()
+
+  const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
+
 
   const [sound, setSound] = React.useState<Audio.Sound | null>(null);
 
@@ -17,6 +52,36 @@ const HomeScreen = () => {
   const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
+
+
+  const swiped = (direction: string | React.SetStateAction<undefined>, nameToDelete: string) => {
+    console.log('removing: ' + nameToDelete + ' to the ' + direction)
+    setLastDirection(direction)
+    alreadyRemoved.push(nameToDelete)
+  }
+
+  const outOfFrame = (name: string) => {
+    console.log(name + ' left the screen!')
+    charactersState = charactersState.filter(character => character.name !== name)
+    setCharacters(charactersState)
+  }
+
+  const swipe = (dir: string) => {
+    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
+    if (cardsLeft.length) {
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
+      const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
+      alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      childRefs[index].current.swipe(dir) // Swipe the card!
+    }
+  }
+
+  const cardsData = [
+    { src: require('@assets/icon.png') },
+    { src: require('@assets/icon.png') },
+    { src: require('@assets/icon.png') },
+    { src: require('@assets/icon.png') },
+  ];
 
   // spotify.searchTracks('Paramore').then(
   //   function (data) {
@@ -29,7 +94,7 @@ const HomeScreen = () => {
 
   async function getRecentlyPlayedTracks() {
     const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
-      function(data){
+      function (data) {
         console.log("Here are your 15 recently played tracks: \n");
         data.items.forEach(element => {
           console.log(element.track.name);
@@ -74,7 +139,7 @@ const HomeScreen = () => {
     getRecentlyPlayedTracks();
   }, [user, spotify]);
 
-  async function playPreview(cardIndex: number) {
+  async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
 
     if (currentTrack.preview_url === null) {
@@ -82,7 +147,7 @@ const HomeScreen = () => {
     }
 
     if (this.sound) {
-      await this.sound.unloadAsync().catch((error) => console.log(error));
+      await this.sound.unloadAsync().catch((error: any) => console.log(error));
     }
 
     const { sound } = await Audio.Sound.createAsync(
@@ -113,140 +178,176 @@ const HomeScreen = () => {
     }
   }, [user])
 
+
   return (
     <SafeAreaView className='flex-1'>
-      <View className='items-center relative'>
-        <TouchableOpacity className='absolute left-5 top-3' onPress={
-          () => {
-            navigation.navigate('User')
-          }
-        }>
-          {
-            userImage !== null 
-            ? 
-              <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
-            :
-              <View>
-                <Image source={require('../../assets/blank_user.png')} className="w-10 h-10 rounded-full"/>
-              </View>
-          }
-        </TouchableOpacity>
-        <TouchableOpacity >
-          <Image source={require('../../assets/Logo_512.png')} style={{
-            width: 128,
-            height: 65,
-            transform: [{ translateX: -6 }],
-            resizeMode: 'contain',
-          }} />
-        </TouchableOpacity>
-      </View>
+      <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'>
 
-      <View className='flex-1 -mt-6'>
-        <Swiper
-          cards={tracks}
-          containerStyle={{ backgroundColor: "transparent" }}
-          stackSize={3}
-          cardIndex={0}
-          cardVerticalMargin={80}
-          animateCardOpacity
-          animateOverlayLabelsOpacity
-          verticalSwipe={false}
-          onSwipedLeft={(cardIndex) => { console.log("dislike") }}
-          onSwipedRight={(cardIndex) => { console.log("like") }}
-          onSwiped={(cardIndex) => {
-            console.log(tracks[cardIndex].artists[0].name + " - " + tracks[cardIndex].name);
-            
-            playPreview(cardIndex + 1);
-
-          }}
-          onSwipedAll={() => { console.log('onSwipedAll') }}
-          onTapCard={(cardIndex) => { console.log(cardIndex) }}
-          onSwipedTop={() => { console.log('onSwipedTop') }}
-          onSwipedBottom={() => { console.log('onSwipedBottom') }}
-          cardStyle={{ backgroundColor: "transparent" }}
-          overlayLabels={{
-            left: {
-              title: 'NOPE',
-              style: {
-                label: {
-                  backgroundColor: 'red',
-                  borderColor: 'red',
-                  color: 'white',
-                  borderWidth: 1
-                },
-                wrapper: {
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  justifyContent: 'flex-start',
-                  marginTop: 30,
-                  marginLeft: -30
-                }
-              }
-            },
-            right: {
-              title: 'LIKE',
-              style: {
-                label: {
-                  backgroundColor: 'green',
-                  borderColor: 'green',
-                  color: 'white',
-                  borderWidth: 1
-                },
-                wrapper: {
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  justifyContent: 'flex-start',
-                  marginTop: 30,
-                  marginLeft: 30
-                }
-              }
+        <View className='items-center relative bg-red-500'>
+          <TouchableOpacity className='absolute left-5 top-3' onPress={
+            () => {
+              navigation.navigate('User')
             }
-          }}
-          
+          }>
+            {
+              userImage !== null
+                ?
+                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
+                :
+                <View>
+                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" />
+                </View>
+            }
+          </TouchableOpacity>
+          <TouchableOpacity >
+            <Image source={require('@assets/Logo_512.png')} style={{
+              width: 128,
+              height: 65,
+              transform: [{ translateX: -6 }],
+              resizeMode: 'contain',
+            }} />
+          </TouchableOpacity>
+        </View>
+        <View className='flex-1 bg-yellow-500 items-center justify-center'>
+          <View className='h-full bg-green-500 px-5 py-12' style={{ aspectRatio: 0.6 }}>
+            <CardsSwipe cards={cardsData} renderCard={(card: any) => {
+              return (
+                <View className='relative w-full h-full rounded-2xl bg-blue-500 '>
+                  <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'>
 
-          
-
-          renderCard={(card?) => {
-            return (
-              <View key={card?.id} style={styles.cardShadow} className='relative justify-center items-center bg-white h-3/4 rounded-xl'>
-                <Image source={{ uri: card?.album.images[0].url }} className="w-64 h-64" />
-                <Text className='text-2xl font-semibold'>{card?.name}</Text>
-                <Text className='text-xl'>{card?.artists[0].name}</Text>
-                <Text className='text-xl'>{card?.album.name}</Text>
-              </View>
-            )
-          }}
-        />
-      </View>
-
-      <View className='flex-row justify-center items-center'>
-        <TouchableOpacity className='flex-row items-center justify-center bg-red-500 px-5 rounded-3xl'>
-          <AntDesign name="close" size={24} color="white" />
-          <Text className='text-white text-xl font-semibold'>Nope</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-5 rounded-3xl'>
-          <Entypo name="check" size={24} color="white" />
-          <Text className='text-white text-xl font-semibold'>Like</Text>
-        </TouchableOpacity>
-      </View>
+                    <View className='absolute left-4 right-4 top-8 bottom-0 bg-blue-500 opacity-50 '>
+                      <View className='flex-1 bg-red-500'>
+                        <Image source={require('@assets/icon.png')} className="w-full aspect-square" resizeMode='contain' />
+                      </View>
+                    </View>
 
 
+                  </ImageBackground>
+                </View>
+              )
+            }} />
+          </View>
+        </View>
 
-    </SafeAreaView>
+
+      </ImageBackground>
+    </SafeAreaView >
   )
 }
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  cardShadow: {
-    shadowColor: "#000",
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'green'
+  },
+  cardsSwipeContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingTop: 40,
+    zIndex: 1,
+    elevation: 1,
+    backgroundColor: 'yellow',
+    height: '100%',
+    aspectRatio: 0.75,
+  },
+  cardContainer: {
+    width: '92%',
+    height: '100%',
+    padding: 2,
+  },
+  card: {
+    aspectRatio: 9 / 16,
+    height: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 13,
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 8,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  }
-})
+    shadowOpacity: 0.07,
+    shadowRadius: 3.3,
+    elevation: 6,
+  },
+  cardImg: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 13,
+  },
+  noMoreCard: {
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 22,
+    marginBottom: 30,
+  },
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70,
+    height: 70,
+    padding: 14,
+    borderWidth: 3,
+    borderRadius: 35,
+  },
+  rightBtn: {
+    borderColor: '#00D400',
+  },
+  leftBtn: {
+    borderColor: '#E60000',
+  },
+  likeIcon: {
+    width: 40,
+    height: 40,
+    top: -3,
+  },
+  dislikeIcon: {
+    width: 40,
+    height: 40,
+    top: 3,
+  },
+  nope: {
+    borderWidth: 5,
+    borderRadius: 6,
+    padding: 8,
+    marginRight: 30,
+    marginTop: 25,
+    borderColor: 'red',
+    transform: [{ rotateZ: '22deg' }],
+  },
+  nopeLabel: {
+    fontSize: 32,
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  like: {
+    borderWidth: 5,
+    borderRadius: 6,
+    padding: 8,
+    marginLeft: 30,
+    marginTop: 20,
+    borderColor: 'lightgreen',
+    transform: [{ rotateZ: '-22deg' }],
+  },
+  likeLabel: {
+    fontSize: 32,
+    color: 'lightgreen',
+    fontWeight: 'bold',
+  },
+});

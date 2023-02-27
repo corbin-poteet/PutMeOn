@@ -1,6 +1,6 @@
 import { View, Text, Button, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
-import useAuth from '../hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -20,7 +20,7 @@ const LoginScreen = () => {
   return (
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-        <Image source={require('../../assets/Logo_512_White.png')} style={{
+        <Image source={require('@assets/Logo_512_White.png')} style={{
           width: 256,
           height: 256,
           transform: [{ translateX: -6 }],
