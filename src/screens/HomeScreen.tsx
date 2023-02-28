@@ -227,7 +227,7 @@ const HomeScreen = () => {
                     <View className='relative justify-center items-center w-full aspect-square justify-start'>
                       <Image source={card.src} className='absolute w-full h-full' />
                     </View>
-                    <View className='py-2 px-0 w-full justify-start items-start'>
+                    <View className='py-2 px-0 w-full justify-start items-start pt-4'>
                       <View className='flex-row items-end'>
                         <Text className='text-white text-5xl font-bold'>Gabby</Text>
                         <Text className='text-white text-2xl px-1 opacity-80'>22</Text>
