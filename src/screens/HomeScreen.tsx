@@ -10,7 +10,7 @@ import TinderCard from 'react-tinder-card';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import Slider from '@react-native-community/slider';
 
 const db = [
   {
@@ -184,75 +184,88 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView className='flex-1'>
-      <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'>
+      {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
-        <View className='items-center relative bg-red-500'>
-          <TouchableOpacity className='absolute left-5 top-3' onPress={
-            () => {
-              navigation.navigate('User')
-            }
-          }>
-            {
-              userImage !== null
-                ?
-                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
-                :
-                <View>
-                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" />
-                </View>
-            }
-          </TouchableOpacity>
-          <TouchableOpacity >
-            <Image source={require('@assets/Logo_512.png')} style={{
-              width: 128,
-              height: 65,
-              transform: [{ translateX: -6 }],
-              resizeMode: 'contain',
-            }} />
-          </TouchableOpacity>
-        </View>
-        <View className='flex-1 bg-yellow-500 items-center justify-center'>
-          <View className='h-full bg-green-500 px-5 py-12' style={{ aspectRatio: 0.6 }}>
-            <CardsSwipe cards={cardsData} renderCard={(card: any) => {
-              return (
-                <View className='relative w-full h-full rounded-2xl bg-blue-500 '>
+      <View className='items-center relative'>
+        <TouchableOpacity className='absolute left-5 top-3' onPress={
+          () => {
+            navigation.navigate('User')
+          }
+        }>
+          {
+            userImage !== null
+              ?
+              <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
+              :
+              <View>
+                <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" />
+              </View>
+          }
+        </TouchableOpacity>
+        <TouchableOpacity >
+          <Image source={require('@assets/Logo_512.png')} style={{
+            width: 128,
+            height: 65,
+            transform: [{ translateX: -6 }],
+            resizeMode: 'contain',
+          }} />
+        </TouchableOpacity>
+      </View>
+      <View className='flex-1 items-center justify-center'>
+        <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9/16 }}>
+          <CardsSwipe cards={cardsData} renderCard={(card: any) => {
+            return (
 
-                  
-                  <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'>
-                    <View className='absolute left-4 right-4 top-8 bottom-0 bg-blue-500 opacity-100 '>
-                      <View className='flex-1 bg-red-500 justify-start items-start'>
-                        <View className='relative justify-center items-center bg-blue-500 w-full aspect-square justify-start'>
-                          <Image source={card.src} className='absolute w-full h-full' />
-                        </View>
-                        <View className='py-2 px-1 w-full bg-green-500 justify-start items-start'>
-                          <View className='flex-row items-end'>
-                            <Text className='text-white text-5xl font-bold'>Gabby</Text>
-                            <Text className='text-white text-2xl px-1'>22</Text>
-                          </View>
-                          <View className='flex-row items-center'>
-                            <FontAwesome5 name="user-alt" size={16} color="white" />
-                            <Text className='px-2 text-white text-xl'>Artist Name</Text>
-                          </View>
-                          <View className='flex-row items-center'>
-                            <FontAwesome5 name="compact-disc" size={16} color="white" />
-                            <Text className='px-2 text-white text-xl'>Album Title</Text>
-                          </View>
-                        </View>
+              <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl" >
 
-                      </View>
+                {/* <LinearGradient start={{ x: 0, y: 0 }} colors={['transparent', 'rgba(0,0,0,0.8)']} className="flex-1 items-center justify-center z-10" /> */}
+
+
+                {/* <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'> */}
+                <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
+                  <View className='flex-1 justify-start items-start'>
+                    <View className='relative justify-center items-center w-full aspect-square justify-start'>
+                      <Image source={card.src} className='absolute w-full h-full' />
                     </View>
+                    <View className='py-2 px-0 w-full justify-start items-start'>
+                      <View className='flex-row items-end'>
+                        <Text className='text-white text-5xl font-bold'>Gabby</Text>
+                        <Text className='text-white text-2xl px-1 opacity-80'>22</Text>
+                      </View>
+                      <View className='flex-row items-center opacity-80'>
+                        <FontAwesome5 name="user-alt" size={16} color="white" />
+                        <Text className='px-2 text-white text-xl'>Artist Name</Text>
+                      </View>
+                      <View className='flex-row items-center opacity-80'>
+                        <FontAwesome5 name="compact-disc" size={16} color="white" />
+                        <Text className='px-2 text-white text-xl'>Album Title</Text>
+                      </View>
+                      <View className='flex-row'>
+                        <Slider
+                          style={{ width: '100%', height: 40 }}
+                          minimumValue={0}
+                          maximumValue={1}
+                          minimumTrackTintColor="#FFFFFF"
+                          maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
 
 
-                  </ImageBackground>
-                  
+                        />
+                      </View>
+
+                    </View>
+                  </View>
                 </View>
-              )
-            }} />
-          </View>
+
+                {/* </ImageBackground> */}
+
+              </LinearGradient>
+            )
+          }} />
         </View>
+      </View>
 
 
-      </ImageBackground>
+      {/* </ImageBackground> */}
     </SafeAreaView >
   )
 }
