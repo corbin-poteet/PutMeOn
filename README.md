@@ -1,5 +1,6 @@
 # put-me-on
  
+### To install and run:
 * npm install expo-cli --global
-* npm install
-* expo start
+* yarn install
+* yarn start
