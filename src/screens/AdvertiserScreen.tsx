@@ -1,6 +1,5 @@
-import { View, Text, Button, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
 import React from 'react'
-import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -17,8 +16,23 @@ const AdvertiserScreen = () => {
   return (
     <View className='flex-1 justify-center'>
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-            <TouchableOpacity onPress={ () => {navigation.navigate("Home")}}>
-                <Text>Sample text</Text>
+            <Image source={require('@assets/Logo_512_White.png')} style={{
+              width: 256,
+              height: 256,
+              transform: [{ translateX: -6 }],
+              resizeMode: 'contain',
+            }}
+              className="mb-0"
+            />
+            <Text className="text-white text-xl px-5 py-2 text-1 font-semibold bottom-8">Welcome to PutMeOn Spotlight, our service for artists and businesses alike to promote their music and products. Please select from the options below:</Text>
+            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-10 py-3 rounded-3xl margin-8" onPress={ () => {navigation.navigate("Login")}}>
+                <Text className="text-white text-xl px-5 py-2 text-1 font-semibold">Promote your music</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 py-3 rounded-3xl top-8" onPress={ () => {navigation.navigate("Login")}}>
+                <Text className="text-white text-xl px-5 py-2 text-1 font-semibold">Advertise for a business</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-row items-center justify-center bg-red-500 px-5 rounded-3xl top-8" onPress={ () => {navigation.navigate("Login")}}>
+                <Text className="text-white text-xl px-5 py-2 text-1 font-semibold">Return to Login Page</Text>
             </TouchableOpacity>
         </LinearGradient>
     </View>
