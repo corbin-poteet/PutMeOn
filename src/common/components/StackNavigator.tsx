@@ -5,13 +5,14 @@ import HomeScreen from '@screens/HomeScreen';
 import LoginScreen from '@screens/LoginScreen';
 import useAuth from '@hooks/useAuth';
 import UserScreen from '@screens/UserScreen';
+import AdvertiserScreen from '@/screens/AdvertiserScreen';
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
 
   const { token } = useAuth();
-
+  //DUETO
   return (
     <NavigationContainer>
         <Stack.Navigator screenOptions={
@@ -27,6 +28,7 @@ const StackNavigator = () => {
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />
           )}
+            <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
         </Stack.Navigator>
     </NavigationContainer>
   )
