@@ -6,6 +6,8 @@ import LoginScreen from '@screens/LoginScreen';
 import useAuth from '@hooks/useAuth';
 import UserScreen from '@screens/UserScreen';
 import AdvertiserScreen from '@/screens/AdvertiserScreen';
+import ArtistFormScreen from '@/screens/ArtistFormScreen';
+import BusinessFormScreen from '@/screens/BusinessFormScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +31,8 @@ const StackNavigator = () => {
             <Stack.Screen name="Login" component={LoginScreen} />
           )}
             <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
+            <Stack.Screen name="ArtistForm" component={ArtistFormScreen} />
+            <Stack.Screen name="BusinessForm" component={BusinessFormScreen} />          
         </Stack.Navigator>
     </NavigationContainer>
   )
