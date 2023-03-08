@@ -4,14 +4,13 @@ import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
-import Swiper from 'react-native-deck-swiper';
 import { Audio } from 'expo-av';
-import TinderCard from 'react-tinder-card';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import SQLite from 'react-native-sqlite-storage';
+import Swiper from '@/common/components/elements/Swiper';
 
 const db = [
   {
@@ -53,10 +52,10 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const { logout, spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
-  const [tracks, setTracks] = React.useState<any[]>([]);
+  //const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
-
+  var tracks: any | any[] = [];
 
   const swiped = (direction: string | React.SetStateAction<undefined>, nameToDelete: string) => {
     console.log('removing: ' + nameToDelete + ' to the ' + direction)
@@ -100,9 +99,29 @@ const HomeScreen = () => {
     const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
       function (data: { items: any[]; }) {
         console.log("Here are your 15 recently played tracks: \n");
+
         data.items.forEach((element: { track: { name: any; }; }) => {
           console.log(element.track.name);
         });
+
+        var recentlyPlayedTracks = data.items;
+
+        //setTracks(recentlyPlayedTracks);
+        tracks = recentlyPlayedTracks;
+        setLoaded(true);
+        console.log("Data Items Tracks: \n");
+        //console.log(data.items.map((item: { track: any; }) => item.track));
+        //console.log(tracks);
+
+        // loop through tracks
+        // for (var i = 0; i < tracks.length; i++) {
+        //   console.log(tracks[i].name);
+        // } 
+
+
+
+
+
       }
     )
   }
@@ -128,6 +147,7 @@ const HomeScreen = () => {
       function (data: { tracks: React.SetStateAction<any[]>; }) {
         setTracks(data.tracks);
         setLoaded(true);
+        console.log(data.tracks);
       },
       function (err: any) {
         console.error(err);
@@ -135,8 +155,9 @@ const HomeScreen = () => {
     );
   }
 
+
   React.useEffect(() => {
-    getTracks();
+    //getTracks();
   }, [user, spotify]);
 
   React.useEffect(() => {
@@ -172,6 +193,8 @@ const HomeScreen = () => {
       : undefined;
   }, [sound]);
 
+
+
   React.useEffect(() => {
     if (user) {
       if (user.images) {
@@ -180,7 +203,8 @@ const HomeScreen = () => {
         }
       }
     }
-  }, [user])
+  }, [user]);
+
 
 
   return (
@@ -213,63 +237,17 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
       <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9/16 }}>
-          <CardsSwipe cards={cardsData} renderCard={(card: any) => {
-            return (
-
-              <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl" >
-
-                {/* <LinearGradient start={{ x: 0, y: 0 }} colors={['transparent', 'rgba(0,0,0,0.8)']} className="flex-1 items-center justify-center z-10" /> */}
-
-
-                {/* <ImageBackground source={require('@assets/Swipe_Concept_v2_1.png')} resizeMethod={"scale"} resizeMode={'center'} className='w-full h-full rounded-2xl items-center'> */}
-                <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
-                  <View className='flex-1 justify-start items-start'>
-                    <View className='relative justify-center items-center w-full aspect-square justify-start'>
-                      <Image source={card.src} className='absolute w-full h-full' />
-                    </View>
-                    <View className='py-2 px-0 w-full justify-start items-start pt-4'>
-                      <View className='flex-row items-end'>
-                        <Text className='text-white text-5xl font-bold'>Gabby</Text>
-                        <Text className='text-white text-2xl px-1 opacity-80'>22</Text>
-                      </View>
-                      <View className='flex-row items-center opacity-80'>
-                        <FontAwesome5 name="user-alt" size={16} color="white" />
-                        <Text className='px-2 text-white text-xl'>Artist Name</Text>
-                      </View>
-                      <View className='flex-row items-center opacity-80'>
-                        <FontAwesome5 name="compact-disc" size={16} color="white" />
-                        <Text className='px-2 text-white text-xl'>Album Title</Text>
-                      </View>
-                      <View className='flex-row'>
-                        <Slider
-                          style={{ width: '100%', height: 40 }}
-                          minimumValue={0}
-                          maximumValue={1}
-                          minimumTrackTintColor="#FFFFFF"
-                          maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
-
-
-                        />
-                      </View>
-
-                    </View>
-                  </View>
-                </View>
-
-                {/* </ImageBackground> */}
-
-              </LinearGradient>
-            )
-          }} />
+        <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9 / 16 }}>
+          <Swiper tracks={tracks} />
         </View>
       </View>
-
-
-      {/* </ImageBackground> */}
     </SafeAreaView >
   )
 }
+
+
+
+
 
 export default HomeScreen;
 
