@@ -33,7 +33,6 @@ const LoginScreen = () => {
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Sign in with Spotify</Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 rounded-3xl top-8" onPress={ () => {navigation.navigate("Advertiser")}}>
-          {/* <FontAwesome className='p-5' name="spotify" size={24} color="white" /> */}
           <Text className="text-white text-xl py-2 text-1 font-semibold">Artist/Advertiser? Press here.</Text>
         </TouchableOpacity>
       </LinearGradient>
