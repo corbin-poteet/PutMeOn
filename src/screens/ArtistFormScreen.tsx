@@ -3,14 +3,24 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import {getDatabase, ref, set} from 'firebase/database';
+import {push, ref, set, child, update} from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
-const addPromotion = (artist:string, track:string) => {
+const addPromotion = (artist:string, track:string) => { //This function is unused, but writes data to DB with a simple overwrite, deleting all data in DB and inserting artist and track
   set(ref(database, "ArtistPromos/SampleArtist/"),{
     artistName: artist,
     trackName: track
   });
+}
+
+const appendPromotion = (artist:string, track:string) => {
+  const updates = { //New data to send to DB
+    artistName : artist,
+    trackName : track
+  };
+  const newPostKey = push(child(ref(database), 'ArtistPromos/SampleArtist/')).key; //Generate new key for posting location in DB
+
+  return update(ref(database), updates)
 }
 
 const ArtistFormScreen = () => {
@@ -40,7 +50,7 @@ const ArtistFormScreen = () => {
                 className="mb-12"
             />
             </TouchableOpacity>
-            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => addPromotion(artistName, trackName)}><Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
+            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => appendPromotion(artistName, trackName)}><Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
         </LinearGradient>
     </View>
   )
