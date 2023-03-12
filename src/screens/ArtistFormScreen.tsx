@@ -3,6 +3,15 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
+import {getDatabase, ref, set} from 'firebase/database';
+import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+
+const addPromotion = (artist:string, track:string) => {
+  set(ref(database, "ArtistPromos/SampleArtist/"),{
+    artistName: artist,
+    trackName: track
+  });
+}
 
 const ArtistFormScreen = () => {
     
@@ -31,7 +40,7 @@ const ArtistFormScreen = () => {
                 className="mb-12"
             />
             </TouchableOpacity>
-            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => Alert.alert('Artist Name: ' + artistName + ', Track Name: ' + trackName)}><Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
+            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => addPromotion(artistName, trackName)}><Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
         </LinearGradient>
     </View>
   )
