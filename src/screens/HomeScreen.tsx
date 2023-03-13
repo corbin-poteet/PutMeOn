@@ -86,85 +86,47 @@ const HomeScreen = () => {
     { src: require('@assets/icon.png') },
   ];
 
-  // spotify.searchTracks('Paramore').then(
-  //   function (data) {
-  //     setTracks(data.tracks.items);
-  //   },
-  //   function (err) {
-  //     console.error(err);
-  //   }
-  // );
 
-  async function getRecentlyPlayedTracks() {
-    const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
-      function(data){
-        console.log("Here are your 15 recently played tracks: \n");
-        data.items.forEach(element => {
-          console.log(element.track.name);
-        });
+  // async function getRecentlyPlayedTracks() {
+  //   const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
+  //     function(data){
+  //       console.log("Here are your 15 recently played tracks: \n");
+  //       data.items.forEach(element => {
+  //         console.log(element.track.name);
+  //       });
 
-        var recentlyPlayedTracks = data.items;
+  //       var recentlyPlayedTracks = data.items;
 
-        //setTracks(recentlyPlayedTracks);
-        tracks = recentlyPlayedTracks;
-        setLoaded(true);
-        console.log("Data Items Tracks: \n");
-        //console.log(data.items.map((item: { track: any; }) => item.track));
-        //console.log(tracks);
+  //       //setTracks(recentlyPlayedTracks);
+  //       tracks = recentlyPlayedTracks;
+  //       setLoaded(true);
+  //       console.log("Data Items Tracks: \n");
+  //       //console.log(data.items.map((item: { track: any; }) => item.track));
+  //       //console.log(tracks);
 
-        // loop through tracks
-        // for (var i = 0; i < tracks.length; i++) {
-        //   console.log(tracks[i].name);
-        // } 
+  //       // loop through tracks
+  //       // for (var i = 0; i < tracks.length; i++) {
+  //       //   console.log(tracks[i].name);
+  //       // } 
 
 
 
 
 
-      }
-    )
-    setRecentlyPlayedTrackIds(recentTrackIds)
-    recentTrackIds.length = 0
-    return recentlyPlayedTrackIds;
-  }
+  //     }
+  //   )
+  //   setRecentlyPlayedTrackIds(recentTrackIds)
+  //   recentTrackIds.length = 0
+  //   return recentlyPlayedTrackIds;
+  // }
 
-  async function getTracks() {
-    if (loaded) {
-      return;
-    }
-
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ) as string[];
-
-    spotify.getRecommendations({
-      seed_artists: topArtistsIds,
-      limit: 100,
-    }).then(
-      function (data: { tracks: React.SetStateAction<any[]>; }) {
-        setTracks(data.tracks);
-        setLoaded(true);
-        console.log(data.tracks);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    );
-  }
 
 
   React.useEffect(() => {
     //getTracks();
   }, [user, spotify]);
 
-  React.useEffect(() => {
-    getRecentlyPlayedTracks(10);
-  }, []);
+  
 
 
 

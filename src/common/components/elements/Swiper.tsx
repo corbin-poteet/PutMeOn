@@ -13,15 +13,51 @@ const Swiper = (props: Props) => {
 
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<any[]>([]);
+  const [recentTracks, setRecentTracks] = React.useState<any[]>([]);
+  const [loaded, setLoaded] = React.useState<boolean>(false);
+
 
   async function getTracks() {
+    if (loaded) {
+      return;
+    }
+
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ) as string[];
+
+    spotify.getRecommendations({
+      seed_artists: topArtistsIds,
+      limit: 100,
+    }).then(
+      function (data: { tracks: React.SetStateAction<any[]>; }) {
+        setTracks(data.tracks);
+        setLoaded(true);
+        console.log(data.tracks);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    );
+  }
+
+  async function getRecentlyPlayedTracks() {
     const response = await spotify.getMyRecentlyPlayedTracks();
     const tracks = response.items.map((item: any) => item.track);
-    setTracks(tracks);
+    setRecentTracks(tracks);
   }
 
   React.useEffect(() => {
     getTracks();
+  }, []);
+
+  React.useEffect(() => {
+    getRecentlyPlayedTracks();
   }, []);
 
   if (tracks.length === 0) {
