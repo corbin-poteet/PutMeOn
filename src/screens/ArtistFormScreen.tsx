@@ -13,14 +13,18 @@ const addPromotion = (artist:string, track:string) => { //This function is unuse
   });
 }
 
-const appendPromotion = (artist:string, track:string) => {
-  const updates = { //New data to send to DB
-    artistName : artist,
-    trackName : track
+const appendPromotion = (artist:string, track:string) => { //function to append data to DB
+  const updates = { //New JSON object to send to DB
+    newArtistSample:{
+      artistName : artist,
+      trackName : track
+    }
   };
-  const newPostKey = push(child(ref(database), 'ArtistPromos/SampleArtist/')).key; //Generate new key for posting location in DB
+  const newArtistKey = push(child(ref(database), 'ArtistPromos/SampleArtist/')).key; //Generate new key for posting location in DB
 
-  return update(ref(database), updates)
+  Alert.alert("Successfully submitted data to DB");
+
+  return update(ref(database), updates) //push updates object to DB
 }
 
 const ArtistFormScreen = () => {
