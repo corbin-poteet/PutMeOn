@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
-import { ResponseType, useAuthRequest } from 'expo-auth-session';
+import { Platform } from 'react-native'
+import { makeRedirectUri, ResponseType, useAuthRequest } from 'expo-auth-session';
 import SpotifyWebApi from 'spotify-web-api-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -33,6 +34,7 @@ const config = {
   // also this is the reason authentication doesn't work on the web version of the app currently, need to figure that out
   // TODO: change this so the web version of the app works too
   redirectUri: 'exp://127.0.0.1:19000/',
+
 
   // this is the discovery document for spotify's oauth2 api
   discovery: {
@@ -69,6 +71,10 @@ const AuthContext = createContext({
  * @returns the auth state
  */
 export const AuthProvider = ({ children }) => {
+
+  console.log("redirect uri: ", config.redirectUri)
+
+
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});
 
@@ -87,6 +93,7 @@ export const AuthProvider = ({ children }) => {
     config.discovery
   );
 
+
   // only re-render if token changes
   React.useMemo(() => ({
     signInWithSpotify,
@@ -98,16 +105,17 @@ export const AuthProvider = ({ children }) => {
     [token]);
 
   React.useEffect(() => {
+
+    if (Platform.OS == "web") {
+      setAccessToken("BQBYhn0084rKmH7p8n9Vmf6xIX2A7oH2ayrRW7CsSIkvQoJg1gNH8cCSm3kawqjQR9M2GId-10SI4fqpfciCmjhze65He54lI9mozsefIsNFcQpBpHekMqf8J9soFN6j8B8dhoNfFoq-jRefb917Iy3pLjpk43LulBXfuyc3vsImU_lJh80LFL7YlPCmBVHmX2Ok0PQd04pB5D0AtadTyiTXPt6BXlxs9tKyA0Cuzkyc0odDBPykFmURdgVhXUzmQAkAzjaqHtjONPCUAiAknvHDAD0CVga9Xqgtiv3Q")
+      return;
+    }
+
     // check if there is a token stored in async storage
     AsyncStorage.getItem('token').then((token) => {
       if (token) {
         // if there is a token, set it and pass it to the spotify api
-        setToken(token);
-        spotify.setAccessToken(token);
-        // now we can get user info from the spotify api
-        spotify.getMe().then((user) => {
-          setUser(user);
-        });
+        setAccessToken(token);
       }
     });
   }, []);

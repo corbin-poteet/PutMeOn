@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "put-me-on",
+    "name": "expo",
     "slug": "expo",
+    "scheme": "put-me-on",
     "version": "1.0.0",
-    "scheme": "putmeon",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,16 +15,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "UIBackgroundModes": [
-          "audio"
-        ]
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
