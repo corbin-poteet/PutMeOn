@@ -1,7 +1,7 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity} from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
-import useAuth from '../hooks/useAuth';
+import useAuth from '@hooks/useAuth';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 
 const UserScreen = () => {
@@ -26,20 +26,19 @@ const UserScreen = () => {
           <Text className='text-white text-xl px-5 py-2 text-1 font-semibold'>Logout</Text>
         </TouchableOpacity>
       </View>
-      <View className='flex-row justify-center items-center'>
-        <Text className='text-xl'>Display Name: {[user.display_name]}</Text>
+      <View className='flex-row absolute top-5 left-5'>
+        <Text className='text-2xl'>Display Name: {[user.display_name]}</Text>
       </View>
-      <View className='flex-row justify-center items-center'>
-        <Text className='text-xl'>Country: {user.country}</Text>
+      <View className='flex-row absolute top-10 left-5'>
+        <Text className='text-2xl'>Country: {user.country}</Text>
       </View>
-      <View className='flex-row justify-center items-center'>
-        <Text className='text-xl'>Email: {user.email}</Text>
+      <View className='flex-row absolute top-15 left-5'>
+        <Text className='text-2xl'>Email: {user.email}</Text>
       </View>
-      <View className='flex-row justify-center items-center'>
-        <Text className='text-xl'>Subscription Type: {user.product}</Text>
+      <View className='flex-row absolute top-20 left-5'>
+        <Text className='text-2xl'>Subscription Type: {user.product}</Text>
       </View>
     </View>
-    
   )
 }
 
