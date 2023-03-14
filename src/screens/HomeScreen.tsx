@@ -9,7 +9,6 @@ import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
-import SQLite from 'react-native-sqlite-storage';
 import Swiper from '@/common/components/elements/Swiper';
 
 const db = [
