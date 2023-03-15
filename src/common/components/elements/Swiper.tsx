@@ -74,20 +74,18 @@ const Swiper = (props: Props) => {
       )
     }}onSwipedLeft = { //Add disliked song to the disliked database
       (index: number) => {
-        //set(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
-        //  trackName: tracks[index].name //Replace this with track ID in the future
-        //});
+        console.log("NOPE: "+tracks[index].name)
         push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
-          trackName: tracks[index].name //Replace this with track ID in the future
+          trackID: tracks[index].id,
+          trackName: tracks[index].name
         })
       } 
     } onSwipedRight = { //Add liked songs to the liked database
       (index: number) => {
-        //set(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
-        //  trackName: tracks[index].name //Replace this with track ID in the future
-        //});
+        console.log("LIKE: "+tracks[index].name)
         push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
-          trackName: tracks[index].name //Replace this with track ID in the future
+          trackID: tracks[index].id, 
+          trackName: tracks[index].name
         })
       } 
     }/>
