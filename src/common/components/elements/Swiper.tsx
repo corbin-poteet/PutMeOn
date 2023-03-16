@@ -31,19 +31,37 @@ const Swiper = (props: Props) => {
       }
     ) as string[];
 
-    spotify.getRecommendations({
+    const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 100,
-    }).then(
-      function (data: { tracks: React.SetStateAction<any[]>; }) {
-        setTracks(data.tracks);
-        setLoaded(true);
-        console.log(data.tracks);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    );
+      limit: 10,
+    });
+
+    
+    const tracks = recResponse.tracks;
+
+        await spotify.containsMySavedTracks(
+          recResponse.tracks.map((track: any) => track.id)
+         ).then(
+          // after promise returns of containsMySavedTracks
+          function (isSavedArr: any[]) {
+            console.log("PROMISE RETURNED" + isSavedArr);
+            isSavedArr.forEach((element) => {
+              console.log(element);
+              if (element === true) {
+                console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
+
+                tracks.splice(isSavedArr.indexOf(element), 1);
+
+                console.log("Updated length: " + tracks.length);
+              }
+            });
+            
+          }
+        );
+        
+        setTracks(tracks);
+      
+    
   }
 
   async function getRecentlyPlayedTracks() {
@@ -59,6 +77,8 @@ const Swiper = (props: Props) => {
   React.useEffect(() => {
     getRecentlyPlayedTracks();
   }, []);
+
+
 
   if (tracks.length === 0) {
     return (
