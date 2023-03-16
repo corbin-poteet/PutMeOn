@@ -4,6 +4,8 @@ import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
+import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import {push, ref, set, child, update} from 'firebase/database';
 
 type Props = {
   tracks: any[];
@@ -126,7 +128,23 @@ const Swiper = (props: Props) => {
           </View>
         </LinearGradient>
       )
-    }} />
+    }}onSwipedLeft = { //Add disliked song to the disliked database
+      (index: number) => {
+        console.log("NOPE: "+tracks[index].name)
+        push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
+          trackID: tracks[index].id,
+          trackName: tracks[index].name
+        })
+      } 
+    } onSwipedRight = { //Add liked songs to the liked database
+      (index: number) => {
+        console.log("LIKE: "+tracks[index].name)
+        push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
+          trackID: tracks[index].id, 
+          trackName: tracks[index].name
+        })
+      } 
+    }/>
   )
 }
 

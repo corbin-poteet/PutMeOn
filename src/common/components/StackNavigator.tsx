@@ -9,6 +9,7 @@ import MenuScreen from '@screens/MenuScreen';
 import AdvertiserScreen from '@/screens/AdvertiserScreen';
 import ArtistFormScreen from '@/screens/ArtistFormScreen';
 import BusinessFormScreen from '@/screens/BusinessFormScreen';
+import PlaylistScreen from '@/screens/PlaylistScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ const StackNavigator = () => {
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="User" component={UserScreen} />
               <Stack.Screen name="Menu" component={MenuScreen} />
+              <Stack.Screen name="Playlist" component={PlaylistScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />

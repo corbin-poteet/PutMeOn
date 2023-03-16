@@ -9,83 +9,18 @@ import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
-import SQLite from 'react-native-sqlite-storage';
 import Swiper from '@/common/components/elements/Swiper';
 
-const db = [
-  {
-    name: 'Richard Hendricks',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Erlich Bachman',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Monica Hall',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Jared Dunn',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Dinesh Chugtai',
-    img: require('@assets/icon.png')
-  }
-]
-
-const alreadyRemoved: string[] = []
-let charactersState = db // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
-
-
 const HomeScreen = () => {
-
-  const [characters, setCharacters] = useState(db)
-  const [lastDirection, setLastDirection] = useState()
-
-  const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
-
-
-  const [sound, setSound] = React.useState<Audio.Sound | null>(null);
-
-  const navigation = useNavigation();
+  const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
+  const navigation = useNavigation(); //Establish stack navigation
+  
   const { logout, spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   //const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
   var tracks: any | any[] = [];
-
-  const swiped = (direction: string | React.SetStateAction<undefined>, nameToDelete: string) => {
-    console.log('removing: ' + nameToDelete + ' to the ' + direction)
-    setLastDirection(direction)
-    alreadyRemoved.push(nameToDelete)
-  }
-
-  const outOfFrame = (name: string) => {
-    console.log(name + ' left the screen!')
-    charactersState = charactersState.filter(character => character.name !== name)
-    setCharacters(charactersState)
-  }
-
-  const swipe = (dir: string) => {
-    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
-    if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
-      const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      childRefs[index].current.swipe(dir) // Swipe the card!
-    }
-  }
-
-  const cardsData = [
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-  ];
-
 
   // async function getRecentlyPlayedTracks() {
   //   const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
@@ -108,11 +43,6 @@ const HomeScreen = () => {
   //       // for (var i = 0; i < tracks.length; i++) {
   //       //   console.log(tracks[i].name);
   //       // } 
-
-
-
-
-
   //     }
   //   )
   //   setRecentlyPlayedTrackIds(recentTrackIds)
@@ -120,15 +50,9 @@ const HomeScreen = () => {
   //   return recentlyPlayedTrackIds;
   // }
 
-
-
   React.useEffect(() => {
     //getTracks();
   }, [user, spotify]);
-
-  
-
-
 
   async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
@@ -193,7 +117,11 @@ const HomeScreen = () => {
               </View>
           }
         </TouchableOpacity>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={
+          () => {
+            navigation.navigate('Playlist')
+          }
+        }>
           <Image source={require('@assets/Logo_512.png')} style={{
             width: 128,
             height: 65,

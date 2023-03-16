@@ -1,8 +1,10 @@
-import { View, Text, TouchableOpacity} from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import useAuth from '@hooks/useAuth';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const UserScreen = () => {
 
@@ -12,7 +14,7 @@ const UserScreen = () => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerTitle: user?.display_name || 'User',
+      headerTitle: 'Settings',
       //TODO: Figure out how to make this swipe from the left
       
     });
@@ -20,26 +22,55 @@ const UserScreen = () => {
 
   return (
     //Logout button functionality, user details
-    <View>
-      <View className='flex-row justify-center items-center'> 
-        <TouchableOpacity className='flex-row items-center justify-center bg-red-500 px-20 py-15 rounded-3xl absolute top-80' onPress={logout}>
-          <Text className='text-white text-xl px-5 py-2 text-1 font-semibold'>Logout</Text>
+      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-end' }}>
+        <View style={{ alignItems: 'left'}}> 
+        <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 60, marginBottom: 10}}>
+        <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="person-circle-outline" size={30} color="white" />
+       <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', marginBottom: 5, marginTop: 5 }}>Account</Text>
+        </View>
         </TouchableOpacity>
-      </View>
-      <View className='flex-row absolute top-5 left-5'>
-        <Text className='text-2xl'>Display Name: {[user.display_name]}</Text>
-      </View>
-      <View className='flex-row absolute top-10 left-5'>
-        <Text className='text-2xl'>Country: {user.country}</Text>
-      </View>
-      <View className='flex-row absolute top-15 left-5'>
-        <Text className='text-2xl'>Email: {user.email}</Text>
-      </View>
-      <View className='flex-row absolute top-20 left-5'>
-        <Text className='text-2xl'>Subscription Type: {user.product}</Text>
-      </View>
-    </View>
+        <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+          <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="game-controller" size={35} color="white" />
+          <Text style={{fontWeight: 'bold', fontSize: 30, color: 'white', }}>Game Settings</Text>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+          <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="moon" size={35} color="white" />
+          <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Dark Mode</Text>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+          <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="play-circle" size={35} color="white" />
+          <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playback</Text>
+        </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+          <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="information-circle-outline" size={35} color="white" />
+          <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Information</Text>
+        </View>
+        </TouchableOpacity>
+        </View>
+        <View style={{ alignItems: 'center',flex: 1, justifyContent: 'flex-end' }}> 
+          <TouchableOpacity style={{ backgroundColor: 'red', width: '60%', height: 50, alignItems: 'center', justifyContent: 'center', borderRadius: 10, marginBottom: 1 }} onPress={logout}>
+            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ padding: 10 }}>
+          <Text style={{ fontSize: 20, color: 'white' }}>Account Name: {user?.display_name}</Text>
+          <Text style={{ fontSize: 20, color: 'white' }}>Country: {user?.country}</Text>
+          <Text style={{ fontSize: 20, color: 'white' }}>Email: {user?.email}</Text>
+          <Text style={{ fontSize: 20, color: 'white' }}>Subscription Type: {user?.product}</Text>
+        </View>
+        </LinearGradient>
+
   )
+
+  
 }
 
 export default UserScreen
