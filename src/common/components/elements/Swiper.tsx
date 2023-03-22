@@ -1,11 +1,13 @@
-import { View, Text, Image, Slider } from 'react-native'
+import { View, Text, Image, Slider, ScrollView } from 'react-native'
 import React from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
-import {push, ref, set, child, update} from 'firebase/database';
+import { push, ref, set, child, update } from 'firebase/database';
+import Scrubber from 'react-native-scrubber'
+import { AntDesign } from '@expo/vector-icons'; 
 
 type Props = {
   tracks: any[];
@@ -38,32 +40,32 @@ const Swiper = (props: Props) => {
       limit: 10,
     });
 
-    
+
     const tracks = recResponse.tracks;
 
-        await spotify.containsMySavedTracks(
-          recResponse.tracks.map((track: any) => track.id)
-         ).then(
-          // after promise returns of containsMySavedTracks
-          function (isSavedArr: any[]) {
-            console.log("PROMISE RETURNED" + isSavedArr);
-            isSavedArr.forEach((element) => {
-              console.log(element);
-              if (element === true) {
-                console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
+    await spotify.containsMySavedTracks(
+      recResponse.tracks.map((track: any) => track.id)
+    ).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
 
-                tracks.splice(isSavedArr.indexOf(element), 1);
+            tracks.splice(isSavedArr.indexOf(element), 1);
 
-                console.log("Updated length: " + tracks.length);
-              }
-            });
-            
+            console.log("Updated length: " + tracks.length);
           }
-        );
-        
-        setTracks(tracks);
-      
-    
+        });
+
+      }
+    );
+
+    setTracks(tracks);
+
+
   }
 
   async function getRecentlyPlayedTracks() {
@@ -101,50 +103,62 @@ const Swiper = (props: Props) => {
               </View>
               <View className='py-2 px-0 w-full justify-start items-start pt-4'>
                 <View className='flex-row items-end'>
-                  <Text className='text-white text-5xl font-bold'>{track.name}</Text>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='text-white text-5xl font-bold'>{track.name}</Text>
+                  </ScrollView>
                   {/* <Text className='text-white text-2xl px-1 opacity-80'>22</Text> */}
                 </View>
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
-                  <Text className='px-2 text-white text-xl'>{
-                    track?.artists?.map((artist: any) => artist.name).join(', ')
-                  }</Text>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='px-2 text-white text-xl'>{
+                      track?.artists?.map((artist: any) => artist.name).join(', ')
+                    }</Text>
+                  </ScrollView>
                 </View>
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
+                  </ScrollView>
                 </View>
                 <View className='flex-row'>
-                  <Slider
-                    style={{ width: '100%', height: 40 }}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#FFFFFF"
-                    maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
+                  <Scrubber
+                    value={0}
+                    onSlidingComplete={(value: number) => console.log(value)}
+                    totalDuration={track?.duration_ms / 1000}
+                    trackColor={'#666'}
+                    scrubbedColor={'#8d309b'}
                   />
+                </View>
+                <View className='flex-row w-full justify-center content-center items-center'>
+                  <AntDesign name="dislike1" size={32} color="white" />
+                  <FontAwesome5 name="play" size={32} color="white" />
+                  <AntDesign name="like1" size={32} color="white" />
+
                 </View>
               </View>
             </View>
           </View>
         </LinearGradient>
       )
-    }}onSwipedLeft = { //Add disliked song to the disliked database
+    }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
-        console.log("NOPE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
+        console.log("NOPE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
           trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      } 
-    } onSwipedRight = { //Add liked songs to the liked database
+      }
+    } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
-        console.log("LIKE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
-          trackID: tracks[index].id, 
+        console.log("LIKE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
+          trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      } 
-    }/>
+      }
+    } />
   )
 }
 
