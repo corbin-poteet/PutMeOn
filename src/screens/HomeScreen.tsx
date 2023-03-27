@@ -14,7 +14,7 @@ import Swiper from '@/common/components/elements/Swiper';
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
   const navigation = useNavigation(); //Establish stack navigation
-  
+
   const { logout, spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   //const [tracks, setTracks] = React.useState<any[]>([]);
@@ -83,8 +83,6 @@ const HomeScreen = () => {
       : undefined;
   }, [sound]);
 
-
-
   React.useEffect(() => {
     if (user) {
       if (user.images) {
@@ -94,8 +92,6 @@ const HomeScreen = () => {
       }
     }
   }, [user]);
-
-
 
   return (
     <SafeAreaView className='flex-1'>
@@ -138,10 +134,6 @@ const HomeScreen = () => {
     </SafeAreaView >
   )
 }
-
-
-
-
 
 export default HomeScreen;
 

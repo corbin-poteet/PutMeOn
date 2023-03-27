@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
-import {push, ref, set, child, update} from 'firebase/database';
+import { push, ref, set, child, update } from 'firebase/database';
 
 type Props = {
   tracks: any[];
@@ -18,8 +18,7 @@ const Swiper = (props: Props) => {
   const [recentTracks, setRecentTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
 
-
-  async function getTracks() {
+  async function getTracks() { //Fetch tracks to fill cards in homescreen, excluding user's saved songs in Spotify
     if (loaded) {
       return;
     }
@@ -38,32 +37,29 @@ const Swiper = (props: Props) => {
       limit: 10,
     });
 
-    
     const tracks = recResponse.tracks;
 
-        await spotify.containsMySavedTracks(
-          recResponse.tracks.map((track: any) => track.id)
-         ).then(
-          // after promise returns of containsMySavedTracks
-          function (isSavedArr: any[]) {
-            console.log("PROMISE RETURNED" + isSavedArr);
-            isSavedArr.forEach((element) => {
-              console.log(element);
-              if (element === true) {
-                console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
+    await spotify.containsMySavedTracks( 
+      recResponse.tracks.map((track: any) => track.id)
+    ).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
 
-                tracks.splice(isSavedArr.indexOf(element), 1);
+            tracks.splice(isSavedArr.indexOf(element), 1);
 
-                console.log("Updated length: " + tracks.length);
-              }
-            });
-            
+            console.log("Updated length: " + tracks.length);
           }
-        );
-        
-        setTracks(tracks);
-      
-    
+        });
+
+      }
+    );
+
+    setTracks(tracks);
   }
 
   async function getRecentlyPlayedTracks() {
@@ -79,8 +75,6 @@ const Swiper = (props: Props) => {
   React.useEffect(() => {
     getRecentlyPlayedTracks();
   }, []);
-
-
 
   if (tracks.length === 0) {
     return (
@@ -128,23 +122,23 @@ const Swiper = (props: Props) => {
           </View>
         </LinearGradient>
       )
-    }}onSwipedLeft = { //Add disliked song to the disliked database
+    }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
-        console.log("NOPE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
+        console.log("NOPE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
           trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      } 
-    } onSwipedRight = { //Add liked songs to the liked database
+      }
+    } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
-        console.log("LIKE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
-          trackID: tracks[index].id, 
+        console.log("LIKE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
+          trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      } 
-    }/>
+      }
+    } />
   )
 }
 

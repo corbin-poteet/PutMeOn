@@ -10,6 +10,11 @@ const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
+  const [selectedPlaylist, setSelectedPlaylist] = React.useState<any[]>();
+  const [playlists, setPlaylists] = React.useState<any[]>();
+  const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [componentHandler, setComponentHandler] = React.useState<any>();
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -17,6 +22,47 @@ const PlaylistScreen = () => {
     });
   }, [navigation]);
 
+  const { spotify, user } = useAuth();
+
+  const result: any[] = [];
+
+  async function getPlaylists() {
+    console.log("User ID: "+user?.id);
+    const response = await spotify.getUserPlaylists(user?.id
+      ).then(
+      function (data) {
+        const playlists = data.items;
+        playlists.forEach(element => { 
+          console.log(element.name); //Testing log for debugging
+        });
+        console.log("Finished Then");
+        setPlaylists(playlists);
+    
+        for(var i = 0; i < playlists.length; i++) {
+          let button = <View>
+          <TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+              <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
+              <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}> HELLO {i}</Text>
+            </View>
+          </TouchableOpacity>
+          </View>
+          //console.log(button);
+          
+          result.push(button);
+          console.log(button)
+          console.log(i+" : "+result[i])
+      }
+      setComponentHandler(result.map(type => <View/>));
+      setLoaded(true)
+    });
+  }
+
+  React.useEffect(() => {
+    console.log("Hello");
+    getPlaylists();
+  }, []);
+  
   return (
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
@@ -28,81 +74,19 @@ const PlaylistScreen = () => {
             <TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
                 <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>Playlist Name</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
               </View>
             </TouchableOpacity>
+            
+            { componentHandler }
+            
             <TouchableOpacity>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
                 <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
                 <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>Playlist</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>Rock</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>New Playlist</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 10, width: 75, height: 75 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 36, color: 'white'}}>LAST Playlist</Text>
-              </View>
-            </TouchableOpacity>
+            
 
           </ScrollView>
         </View>
