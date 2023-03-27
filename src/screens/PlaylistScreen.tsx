@@ -10,7 +10,7 @@ const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
-  const [selectedPlaylist, setSelectedPlaylist] = React.useState<any[]>();
+  const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [playlists, setPlaylists] = React.useState<any[]>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
@@ -27,14 +27,13 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
-    console.log("User ID: "+user?.id);
     const response = await spotify.getUserPlaylists(user?.id
       ).then(
       function (data) {
         const playlists = data.items;
-        playlists.forEach(element => { 
-          console.log(element.name); //Testing log for debugging
-        });
+        // playlists.forEach(element => { 
+        //   console.log(element.name); //Testing log for debugging
+        // });
         setPlaylists(playlists);
     
         for(var i = 0; i < playlists.length; i++) {
@@ -44,14 +43,17 @@ const PlaylistScreen = () => {
               "image": playlists[i].images[0] 
             }
           );
-    
-          console.log(result[i].name);
       }
       const listItems = result.map(
         (element) => {
           return (
             <View>  
-              <TouchableOpacity>
+              <TouchableOpacity onPress = { 
+                () => {
+                  setSelectedPlaylist(element)
+                  console.log("SELECTED: "+element.name)
+                }
+              }>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                   <Image source={ {uri: element.image.url}} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
                   <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white'}}> {element.name} </Text>
@@ -68,7 +70,6 @@ const PlaylistScreen = () => {
   }
 
   React.useEffect(() => {
-    console.log("Hello");
     getPlaylists();
   }, []);
   
