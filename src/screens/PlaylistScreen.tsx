@@ -37,12 +37,15 @@ const PlaylistScreen = () => {
         setPlaylists(playlists);
     
         for(var i = 0; i < playlists.length; i++) {
-          result.push(
-            {
-              "name": playlists[i].name,
-              "image": playlists[i].images[0] 
-            }
-          );
+          if(playlists[i].owner.id === user?.id) //Remove Playlists not created by user
+          {
+            result.push(
+              {
+                "name": playlists[i].name,
+                "image": playlists[i].images[0] 
+              }
+            );
+          }
       }
       const listItems = result.map(
         (element) => {
@@ -77,11 +80,16 @@ const PlaylistScreen = () => {
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
         <View className='absolute top-1'>
-          <Text className='text-white text-2xl px-3'>Songs that you like in Put Me On will be added to a Playlist of your choice: </Text>
+          <Text className='text-white text-2xl px-3'>Songs you like in Put Me On will be added to a Playlist that you have created in Spotify: </Text>
         </View>
         <View style={{padding: 10, flex: 1}}>
           <ScrollView style={{flex: 1, marginTop: 100}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress = {
+              () => {
+                spotify.createPlaylist(user?.id)
+                console.log('Created Playlist')
+              }
+            }>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                 <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white'}}>New Playlist</Text>
