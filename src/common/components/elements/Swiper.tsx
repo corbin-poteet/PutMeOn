@@ -10,6 +10,7 @@ import Scrubber from 'react-native-scrubber'
 import { AntDesign } from '@expo/vector-icons'; 
 import { selectedPlaylist } from '@screens/PlaylistScreen';
 
+
 type Props = {
   tracks: any[];
 };
@@ -18,13 +19,61 @@ const Swiper = (props: Props) => {
 
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<any[]>([]);
-  const [recentTracks, setRecentTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [needsReload, setReload] = React.useState<boolean>(false);
+  const [deckCounter, setDeckCounter] = React.useState<number>(0);
 
-  async function getTracks() { //Fetch tracks to fill cards in homescreen, excluding user's saved songs in Spotify
-    if (loaded) {
-      return;
-    }
+  let trackStack: any[] = [];
+
+  //previously known as getTracks
+  async function initializeTracks() {
+
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data: { items: any[]; }) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ) as string[];
+
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: topArtistsIds,
+      limit: 20,
+    });
+
+    const trackIds = recResponse.tracks.map((track: any) => track.id);
+
+    await spotify.containsMySavedTracks(trackIds).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
+
+            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+            console.log("Updated length: " + recResponse.tracks.length);
+          }
+        });
+          
+        }
+      );
+
+      trackStack = recResponse.tracks;
+      setTracks(recResponse.tracks);
+      setDeckCounter(recResponse.tracks.length);
+    
+  }
+
+  async function updateTracks() {
+
+    let trackStack = tracks;
+    console.log("trackstack beginning of function: " + trackStack.length);
+    console.log("tracks usestate beginning of function: " + tracks.length);
+
 
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
       function (data) {
@@ -37,55 +86,73 @@ const Swiper = (props: Props) => {
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 10,
+      limit: 5,
     });
 
+    //Do To: try putting recs in new array and then concat with trackStack
+    console.log("RECOMMENDATIONS: " + recResponse.tracks.length);
+    trackStack = trackStack.concat(recResponse.tracks);
+    console.log("TRACKSTACK: " + trackStack.length);
 
-    const tracks = recResponse.tracks;
+        await spotify.containsMySavedTracks(
+          recResponse.tracks.map((track: any) => track.id)
+         ).then(
+          // after promise returns of containsMySavedTracks
+          function (isSavedArr: any[]) {
+            console.log("PROMISE RETURNED" + isSavedArr);
+            isSavedArr.forEach((element) => {
+              console.log(element);
+              if (element === true) {
+                console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
 
-    await spotify.containsMySavedTracks(
-      recResponse.tracks.map((track: any) => track.id)
-    ).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("PROMISE RETURNED" + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
+                trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
 
-            tracks.splice(isSavedArr.indexOf(element), 1);
-
-            console.log("Updated length: " + tracks.length);
+                console.log("Updated length: " + trackStack.length);
+              }
+            });
+            
           }
+        ).catch((err) => {
+          console.log(err);
         });
 
-      }
-    );
-
-    setTracks(tracks);
-
+        setTracks(trackStack);
+        setDeckCounter(trackStack.length);
 
   }
 
-  async function getRecentlyPlayedTracks() {
-    const response = await spotify.getMyRecentlyPlayedTracks();
-    const tracks = response.items.map((item: any) => item.track);
-    setRecentTracks(tracks);
+  // async function getRecentlyPlayedTracks() {
+  //   const response = await spotify.getMyRecentlyPlayedTracks();
+  //   const tracks = response.items.map((item: any) => item.track);
+  //   setRecentTracks(tracks);
+  // }
+
+  function tester() {
+    console.log("TESTER");
   }
+
 
   async function addToPlaylist(trackURIs : string[]) {
     //console.log("PLAYLIST ID: "+selectedPlaylist);
     const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
   }
 
-  React.useEffect(() => {
-    getTracks();
-  }, []);
 
   React.useEffect(() => {
-    getRecentlyPlayedTracks();
+    //previously known as getTracks
+    initializeTracks();
   }, []);
+
+  // React.useEffect(() => {
+  //   getRecentlyPlayedTracks();
+  // }, []);
+
+  React.useEffect(() => {
+    if (needsReload) {
+      updateTracks();
+      setReload(false);
+    }
+  }, [needsReload]);
 
   if (tracks.length === 0) {
     return (
@@ -94,6 +161,7 @@ const Swiper = (props: Props) => {
       </View>
     )
   }
+
 
   return (
     <CardsSwipe cards={tracks} renderCard={(track: any) => {
@@ -106,60 +174,64 @@ const Swiper = (props: Props) => {
               </View>
               <View className='py-2 px-0 w-full justify-start items-start pt-4'>
                 <View className='flex-row items-end'>
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='text-white text-5xl font-bold'>{track.name}</Text>
-                  </ScrollView>
+                  <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
                   {/* <Text className='text-white text-2xl px-1 opacity-80'>22</Text> */}
                 </View>
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{
-                      track?.artists?.map((artist: any) => artist.name).join(', ')
-                    }</Text>
-                  </ScrollView>
+                  <Text className='px-2 text-white text-xl'>{
+                    track?.artists?.map((artist: any) => artist.name).join(', ')
+                  }</Text>
                 </View>
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
-                  </ScrollView>
+                  <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
                 </View>
                 <View className='flex-row'>
-                  <Scrubber
-                    value={0}
-                    onSlidingComplete={(value: number) => console.log(value)}
-                    totalDuration={track?.duration_ms / 1000}
-                    trackColor={'#666'}
-                    scrubbedColor={'#8d309b'}
+                  <Slider
+                    style={{ width: '100%', height: 40 }}
+                    minimumValue={0}
+                    maximumValue={1}
+                    minimumTrackTintColor="#FFFFFF"
+                    maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
                   />
-                </View>
-                <View className='flex-row w-full justify-center content-center items-center'>
-                  <AntDesign name="dislike1" size={32} color="white" />
-                  <FontAwesome5 name="play" size={32} color="white" />
-                  <AntDesign name="like1" size={32} color="white" />
-
                 </View>
               </View>
             </View>
           </View>
         </LinearGradient>
       )
-    }} onSwipedLeft={ //Add disliked song to the disliked database
+    }}onSwipedLeft = { //Add disliked song to the disliked database
       (index: number) => {
-        console.log("NOPE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
+        setDeckCounter(deckCounter-1);
+        console.log("DECK COUNTER: "+deckCounter)
+        if (deckCounter <= 5 && needsReload === false) {
+          setReload(true);
+        }
+
+        console.log("NOPE: "+tracks[index].name)
+        push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
           trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      }
-    } onSwipedRight={ //Add liked songs to the liked database
+      } 
+    } onSwipedRight = { //Add liked songs to the liked database
       (index: number) => {
-        console.log("LIKE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
-          trackID: tracks[index].id,
+        setDeckCounter(deckCounter-1);
+        console.log("DECK COUNTER: "+deckCounter)
+        if (deckCounter <= 5 && needsReload === false) {
+          setReload(true);
+        }
+
+        console.log("LIKE: "+tracks[index].name)
+        push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
+          trackID: tracks[index].id, 
           trackName: tracks[index].name
         })
+
+      } 
+    }/>
+
 
         console.log("Playlist to add to: "+selectedPlaylist?.name)
         const likedTrack : string[] = []
