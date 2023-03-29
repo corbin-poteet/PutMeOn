@@ -5,14 +5,17 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
+import { fromJSON } from 'postcss';
+
+let selectedPlaylist;
 
 const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
-  const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
+  //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [playlists, setPlaylists] = React.useState<any[]>();
-  const [loaded, setLoaded] = React.useState<boolean>(false);
+  //const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
 
   React.useLayoutEffect(() => {
@@ -31,9 +34,7 @@ const PlaylistScreen = () => {
       ).then(
       function (data) {
         const playlists = data.items;
-        // playlists.forEach(element => { 
-        //   console.log(element.name); //Testing log for debugging
-        // });
+     
         setPlaylists(playlists);
     
         for(var i = 0; i < playlists.length; i++) {
@@ -53,8 +54,9 @@ const PlaylistScreen = () => {
             <View>  
               <TouchableOpacity onPress = { 
                 () => {
-                  setSelectedPlaylist(element)
-                  console.log("SELECTED: "+element.name)
+                  selectedPlaylist = element;
+                  console.log("SELECTED: "+selectedPlaylist.name)
+                  navigation.navigate('Home')
                 }
               }>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -67,13 +69,13 @@ const PlaylistScreen = () => {
           }
         )
       setComponentHandler(listItems);
-      setLoaded(true)
+      //setLoaded(true)
       //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
     });
   }
-
+  
   React.useEffect(() => {
-    getPlaylists();
+      getPlaylists();
   }, []);
   
   return (
@@ -85,9 +87,12 @@ const PlaylistScreen = () => {
         <View style={{padding: 10, flex: 1}}>
           <ScrollView style={{flex: 1, marginTop: 100}}>
             <TouchableOpacity onPress = {
-              () => {
-                spotify.createPlaylist(user?.id)
-                console.log('Created Playlist')
+              async () => {
+                await spotify.createPlaylist(user?.id).then(
+                  function(data){
+                    console.log('Created Playlist' + data)
+                  }
+                )
               }
             }>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -106,3 +111,4 @@ const PlaylistScreen = () => {
 }
 
 export default PlaylistScreen
+export {selectedPlaylist};
