@@ -1,4 +1,4 @@
-import { View, Text, Image, Slider, ScrollView } from 'react-native'
+import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
 import React from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -154,10 +154,10 @@ const Swiper = (props: Props) => {
     }
   }, [needsReload]);
 
-  if (tracks.length === 0) {
+  if (tracks.length === 0) { //Loading Activity Indicator Animation
     return (
-      <View>
-        <Text>Loading...</Text>
+      <View style={{flex: 1, marginTop: 300}}> 
+        <ActivityIndicator size="large" color="#014871"/>
       </View>
     )
   }
@@ -228,7 +228,7 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id, 
           trackName: tracks[index].name
         })
-        console.log("Playlist to add to: "+selectedPlaylist?.name)
+        console.log("Playlist to add to: "+selectedPlaylist)
         const likedTrack : string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)

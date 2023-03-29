@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert} from 'react-native'
+import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator} from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
@@ -9,13 +9,14 @@ import { fromJSON } from 'postcss';
 
 let selectedPlaylist: string;
 let playlists: any[];
+//let loaded: boolean = false;
 
 const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
-  //const [loaded, setLoaded] = React.useState<boolean>(false);
+  const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
 
   React.useLayoutEffect(() => {
@@ -30,6 +31,7 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
+    console.log("Setting Loaded to: "+loaded)
     const response = await spotify.getUserPlaylists(user?.id
       ).then(
       function (data) {
@@ -69,7 +71,10 @@ const PlaylistScreen = () => {
           }
         )
       setComponentHandler(listItems);
-      //setLoaded(true)
+      //loaded = true;
+      setLoaded(true)
+      console.log("Finished Loaded to: "+loaded)
+     
       //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
     });
   }
@@ -79,9 +84,6 @@ const PlaylistScreen = () => {
       {
         text: 'Cancel',
         style: 'cancel',
-        onPress: () => {
-          console.log('Cancel Pressed')
-        }
       },
       {text: 'Yes', onPress: 
         () => {
@@ -94,7 +96,7 @@ const PlaylistScreen = () => {
   }
 
   React.useEffect(() => {
-      getPlaylists();
+    getPlaylists();
   }, []);
   
   return (
@@ -104,22 +106,28 @@ const PlaylistScreen = () => {
           <Text className='text-white text-2xl px-3'>Songs you like in Put Me On will be added to a Playlist that you have created in Spotify: </Text>
         </View>
         <View style={{padding: 10, flex: 1}}>
-          <ScrollView style={{flex: 1, marginTop: 100}}>
-            <TouchableOpacity onPress = {
-              async () => {
-                const response = await spotify.createPlaylist(user?.id)
-                console.log('Created Playlist userId: '+user?.id)
-              }
-            }>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
-                <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white'}}>New Playlist</Text>
+          { !loaded //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
+            ? 
+              <View style={{flex: 1, marginTop: 300}}> 
+                <ActivityIndicator size="large" color="#014871"/> 
               </View>
-            </TouchableOpacity>
-            
-            { componentHandler }
- 
-          </ScrollView>
+            :
+              <ScrollView style={{flex: 1, marginTop: 100}}>
+                <TouchableOpacity onPress = {
+                  async () => {
+                    const response = await spotify.createPlaylist(user?.id)
+                    console.log('Created Playlist userId: '+user?.id)
+                  }
+                }>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+                    <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
+                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white'}}>New Playlist</Text>
+                  </View>
+                </TouchableOpacity>
+                
+                { componentHandler }
+              </ScrollView>
+          }
         </View>
       </LinearGradient>
     </View>

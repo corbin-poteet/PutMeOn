@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
@@ -56,15 +56,8 @@ const HomeScreen = () => {
       {
         text: 'Okay',
         style: 'cancel',
-        onPress: () => {
-          console.log('Cancel Pressed')
-        }
       }]);
   }, []);
-
-  React.useEffect(() => {
-    
-  }, [user, spotify]);
 
   async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
@@ -127,7 +120,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={
           () => {
-            navigation.navigate('Playlist')
+            //navigation.navigate('Playlist') //Top banner opacity press event
           }
         }>
           <Image source={require('@assets/Logo_512.png')} style={{
