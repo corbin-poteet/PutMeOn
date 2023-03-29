@@ -2,7 +2,7 @@ import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-n
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import useAuth from '@hooks/useAuth';
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
@@ -39,10 +39,13 @@ const UserScreen = () => {
             <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Game Settings</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={
+          () => {
+            navigation.navigate('Playlist')
+          }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-            <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="moon" size={35} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Dark Mode</Text>
+            <MaterialIcons style={{ marginRight: 12, marginLeft: 10 }} name="playlist-add-check" size={35} color="white" />
+            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playlists</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity>

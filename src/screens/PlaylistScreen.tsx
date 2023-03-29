@@ -8,6 +8,7 @@ import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import { fromJSON } from 'postcss';
 
 let selectedPlaylist: string;
+let playlists: any[];
 
 const PlaylistScreen = () => {
 
@@ -32,7 +33,7 @@ const PlaylistScreen = () => {
     const response = await spotify.getUserPlaylists(user?.id
       ).then(
       function (data) {
-        const playlists = data.items;
+        playlists = data.items;
 
         for(var i = 0; i < playlists.length; i++) {
           if(playlists[i].owner.id === user?.id) //Remove Playlists not created by user
@@ -52,7 +53,8 @@ const PlaylistScreen = () => {
             <View>  
               <TouchableOpacity onPress = { 
                 () => {
-                  selectedPlaylist = playlists[element.index].id;
+                  createAlert(element)
+                  //selectedPlaylist = playlists[element.index].id;
                   //console.log("SELECTED: "+selectedPlaylist)
                   //navigation.navigate('Home')
                 }
@@ -72,6 +74,25 @@ const PlaylistScreen = () => {
     });
   }
   
+  function createAlert(playlist: any) { //Confirm playlist selection alert
+    Alert.alert('Confirm Playlist', 'Select '+playlist.name+' as your Put Me On playlist?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+        onPress: () => {
+          console.log('Cancel Pressed')
+        }
+      },
+      {text: 'Yes', onPress: 
+        () => {
+          console.log('YES Pressed')
+          selectedPlaylist = playlists[playlist.index].id;
+          navigation.navigate('Home')
+        }
+      }  
+    ]);
+  }
+
   React.useEffect(() => {
       getPlaylists();
   }, []);
