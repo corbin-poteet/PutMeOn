@@ -3,7 +3,7 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
-import {push, ref, set, child, update} from 'firebase/database';
+import { push, ref, child, update } from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 const appendPromotion = (artist:string, track:string) => { //function to append data to DB
