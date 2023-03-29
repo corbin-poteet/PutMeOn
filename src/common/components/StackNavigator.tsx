@@ -13,6 +13,7 @@ import PlaylistScreen from '@/screens/PlaylistScreen';
 import userDetails from '@/screens/UserDetails';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
+import GameScreen from '@/screens/GameScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,7 @@ const StackNavigator = () => {
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
+              <Stack.Screen name="Game" component={GameScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />
