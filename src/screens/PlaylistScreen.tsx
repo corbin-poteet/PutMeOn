@@ -1,4 +1,4 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView} from 'react-native'
+import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert} from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
@@ -7,14 +7,13 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import { fromJSON } from 'postcss';
 
-let selectedPlaylist;
+let selectedPlaylist: string;
 
 const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
-  const [playlists, setPlaylists] = React.useState<any[]>();
   //const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
 
@@ -34,16 +33,15 @@ const PlaylistScreen = () => {
       ).then(
       function (data) {
         const playlists = data.items;
-     
-        setPlaylists(playlists);
-    
+
         for(var i = 0; i < playlists.length; i++) {
           if(playlists[i].owner.id === user?.id) //Remove Playlists not created by user
           {
             result.push(
               {
                 "name": playlists[i].name,
-                "image": playlists[i].images[0] 
+                "image": playlists[i].images[0], 
+                "index": i
               }
             );
           }
@@ -54,13 +52,13 @@ const PlaylistScreen = () => {
             <View>  
               <TouchableOpacity onPress = { 
                 () => {
-                  selectedPlaylist = element;
-                  console.log("SELECTED: "+selectedPlaylist.name)
-                  navigation.navigate('Home')
+                  selectedPlaylist = playlists[element.index].id;
+                  //console.log("SELECTED: "+selectedPlaylist)
+                  //navigation.navigate('Home')
                 }
               }>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                  <Image source={ {uri: element.image.url}} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
+                  <Image source={element.image != undefined ? {uri: element.image.url} : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }}/>
                   <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white'}}> {element.name} </Text>
                 </View>
               </TouchableOpacity>
@@ -88,11 +86,8 @@ const PlaylistScreen = () => {
           <ScrollView style={{flex: 1, marginTop: 100}}>
             <TouchableOpacity onPress = {
               async () => {
-                await spotify.createPlaylist(user?.id).then(
-                  function(data){
-                    console.log('Created Playlist' + data)
-                  }
-                )
+                const response = await spotify.createPlaylist(user?.id)
+                console.log('Created Playlist userId: '+user?.id)
               }
             }>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
