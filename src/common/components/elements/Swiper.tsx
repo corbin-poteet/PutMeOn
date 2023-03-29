@@ -8,6 +8,7 @@ import database from "../../../../firebaseConfig.tsx"; //ignore this error the i
 import { push, ref, set, child, update } from 'firebase/database';
 import Scrubber from 'react-native-scrubber'
 import { AntDesign } from '@expo/vector-icons'; 
+import { selectedPlaylist } from '@screens/PlaylistScreen';
 
 
 type Props = {
@@ -130,7 +131,12 @@ const Swiper = (props: Props) => {
     console.log("TESTER");
   }
 
-  
+
+  async function addToPlaylist(trackURIs : string[]) {
+    //console.log("PLAYLIST ID: "+selectedPlaylist);
+    const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
+  }
+
 
   React.useEffect(() => {
     //previously known as getTracks
@@ -222,8 +228,17 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id, 
           trackName: tracks[index].name
         })
+
       } 
     }/>
+
+
+        console.log("Playlist to add to: "+selectedPlaylist?.name)
+        const likedTrack : string[] = []
+        likedTrack.push(tracks[index].uri)
+        addToPlaylist(likedTrack)
+      }
+    } />
   )
 }
 

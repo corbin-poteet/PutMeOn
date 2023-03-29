@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
@@ -10,12 +10,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import Swiper from '@/common/components/elements/Swiper';
+import { selectedPlaylist } from '@screens/PlaylistScreen';
 
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
   const navigation = useNavigation(); //Establish stack navigation
 
-  const { logout, spotify, user } = useAuth();
+  const { spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   //const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
@@ -51,7 +52,18 @@ const HomeScreen = () => {
   // }
 
   React.useEffect(() => {
-    //getTracks();
+    Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+      {
+        text: 'Okay',
+        style: 'cancel',
+        onPress: () => {
+          console.log('Cancel Pressed')
+        }
+      }]);
+  }, []);
+
+  React.useEffect(() => {
+    
   }, [user, spotify]);
 
   async function playPreview(this: any, cardIndex: number) {

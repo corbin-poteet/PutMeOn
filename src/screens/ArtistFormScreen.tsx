@@ -6,13 +6,6 @@ import { useState } from 'react';
 import {push, ref, set, child, update} from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
-const addPromotion = (artist:string, track:string) => { //This function is unused, but writes data to DB with a simple overwrite, deleting all data in DB and inserting artist and track
-  set(ref(database, "ArtistPromos/SampleArtist/"),{
-    artistName: artist,
-    trackName: track
-  });
-}
-
 const appendPromotion = (artist:string, track:string) => { //function to append data to DB
   const updates = { //New JSON object to send to DB
     newArtistSample:{
