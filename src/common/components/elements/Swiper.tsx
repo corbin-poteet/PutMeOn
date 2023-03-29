@@ -228,17 +228,12 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id, 
           trackName: tracks[index].name
         })
-
-      } 
-    }/>
-
-
         console.log("Playlist to add to: "+selectedPlaylist?.name)
         const likedTrack : string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
       }
-    } />
+    } />   
   )
 }
 
