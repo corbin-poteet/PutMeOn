@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, Vibration } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
