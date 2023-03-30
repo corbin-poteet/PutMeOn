@@ -10,7 +10,7 @@ import { fromJSON } from 'postcss';
 let selectedPlaylist: string;
 let playlists: any[];
 //let loaded: boolean = false;
-
+//Maybe add these values as props?
 const PlaylistScreen = () => {
 
   const navigation = useNavigation();
@@ -19,12 +19,14 @@ const PlaylistScreen = () => {
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitle: "Playlists"
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   if(selectedPlaylist != null) {
+  //     navigation.setOptions({
+  //       headerShown: true,
+  //       headerTitle: "Playlists"
+  //     });
+  //   }
+  // }, [navigation]);
 
   const { spotify, user } = useAuth();
 
@@ -100,8 +102,8 @@ const PlaylistScreen = () => {
   return (
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-        <View className='absolute top-1'>
-          <Text className='text-white text-2xl px-3'>Songs you like in Put Me On will be added to a Playlist that you have created in Spotify: </Text>
+        <View className='absolute top-1' style={{marginTop: 50, flex: 1}}>
+          <Text className='text-white text-2xl px-3'>Songs that you like in Put Me On will be added to a Spotify playlist of your choice: </Text>
         </View>
         <View style={{padding: 10, flex: 1}}>
           { !loaded //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
@@ -110,7 +112,7 @@ const PlaylistScreen = () => {
                 <ActivityIndicator size="large" color="#014871"/> 
               </View>
             :
-              <ScrollView style={{flex: 1, marginTop: 100}}>
+              <ScrollView style={{flex: 1, marginTop: 150}}>
                 <TouchableOpacity onPress = {
                   async () => {
                     const response = await spotify.createPlaylist(user?.id)
