@@ -31,7 +31,7 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
-    console.log("Setting Loaded to: "+loaded)
+    console.log("PLAY user Id: "+user?.id);
     const response = await spotify.getUserPlaylists(user?.id
       ).then(
       function (data) {
@@ -71,10 +71,7 @@ const PlaylistScreen = () => {
           }
         )
       setComponentHandler(listItems);
-      //loaded = true;
       setLoaded(true)
-      console.log("Finished Loaded to: "+loaded)
-     
       //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
     });
   }
@@ -87,7 +84,6 @@ const PlaylistScreen = () => {
       },
       {text: 'Yes', onPress: 
         () => {
-          console.log('YES Pressed')
           selectedPlaylist = playlists[playlist.index].id;
           navigation.navigate('Home')
         }
@@ -96,8 +92,10 @@ const PlaylistScreen = () => {
   }
 
   React.useEffect(() => {
-    getPlaylists();
-  }, []);
+    if(user != undefined) { //Load Playlists only after user credentials are retrieved
+      getPlaylists();
+    }
+  }, [user]);
   
   return (
     <View className='flex-1 justify-center'>

@@ -95,8 +95,15 @@ const HomeScreen = () => {
           setUserImage(user.images[0].url)
         }
       }
+      setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
     }
   }, [user]);
+
+  React.useEffect(() => { 
+    if(!selectedPlaylist && loaded) {
+      navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
+    }
+  }, [loaded]);
 
   return (
     <SafeAreaView className='flex-1'>
