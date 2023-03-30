@@ -125,18 +125,14 @@ const HomeScreen = () => {
               </View>
           }
         </TouchableOpacity>
-        <TouchableOpacity onPress={
-          () => {
-            //navigation.navigate('Playlist') //Top banner opacity press event
-          }
-        }>
+        <View>
           <Image source={require('@assets/Logo_512.png')} style={{
             width: 128,
             height: 65,
             transform: [{ translateX: -6 }],
             resizeMode: 'contain',
           }} />
-        </TouchableOpacity>
+        </View>
       </View>
       <View className='flex-1 items-center justify-center'>
         <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9 / 16 }}>

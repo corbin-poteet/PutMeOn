@@ -19,14 +19,13 @@ const PlaylistScreen = () => {
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
 
-  // React.useLayoutEffect(() => {
-  //   if(selectedPlaylist != null) {
-  //     navigation.setOptions({
-  //       headerShown: true,
-  //       headerTitle: "Playlists"
-  //     });
-  //   }
-  // }, [navigation]);
+   React.useLayoutEffect(() => {
+     if(selectedPlaylist == null) {
+       navigation.setOptions({
+        gestureEnabled: false
+       });
+     }
+   }, [navigation]);
 
   const { spotify, user } = useAuth();
 
