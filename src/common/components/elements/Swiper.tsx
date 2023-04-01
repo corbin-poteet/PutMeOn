@@ -203,26 +203,30 @@ const Swiper = (props: Props) => {
                     <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
                   </ScrollView>
                 </View>
-                <View className='flex-row'>
-                  <Scrubber
-                    value={0}
-                    onSlidingComplete={() => { }
-                    }
-                    totalDuration={30}
-                    trackColor='#666'
-                    scrubbedColor='#29A3DA'
-                  />
-                </View>
-              </View>
-              <View className='flex-row justify-center items-center w-full'>
-                <View className='flex-row justify-center items-center align-center'>
-                  <TouchableOpacity className='rounded-full py-0' onPress={() => {
-                    playTrack(track);
-                  }}>
+                {track?.preview_url ?
+                  <View>
+                    <View className='flex-row'>
+                      <Scrubber
+                        value={0}
+                        onSlidingComplete={() => { }
+                        }
+                        totalDuration={30}
+                        trackColor='#666'
+                        scrubbedColor='#29A3DA'
+                      />
+                    </View>
+                    <View className='flex-row justify-center items-center w-full'>
+                      <View className='flex-row justify-center items-center align-center'>
+                        <TouchableOpacity className='rounded-full py-0' onPress={() => {
+                          playTrack(track);
+                        }}>
 
-                    <Ionicons name={b ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
-                  </TouchableOpacity>
-                </View>
+                          <Ionicons name={b ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                  : null}
               </View>
             </View>
           </View>
