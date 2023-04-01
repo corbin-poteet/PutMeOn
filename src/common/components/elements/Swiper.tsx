@@ -1,5 +1,5 @@
 import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
@@ -28,7 +28,8 @@ const Swiper = (props: Props) => {
   const [sound, setSound] = React.useState<any>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [cardIndex, setCardIndex] = React.useState<number>(0);
-
+  const [trackPosition, setTrackPosition] = React.useState<number>(0);
+  const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
 
   let trackStack: any[] = [];
 
@@ -160,6 +161,10 @@ const Swiper = (props: Props) => {
     playTrack(tracks[cardIndex]);
   }, []);
 
+
+
+
+
   React.useEffect(() => {
     if (needsReload) {
       updateTracks();
@@ -178,12 +183,21 @@ const Swiper = (props: Props) => {
   const b = false;
   //const [sound, setSound] = React.useState<any>();
 
+  async function onPlaybackStatusUpdate(playbackStatus: any) {
+    if (playbackStatus.isLoaded) {
+      setTrackPosition(playbackStatus.positionMillis);
+      setPlaybackPosition(playbackStatus.positionMillis);
+    }
+  }
 
   async function playTrack(track: any) {
     const { sound } = await Audio.Sound.createAsync(
       { uri: track.preview_url },
       { shouldPlay: true }
     );
+
+    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+
     setSound(sound);
 
     await sound.playAsync();
@@ -245,11 +259,12 @@ const Swiper = (props: Props) => {
                   <View>
                     <View className='flex-row'>
                       <Scrubber
-                        value={0}
+                        value={sound ? playbackPosition / 1000 : 0}
+
                         onSlidingComplete={() => { }
                         }
                         totalDuration={30}
-                        trackColor='#666'
+                        trackColor='#29A3DA'
                         scrubbedColor='#29A3DA'
                       />
                     </View>
@@ -299,15 +314,16 @@ const Swiper = (props: Props) => {
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
       }
-    } 
-    onSwiped={() => {
-      console.log("SWIPED")
-      setCardIndex(cardIndex + 1);
-      sound && sound.unloadAsync();
-      playTrack(tracks[cardIndex + 1]);
-    }}
-    
-    
+    }
+      onSwiped={() => {
+        console.log("SWIPED")
+        setCardIndex(cardIndex + 1);
+        sound && sound.unloadAsync();
+        setPlaybackPosition(0);
+        playTrack(tracks[cardIndex + 1]);
+      }}
+
+
     />
   )
 }
