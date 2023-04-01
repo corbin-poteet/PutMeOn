@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
@@ -9,160 +9,55 @@ import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
-import SQLite from 'react-native-sqlite-storage';
 import Swiper from '@/common/components/elements/Swiper';
-
-const db = [
-  {
-    name: 'Richard Hendricks',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Erlich Bachman',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Monica Hall',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Jared Dunn',
-    img: require('@assets/icon.png')
-  },
-  {
-    name: 'Dinesh Chugtai',
-    img: require('@assets/icon.png')
-  }
-]
-
-const alreadyRemoved: string[] = []
-let charactersState = db // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
-
+import { selectedPlaylist } from '@screens/PlaylistScreen';
 
 const HomeScreen = () => {
+  const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
+  const navigation = useNavigation(); //Establish stack navigation
 
-  const [characters, setCharacters] = useState(db)
-  const [lastDirection, setLastDirection] = useState()
-
-  const childRefs = useMemo(() => Array(db.length).fill(0).map(i => React.createRef()), [])
-
-
-  const [sound, setSound] = React.useState<Audio.Sound | null>(null);
-
-  const navigation = useNavigation();
-  const { logout, spotify, user } = useAuth();
+  const { spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   //const [tracks, setTracks] = React.useState<any[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
   var tracks: any | any[] = [];
 
-  const swiped = (direction: string | React.SetStateAction<undefined>, nameToDelete: string) => {
-    console.log('removing: ' + nameToDelete + ' to the ' + direction)
-    setLastDirection(direction)
-    alreadyRemoved.push(nameToDelete)
-  }
+  // async function getRecentlyPlayedTracks() {
+  //   const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
+  //     function(data){
+  //       console.log("Here are your 15 recently played tracks: \n");
+  //       data.items.forEach(element => {
+  //         console.log(element.track.name);
+  //       });
 
-  const outOfFrame = (name: string) => {
-    console.log(name + ' left the screen!')
-    charactersState = charactersState.filter(character => character.name !== name)
-    setCharacters(charactersState)
-  }
+  //       var recentlyPlayedTracks = data.items;
 
-  const swipe = (dir: string) => {
-    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name))
-    if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name // Find the card object to be removed
-      const index = db.map(person => person.name).indexOf(toBeRemoved) // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved) // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      childRefs[index].current.swipe(dir) // Swipe the card!
-    }
-  }
+  //       //setTracks(recentlyPlayedTracks);
+  //       tracks = recentlyPlayedTracks;
+  //       setLoaded(true);
+  //       console.log("Data Items Tracks: \n");
+  //       //console.log(data.items.map((item: { track: any; }) => item.track));
+  //       //console.log(tracks);
 
-  const cardsData = [
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-    { src: require('@assets/icon.png') },
-  ];
-
-  // spotify.searchTracks('Paramore').then(
-  //   function (data) {
-  //     setTracks(data.tracks.items);
-  //   },
-  //   function (err) {
-  //     console.error(err);
-  //   }
-  // );
-
-  async function getRecentlyPlayedTracks() {
-    const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
-      function (data: { items: any[]; }) {
-        console.log("Here are your 15 recently played tracks: \n");
-
-        data.items.forEach((element: { track: { name: any; }; }) => {
-          console.log(element.track.name);
-        });
-
-        var recentlyPlayedTracks = data.items;
-
-        //setTracks(recentlyPlayedTracks);
-        tracks = recentlyPlayedTracks;
-        setLoaded(true);
-        console.log("Data Items Tracks: \n");
-        //console.log(data.items.map((item: { track: any; }) => item.track));
-        //console.log(tracks);
-
-        // loop through tracks
-        // for (var i = 0; i < tracks.length; i++) {
-        //   console.log(tracks[i].name);
-        // } 
-
-
-
-
-
-      }
-    )
-  }
-
-  async function getTracks() {
-    if (loaded) {
-      return;
-    }
-
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ) as string[];
-
-    spotify.getRecommendations({
-      seed_artists: topArtistsIds,
-      limit: 100,
-    }).then(
-      function (data: { tracks: React.SetStateAction<any[]>; }) {
-        setTracks(data.tracks);
-        setLoaded(true);
-        console.log(data.tracks);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    );
-  }
-
+  //       // loop through tracks
+  //       // for (var i = 0; i < tracks.length; i++) {
+  //       //   console.log(tracks[i].name);
+  //       // } 
+  //     }
+  //   )
+  //   setRecentlyPlayedTrackIds(recentTrackIds)
+  //   recentTrackIds.length = 0
+  //   return recentlyPlayedTrackIds;
+  // }
 
   React.useEffect(() => {
-    //getTracks();
-  }, [user, spotify]);
-
-  React.useEffect(() => {
-    getRecentlyPlayedTracks();
-  }, [user, spotify]);
+    Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+      {
+        text: 'Okay',
+        style: 'cancel',
+      }]);
+  }, []);
 
   async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
@@ -193,8 +88,6 @@ const HomeScreen = () => {
       : undefined;
   }, [sound]);
 
-
-
   React.useEffect(() => {
     if (user) {
       if (user.images) {
@@ -202,10 +95,15 @@ const HomeScreen = () => {
           setUserImage(user.images[0].url)
         }
       }
+      setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
     }
   }, [user]);
 
-
+  React.useEffect(() => { 
+    if(!selectedPlaylist && loaded) {
+      navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
+    }
+  }, [loaded]);
 
   return (
     <SafeAreaView className='flex-1'>
@@ -227,14 +125,14 @@ const HomeScreen = () => {
               </View>
           }
         </TouchableOpacity>
-        <TouchableOpacity >
+        <View>
           <Image source={require('@assets/Logo_512.png')} style={{
             width: 128,
             height: 65,
             transform: [{ translateX: -6 }],
             resizeMode: 'contain',
           }} />
-        </TouchableOpacity>
+        </View>
       </View>
       <View className='flex-1 items-center justify-center'>
         <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9 / 16 }}>
@@ -244,10 +142,6 @@ const HomeScreen = () => {
     </SafeAreaView >
   )
 }
-
-
-
-
 
 export default HomeScreen;
 
