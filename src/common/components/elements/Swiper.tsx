@@ -9,7 +9,9 @@ import { push, ref, set, child, update } from 'firebase/database';
 import Scrubber from 'react-native-scrubber'
 import { AntDesign } from '@expo/vector-icons';
 import { selectedPlaylist } from '@screens/PlaylistScreen';
-
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Foundation } from '@expo/vector-icons'; 
 
 type Props = {
   tracks: any[];
@@ -172,7 +174,7 @@ const Swiper = (props: Props) => {
               <View className='relative justify-center items-center w-full aspect-square justify-start'>
                 <Image source={{ uri: track?.album?.images[0].url }} className='absolute w-full h-full' />
               </View>
-              <View className='py-2 px-0 w-full justify-start items-start pt-4'>
+              <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
                 {/* Track Name */}
                 <View className='flex-row items-end'>
                   <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -203,6 +205,15 @@ const Swiper = (props: Props) => {
                     minimumTrackTintColor="#FFFFFF"
                     maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
                   />
+                </View>
+              </View>
+              <View className='flex-row justify-center items-center w-full'>
+                <View className='flex-row justify-center items-center align-center'>
+                  <TouchableOpacity className='rounded-full py-0' onPress={() => {
+                    console.log("SHUFFLE");
+                  }}>
+                    <Ionicons name="play-circle-sharp" size={84} color="white" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
