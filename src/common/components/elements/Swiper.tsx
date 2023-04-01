@@ -79,6 +79,7 @@ const Swiper = (props: Props) => {
     ).catch((err) => {
       console.log(err);
     });
+    
 
     trackStack = recResponse.tracks.map((track: any) => track);
     setTracks(trackStack);
@@ -209,7 +210,7 @@ const Swiper = (props: Props) => {
     }
   }
 
-  async function loadAudio(track: any) {
+  async function loadAudio(track: SpotifyApi.TrackObjectFull) {
     if (track == null) {
       return;
     }
