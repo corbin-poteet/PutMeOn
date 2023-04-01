@@ -7,7 +7,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { push, ref, set, child, update } from 'firebase/database';
 import Scrubber from 'react-native-scrubber'
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
 import { selectedPlaylist } from '@screens/PlaylistScreen';
 
 
@@ -58,14 +58,14 @@ const Swiper = (props: Props) => {
             console.log("Updated length: " + recResponse.tracks.length);
           }
         });
-          
-        }
-      );
 
-      trackStack = recResponse.tracks;
-      setTracks(recResponse.tracks);
-      setDeckCounter(recResponse.tracks.length);
-    
+      }
+    );
+
+    trackStack = recResponse.tracks;
+    setTracks(recResponse.tracks);
+    setDeckCounter(recResponse.tracks.length);
+
   }
 
   async function updateTracks() {
@@ -94,30 +94,30 @@ const Swiper = (props: Props) => {
     trackStack = trackStack.concat(recResponse.tracks);
     console.log("TRACKSTACK: " + trackStack.length);
 
-        await spotify.containsMySavedTracks(
-          recResponse.tracks.map((track: any) => track.id)
-         ).then(
-          // after promise returns of containsMySavedTracks
-          function (isSavedArr: any[]) {
-            console.log("PROMISE RETURNED" + isSavedArr);
-            isSavedArr.forEach((element) => {
-              console.log(element);
-              if (element === true) {
-                console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
+    await spotify.containsMySavedTracks(
+      recResponse.tracks.map((track: any) => track.id)
+    ).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
 
-                trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
+            trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
 
-                console.log("Updated length: " + trackStack.length);
-              }
-            });
-            
+            console.log("Updated length: " + trackStack.length);
           }
-        ).catch((err) => {
-          console.log(err);
         });
 
-        setTracks(trackStack);
-        setDeckCounter(trackStack.length);
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    setTracks(trackStack);
+    setDeckCounter(trackStack.length);
 
   }
 
@@ -132,7 +132,7 @@ const Swiper = (props: Props) => {
   }
 
 
-  async function addToPlaylist(trackURIs : string[]) {
+  async function addToPlaylist(trackURIs: string[]) {
     //console.log("PLAYLIST ID: "+selectedPlaylist);
     const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
   }
@@ -156,8 +156,8 @@ const Swiper = (props: Props) => {
 
   if (tracks.length === 0) { //Loading Activity Indicator Animation
     return (
-      <View style={{flex: 1, marginTop: 300}}> 
-        <ActivityIndicator size="large" color="#014871"/>
+      <View style={{ flex: 1, marginTop: 300 }}>
+        <ActivityIndicator size="large" color="#014871" />
       </View>
     )
   }
@@ -173,19 +173,27 @@ const Swiper = (props: Props) => {
                 <Image source={{ uri: track?.album?.images[0].url }} className='absolute w-full h-full' />
               </View>
               <View className='py-2 px-0 w-full justify-start items-start pt-4'>
+                {/* Track Name */}
                 <View className='flex-row items-end'>
-                  <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
-                  {/* <Text className='text-white text-2xl px-1 opacity-80'>22</Text> */}
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
+                  </ScrollView>
                 </View>
+                {/* Artist Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
-                  <Text className='px-2 text-white text-xl'>{
-                    track?.artists?.map((artist: any) => artist.name).join(', ')
-                  }</Text>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='px-2 text-white text-xl'>{
+                      track?.artists?.map((artist: any) => artist.name).join(', ')
+                    }</Text>
+                  </ScrollView>
                 </View>
+                {/* Album Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
+                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
+                  </ScrollView>
                 </View>
                 <View className='flex-row'>
                   <Slider
@@ -201,39 +209,39 @@ const Swiper = (props: Props) => {
           </View>
         </LinearGradient>
       )
-    }}onSwipedLeft = { //Add disliked song to the disliked database
+    }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
-        setDeckCounter(deckCounter-1);
-        console.log("DECK COUNTER: "+deckCounter)
+        setDeckCounter(deckCounter - 1);
+        console.log("DECK COUNTER: " + deckCounter)
         if (deckCounter <= 5 && needsReload === false) {
           setReload(true);
         }
 
-        console.log("NOPE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/DislikedTracks/"),{
+        console.log("NOPE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
           trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      } 
-    } onSwipedRight = { //Add liked songs to the liked database
+      }
+    } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
-        setDeckCounter(deckCounter-1);
-        console.log("DECK COUNTER: "+deckCounter)
+        setDeckCounter(deckCounter - 1);
+        console.log("DECK COUNTER: " + deckCounter)
         if (deckCounter <= 5 && needsReload === false) {
           setReload(true);
         }
 
-        console.log("LIKE: "+tracks[index].name)
-        push(ref(database, "SwipedTracks/"+user?.id+"/LikedTracks/"),{
-          trackID: tracks[index].id, 
+        console.log("LIKE: " + tracks[index].name)
+        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
+          trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-        console.log("Playlist to add to: "+selectedPlaylist)
-        const likedTrack : string[] = []
+        console.log("Playlist to add to: " + selectedPlaylist)
+        const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
       }
-    } />   
+    } />
   )
 }
 
