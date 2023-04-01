@@ -28,8 +28,8 @@ const Swiper = (props: Props) => {
   const [sound, setSound] = React.useState<any>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [cardIndex, setCardIndex] = React.useState<number>(0);
-  const [trackPosition, setTrackPosition] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
+  const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
   let trackStack: any[] = [];
 
@@ -158,7 +158,7 @@ const Swiper = (props: Props) => {
   // }, []);
 
   React.useEffect(() => {
-    playTrack(tracks[cardIndex]);
+    loadAudio(tracks[cardIndex]);
   }, []);
 
 
@@ -185,12 +185,12 @@ const Swiper = (props: Props) => {
 
   async function onPlaybackStatusUpdate(playbackStatus: any) {
     if (playbackStatus.isLoaded) {
-      setTrackPosition(playbackStatus.positionMillis);
       setPlaybackPosition(playbackStatus.positionMillis);
+      setPlaybackDuration(playbackStatus.durationMillis);
     }
   }
 
-  async function playTrack(track: any) {
+  async function loadAudio(track: any) {
     const { sound } = await Audio.Sound.createAsync(
       { uri: track.preview_url },
       { shouldPlay: true }
@@ -204,20 +204,51 @@ const Swiper = (props: Props) => {
     setIsPlaying(true);
   }
 
+  async function playAudio() {
+    if (sound == null) {
+      return;
+    }
 
+    await sound.playAsync();
+    setIsPlaying(true);
+  }
 
+  async function pauseAudio() {
+    if (sound == null) {
+      return;
+    }
 
-  async function playPauseTrack() {
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  }
+
+  async function stopAudio() {
+    if (sound == null) {
+      return;
+    }
+
+    await sound.stopAsync();
+    setIsPlaying(false);
+  }
+
+  async function setAudioPosition(position: number) {
+    if (sound == null) {
+      return;
+    }
+
+    setPlaybackPosition(position);
+    await sound.setPositionAsync(position);
+  }
+
+  async function togglePlayAudio() {
     if (sound == null) {
       return;
     }
 
     if (isPlaying) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
+      pauseAudio();
     } else {
-      await sound.playAsync();
-      setIsPlaying(true);
+      playAudio();
     }
   }
 
@@ -260,17 +291,27 @@ const Swiper = (props: Props) => {
                     <View className='flex-row'>
                       <Scrubber
                         value={sound ? playbackPosition / 1000 : 0}
+                        onSlidingComplete={(value: number) => {
+                          setAudioPosition(value * 1000);
+                          //playAudio();
+                        }}
+                        onSlidingStart={() => {
+                          //pauseAudio();
+                        }}
+                        // caused lag
+                        // onSlide={(value: number) => {
+                        //   setAudioPosition(value * 1000);
+                        // }}
+                        
 
-                        onSlidingComplete={() => { }
-                        }
-                        totalDuration={30}
+                        totalDuration={sound ? playbackDuration / 1000 : 0}
                         trackColor='#29A3DA'
                         scrubbedColor='#29A3DA'
                       />
                     </View>
                     <View className='flex-row justify-center items-center w-full'>
                       <View className='flex-row justify-center items-center align-center'>
-                        <TouchableOpacity className='rounded-full py-0' onPress={() => { playPauseTrack(); }}>
+                        <TouchableOpacity className='rounded-full py-0' onPress={() => { togglePlayAudio(); }}>
                           <Ionicons name={isPlaying ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
                         </TouchableOpacity>
                       </View>
@@ -320,7 +361,7 @@ const Swiper = (props: Props) => {
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
-        playTrack(tracks[cardIndex + 1]);
+        loadAudio(tracks[cardIndex + 1]);
       }}
 
 
