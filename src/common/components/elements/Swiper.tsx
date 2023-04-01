@@ -15,7 +15,7 @@ import { Foundation } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { StretchInX } from 'react-native-reanimated';
-
+import Card from '@elements/Card';
 
 type Props = {
   tracks: SpotifyApi.TrackObjectFull[];
@@ -33,6 +33,7 @@ const Swiper = (props: Props) => {
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
+  const cardRef = React.useRef();
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
@@ -178,7 +179,7 @@ const Swiper = (props: Props) => {
   React.useEffect(() => {
     sound ? sound.unloadAsync() : null;
 
-    loadAudio(tracks[cardIndex]);
+    //loadAudio(tracks[cardIndex]);
   }, []);
 
 
@@ -200,161 +201,13 @@ const Swiper = (props: Props) => {
     )
   }
 
-  const b = false;
-  //const [sound, setSound] = React.useState<any>();
-
-  async function onPlaybackStatusUpdate(playbackStatus: any) {
-    if (playbackStatus.isLoaded) {
-      setPlaybackPosition(playbackStatus.positionMillis);
-      setPlaybackDuration(playbackStatus.durationMillis);
-    }
-  }
-
-  async function loadAudio(track: SpotifyApi.TrackObjectFull) {
-    if (track == null) {
-      return;
-    }
-
-    if (track.preview_url == null) {
-      return;
-    }
-
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: track.preview_url },
-      { shouldPlay: true }
-    );
-
-    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-    sound.setProgressUpdateIntervalAsync(25);
-    setSound(sound);
-
-    await sound.playAsync();
-    setIsPlaying(true);
-  }
-
-  async function playAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.playAsync();
-    setIsPlaying(true);
-  }
-
-  async function pauseAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  }
-
-  async function stopAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.stopAsync();
-    setIsPlaying(false);
-  }
-
-  async function setAudioPosition(position: number) {
-    if (sound == null) {
-      return;
-    }
-    
-    setPlaybackPosition(position);
-    await sound.setPositionAsync(position);
-  }
-
-  async function togglePlayAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    if (isPlaying) {
-      pauseAudio();
-    } else {
-      playAudio();
-    }
-  }
-
 
 
   return (
 
     <CardsSwipe cards={tracks} renderCard={(track: SpotifyApi.TrackObjectFull) => {
-
       return (
-        <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67, 1]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl"  >
-          <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
-            <View className='flex-1 justify-start items-start'>
-              <View className='relative justify-center items-center w-full aspect-square justify-start'>
-                <Image source={{ uri: track.album.images[0].url }} className='absolute w-full h-full' />
-              </View>
-              <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
-                {/* Track Name */}
-                <View className='flex-row items-end'>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    scrollEnabled={false}
-                  >
-                    <Text className='text-white text-5xl font-bold'>{track.name}</Text>
-                  </ScrollView>
-                </View>
-                {/* Artist Name */}
-                <View className='flex-row items-center opacity-80'>
-                  <FontAwesome5 name="user-alt" size={16} color="white" />
-                  <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{
-                      track.artists.map((artist: any) => artist.name).join(', ')
-                    }</Text>
-                  </Animated.ScrollView>
-                </View>
-                {/* Album Name */}
-                <View className='flex-row items-center opacity-80'>
-                  <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{track.album.name}</Text>
-                  </ScrollView>
-                </View>
-                {track?.preview_url ?
-                  <View>
-                    <View className='flex-row'>
-                      <Scrubber
-                        value={sound ? playbackPosition / 1000 : 0}
-                        onSlidingComplete={(value: number) => {
-                          setAudioPosition(value * 1000);
-                          //playAudio();
-                        }}
-                        onSlidingStart={() => {
-                          //pauseAudio();
-                        }}
-                        // caused lag
-                        // onSlide={(value: number) => {
-                        //   setAudioPosition(value * 1000);
-                        // }}
-                        totalDuration={sound ? Math.ceil(playbackDuration / 1000) : 0}
-                        trackColor='#29A3DA'
-                        scrubbedColor='#29A3DA'
-                      />
-                    </View>
-                    <View className='flex-row justify-center items-center w-full'>
-                      <View className='flex-row justify-center items-center align-center'>
-                        <TouchableOpacity className='rounded-full py-0' onPress={() => { togglePlayAudio(); }}>
-                          <Ionicons name={isPlaying ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                  : null}
-              </View>
-            </View>
-          </View>
-        </LinearGradient >
+        <Card ref={cardRef} track={track} />
       )
     }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
@@ -394,7 +247,9 @@ const Swiper = (props: Props) => {
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
-        loadAudio(tracks[cardIndex + 1]);
+        //loadAudio(tracks[cardIndex + 1]);
+        cardRef.current?.onCardSwiped();
+        console.log(cardRef.current);
       }}
 
 
