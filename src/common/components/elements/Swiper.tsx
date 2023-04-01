@@ -43,7 +43,12 @@ const Swiper = (props: Props) => {
       function (err: any) {
         console.error(err);
       }
-    ) as string[];
+    ).catch((err) => {
+      console.log(err);
+    }) as string[];
+    
+    
+    
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
@@ -85,9 +90,13 @@ const Swiper = (props: Props) => {
     console.log("tracks usestate beginning of function: " + tracks.length);
 
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).catch(
+      function (err: any) {
+        //console.error(err);
+      }
+    ).then(
       function (data) {
-        return data.items.map((artist: any) => artist.id);
+        return data?.items.map((artist: any) => artist.id);
       },
       function (err: any) {
         console.error(err);
@@ -123,7 +132,7 @@ const Swiper = (props: Props) => {
 
       }
     ).catch((err) => {
-      console.log(err);
+      //console.log(err);
     });
 
     setTracks(trackStack);
@@ -157,7 +166,11 @@ const Swiper = (props: Props) => {
   //   getRecentlyPlayedTracks();
   // }, []);
 
+
+
   React.useEffect(() => {
+    sound ? sound.unloadAsync() : null;
+
     loadAudio(tracks[cardIndex]);
   }, []);
 
@@ -191,6 +204,15 @@ const Swiper = (props: Props) => {
   }
 
   async function loadAudio(track: any) {
+    if (track == null) {
+      return;
+    }
+
+    if(track.preview_url == null) {
+      return;
+    }
+
+
     const { sound } = await Audio.Sound.createAsync(
       { uri: track.preview_url },
       { shouldPlay: true }
