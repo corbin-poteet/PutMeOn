@@ -11,7 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { selectedPlaylist } from '@screens/PlaylistScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Foundation } from '@expo/vector-icons'; 
+import { Foundation } from '@expo/vector-icons';
 
 type Props = {
   tracks: any[];
@@ -164,6 +164,12 @@ const Swiper = (props: Props) => {
     )
   }
 
+  const b = false;
+
+  async function playTrack(track: any) {
+    const trackURIs = [track.uri];
+
+  }
 
   return (
     <CardsSwipe cards={tracks} renderCard={(track: any) => {
@@ -198,21 +204,23 @@ const Swiper = (props: Props) => {
                   </ScrollView>
                 </View>
                 <View className='flex-row'>
-                  <Slider
-                    style={{ width: '100%', height: 40 }}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor="#FFFFFF"
-                    maximumTrackTintColor="rgba(255, 255, 255, 0.5)"
+                  <Scrubber
+                    value={0}
+                    onSlidingComplete={() => { }
+                    }
+                    totalDuration={30}
+                    trackColor='#666'
+                    scrubbedColor='#29A3DA'
                   />
                 </View>
               </View>
               <View className='flex-row justify-center items-center w-full'>
                 <View className='flex-row justify-center items-center align-center'>
                   <TouchableOpacity className='rounded-full py-0' onPress={() => {
-                    console.log("SHUFFLE");
+                    playTrack(track);
                   }}>
-                    <Ionicons name="play-circle-sharp" size={84} color="white" />
+
+                    <Ionicons name={b ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
                   </TouchableOpacity>
                 </View>
               </View>
