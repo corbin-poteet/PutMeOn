@@ -72,8 +72,6 @@ const AuthContext = createContext({
  */
 export const AuthProvider = ({ children }) => {
 
-  console.log("redirect uri: ", config.redirectUri)
-
 
   const [token, setToken] = useState("");
   const [user, setUser] = useState({});

@@ -12,6 +12,7 @@ import { selectedPlaylist } from '@screens/PlaylistScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Foundation } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
 
 type Props = {
   tracks: any[];
@@ -24,6 +25,10 @@ const Swiper = (props: Props) => {
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [needsReload, setReload] = React.useState<boolean>(false);
   const [deckCounter, setDeckCounter] = React.useState<number>(0);
+  const [sound, setSound] = React.useState<any>();
+  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [cardIndex, setCardIndex] = React.useState<number>(0);
+
 
   let trackStack: any[] = [];
 
@@ -62,7 +67,9 @@ const Swiper = (props: Props) => {
         });
 
       }
-    );
+    ).catch((err) => {
+      console.log(err);
+    });
 
     trackStack = recResponse.tracks;
     setTracks(recResponse.tracks);
@@ -150,6 +157,10 @@ const Swiper = (props: Props) => {
   // }, []);
 
   React.useEffect(() => {
+    playTrack(tracks[cardIndex]);
+  }, []);
+
+  React.useEffect(() => {
     if (needsReload) {
       updateTracks();
       setReload(false);
@@ -165,11 +176,38 @@ const Swiper = (props: Props) => {
   }
 
   const b = false;
+  //const [sound, setSound] = React.useState<any>();
+
 
   async function playTrack(track: any) {
-    const trackURIs = [track.uri];
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: track.preview_url },
+      { shouldPlay: true }
+    );
+    setSound(sound);
 
+    await sound.playAsync();
+    setIsPlaying(true);
   }
+
+
+
+
+  async function playPauseTrack() {
+    if (sound == null) {
+      return;
+    }
+
+    if (isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } else {
+      await sound.playAsync();
+      setIsPlaying(true);
+    }
+  }
+
+
 
   return (
     <CardsSwipe cards={tracks} renderCard={(track: any) => {
@@ -217,11 +255,8 @@ const Swiper = (props: Props) => {
                     </View>
                     <View className='flex-row justify-center items-center w-full'>
                       <View className='flex-row justify-center items-center align-center'>
-                        <TouchableOpacity className='rounded-full py-0' onPress={() => {
-                          playTrack(track);
-                        }}>
-
-                          <Ionicons name={b ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
+                        <TouchableOpacity className='rounded-full py-0' onPress={() => { playPauseTrack(); }}>
+                          <Ionicons name={isPlaying ? "pause-circle-sharp" : "play-circle-sharp"} size={84} color="white" />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -264,7 +299,16 @@ const Swiper = (props: Props) => {
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
       }
-    } />
+    } 
+    onSwiped={() => {
+      console.log("SWIPED")
+      setCardIndex(cardIndex + 1);
+      sound && sound.unloadAsync();
+      playTrack(tracks[cardIndex + 1]);
+    }}
+    
+    
+    />
   )
 }
 
