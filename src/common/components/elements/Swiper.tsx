@@ -1,5 +1,5 @@
 import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
@@ -13,6 +13,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Foundation } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
+import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import { StretchInX } from 'react-native-reanimated';
+
 
 type Props = {
   tracks: any[];
@@ -46,9 +49,9 @@ const Swiper = (props: Props) => {
     ).catch((err) => {
       console.log(err);
     }) as string[];
-    
-    
-    
+
+
+
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
@@ -146,9 +149,11 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
+
   function tester() {
     console.log("TESTER");
   }
+
 
 
   async function addToPlaylist(trackURIs: string[]) {
@@ -208,7 +213,7 @@ const Swiper = (props: Props) => {
       return;
     }
 
-    if(track.preview_url == null) {
+    if (track.preview_url == null) {
       return;
     }
 
@@ -277,9 +282,11 @@ const Swiper = (props: Props) => {
 
 
   return (
+
     <CardsSwipe cards={tracks} renderCard={(track: any) => {
+
       return (
-        <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67, 1]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl" >
+        <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67, 1]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl"  >
           <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
             <View className='flex-1 justify-start items-start'>
               <View className='relative justify-center items-center w-full aspect-square justify-start'>
@@ -288,18 +295,25 @@ const Swiper = (props: Props) => {
               <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
                 {/* Track Name */}
                 <View className='flex-row items-end'>
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  {/* automatically scroll */}
+
+
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    scrollEnabled={false}
+                  >
                     <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
                   </ScrollView>
                 </View>
                 {/* Artist Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     <Text className='px-2 text-white text-xl'>{
                       track?.artists?.map((artist: any) => artist.name).join(', ')
                     }</Text>
-                  </ScrollView>
+                  </Animated.ScrollView>
                 </View>
                 {/* Album Name */}
                 <View className='flex-row items-center opacity-80'>
@@ -324,7 +338,7 @@ const Swiper = (props: Props) => {
                         // onSlide={(value: number) => {
                         //   setAudioPosition(value * 1000);
                         // }}
-                        
+
 
                         totalDuration={sound ? playbackDuration / 1000 : 0}
                         trackColor='#29A3DA'
@@ -343,7 +357,7 @@ const Swiper = (props: Props) => {
               </View>
             </View>
           </View>
-        </LinearGradient>
+        </LinearGradient >
       )
     }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
