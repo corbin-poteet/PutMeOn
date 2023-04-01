@@ -28,7 +28,7 @@ const Swiper = (props: Props) => {
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [needsReload, setReload] = React.useState<boolean>(false);
   const [deckCounter, setDeckCounter] = React.useState<number>(0);
-  const [sound, setSound] = React.useState<any>();
+  const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
@@ -262,7 +262,7 @@ const Swiper = (props: Props) => {
     if (sound == null) {
       return;
     }
-
+    
     setPlaybackPosition(position);
     await sound.setPositionAsync(position);
   }
@@ -295,9 +295,6 @@ const Swiper = (props: Props) => {
               <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
                 {/* Track Name */}
                 <View className='flex-row items-end'>
-                  {/* automatically scroll */}
-
-
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
