@@ -5,9 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import CardsSwipe from 'react-native-cards-swipe';
 import { FontAwesome5 } from '@expo/vector-icons';
 import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
-import { push, ref, set, child, update } from 'firebase/database';
-import Scrubber from 'react-native-scrubber'
-import { AntDesign } from '@expo/vector-icons';
+import { push, ref, set, child, get } from 'firebase/database';
+import Scrubber from 'react-native-scrubber';
+import { AntDesign } from '@expo/vector-icons'; 
 import { selectedPlaylist } from '@screens/PlaylistScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -71,16 +71,16 @@ const Swiper = (props: Props) => {
             console.log("Updated length: " + recResponse.tracks.length);
           }
         });
-
-      }
+          
+        }
     ).catch((err) => {
       console.log(err);
     });
 
-    trackStack = recResponse.tracks;
-    setTracks(recResponse.tracks);
-    setDeckCounter(recResponse.tracks.length);
-
+      trackStack = recResponse.tracks;
+      setTracks(recResponse.tracks);
+      setDeckCounter(recResponse.tracks.length);
+    
   }
 
   async function updateTracks() {
@@ -113,30 +113,30 @@ const Swiper = (props: Props) => {
     trackStack = trackStack.concat(recResponse.tracks);
     console.log("TRACKSTACK: " + trackStack.length);
 
-    await spotify.containsMySavedTracks(
-      recResponse.tracks.map((track: any) => track.id)
-    ).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("PROMISE RETURNED" + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
+        await spotify.containsMySavedTracks(
+          recResponse.tracks.map((track: any) => track.id)
+         ).then(
+          // after promise returns of containsMySavedTracks
+          function (isSavedArr: any[]) {
+            console.log("PROMISE RETURNED" + isSavedArr);
+            isSavedArr.forEach((element) => {
+              console.log(element);
+              if (element === true) {
+                console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
 
-            trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
+                trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
 
-            console.log("Updated length: " + trackStack.length);
+                console.log("Updated length: " + trackStack.length);
+              }
+            });
+            
           }
+        ).catch((err) => {
+      //console.log(err);
         });
 
-      }
-    ).catch((err) => {
-      //console.log(err);
-    });
-
-    setTracks(trackStack);
-    setDeckCounter(trackStack.length);
+        setTracks(trackStack);
+        setDeckCounter(trackStack.length);
 
   }
 
@@ -191,7 +191,7 @@ const Swiper = (props: Props) => {
         <ActivityIndicator size="large" color="#014871" />
       </View>
     )
-  }
+  } 
 
   const b = false;
   //const [sound, setSound] = React.useState<any>();
@@ -274,7 +274,7 @@ const Swiper = (props: Props) => {
     }
   }
 
-
+  
 
   return (
     <CardsSwipe cards={tracks} renderCard={(track: any) => {
@@ -289,28 +289,28 @@ const Swiper = (props: Props) => {
                 {/* Track Name */}
                 <View className='flex-row items-end'>
                   <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
+                  <Text className='text-white text-5xl font-bold'>{track?.name}</Text>
                   </ScrollView>
                 </View>
                 {/* Artist Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
                   <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{
-                      track?.artists?.map((artist: any) => artist.name).join(', ')
-                    }</Text>
+                  <Text className='px-2 text-white text-xl'>{
+                    track?.artists?.map((artist: any) => artist.name).join(', ')
+                  }</Text>
                   </ScrollView>
                 </View>
                 {/* Album Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
                   <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
+                  <Text className='px-2 text-white text-xl'>{track?.album?.name}</Text>
                   </ScrollView>
                 </View>
                 {track?.preview_url ?
                   <View>
-                    <View className='flex-row'>
+                <View className='flex-row'>
                       <Scrubber
                         value={sound ? playbackPosition / 1000 : 0}
                         onSlidingComplete={(value: number) => {
@@ -329,8 +329,8 @@ const Swiper = (props: Props) => {
                         totalDuration={sound ? playbackDuration / 1000 : 0}
                         trackColor='#29A3DA'
                         scrubbedColor='#29A3DA'
-                      />
-                    </View>
+                  />
+                </View>
                     <View className='flex-row justify-center items-center w-full'>
                       <View className='flex-row justify-center items-center align-center'>
                         <TouchableOpacity className='rounded-full py-0' onPress={() => { togglePlayAudio(); }}>
@@ -358,7 +358,7 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id,
           trackName: tracks[index].name
         })
-      }
+      } 
     } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
         setDeckCounter(deckCounter - 1);
@@ -369,13 +369,14 @@ const Swiper = (props: Props) => {
 
         console.log("LIKE: " + tracks[index].name)
         push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
-          trackID: tracks[index].id,
+          trackID: tracks[index].id, 
           trackName: tracks[index].name
         })
         console.log("Playlist to add to: " + selectedPlaylist)
         const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
+
       }
     }
       onSwiped={() => {
