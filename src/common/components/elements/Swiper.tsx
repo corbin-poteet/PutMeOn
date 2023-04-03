@@ -94,6 +94,11 @@ const Swiper = (props: Props) => {
     trackStack = trackStack.concat(recResponse.tracks);
     console.log("TRACKSTACK: " + trackStack.length);
 
+    trackStack.forEach(element => {
+      
+      
+    });
+
         await spotify.containsMySavedTracks(
           recResponse.tracks.map((track: any) => track.id)
          ).then(
@@ -127,8 +132,10 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
-  function tester() {
-    console.log("TESTER");
+  async function needsToBeRemoved(tracks: any[]) {
+    const trackIds = tracks.map((track: any) => track.id);
+    const response = await spotify.containsMySavedTracks(trackIds);
+    
   }
 
 
