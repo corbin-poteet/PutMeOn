@@ -15,6 +15,12 @@ const PlaylistScreen = () => {
 
   const navigation = useNavigation();
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+  
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
