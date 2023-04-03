@@ -1,5 +1,6 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '@screens/HomeScreen';
 import LoginScreen from '@screens/LoginScreen';
@@ -9,11 +10,19 @@ import AdvertiserScreen from '@/screens/AdvertiserScreen';
 import ArtistFormScreen from '@/screens/ArtistFormScreen';
 import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
-import userDetails from '@/screens/UserDetails';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
 
 const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
+
+const tab = () => {
+  return (
+    <Tabs.Navigator screenOptions={{headerShown: false}}>
+      <Tabs.Screen name="Home" component={HomeScreen} />
+    </Tabs.Navigator>
+  )
+}
 
 const StackNavigator = () => {
 
@@ -28,7 +37,7 @@ const StackNavigator = () => {
         }>
           {token ? (
             <>
-              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Tabs" component={tab} />
               <Stack.Screen name="User" component={UserScreen} />
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
