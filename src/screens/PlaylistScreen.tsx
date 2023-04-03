@@ -111,6 +111,7 @@ const PlaylistScreen = () => {
       Animated.timing(fadeAnim, { //Establish Animation
         toValue: 1,
         duration: 750,
+        delay: 1000,
         useNativeDriver: true
       }).start();
     }

@@ -12,6 +12,7 @@ import PlaylistScreen from '@/screens/PlaylistScreen';
 import userDetails from '@/screens/UserDetails';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
+import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,9 @@ const StackNavigator = () => {
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Tutorial" component={TutorialScreen} />
+              <Stack.Screen name="Finish" component={FinishScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />
