@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
@@ -51,20 +51,13 @@ const HomeScreen = () => {
   //   return recentlyPlayedTrackIds;
   // }
 
-  React.useEffect(() => {
-    Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
-      {
-        text: 'Okay',
-        style: 'cancel',
-        onPress: () => {
-          console.log('Cancel Pressed')
-        }
-      }]);
-  }, []);
-
-  React.useEffect(() => {
-    
-  }, [user, spotify]);
+  //React.useEffect(() => {
+  //   Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+  //     {
+  //       text: 'Okay',
+  //       style: 'cancel',
+  //     }]);
+  // }, []);
 
   async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
@@ -102,8 +95,16 @@ const HomeScreen = () => {
           setUserImage(user.images[0].url)
         }
       }
+      setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
     }
   }, [user]);
+
+  React.useEffect(() => { 
+    if(!selectedPlaylist && loaded) {
+      //navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
+      navigation.navigate('Welcome') //Navigate to the welcome demo screen if user has not selected a playlist, change later
+    }
+  }, [loaded]); //check for cached credentials so we know if this is first time load 
 
   return (
     <SafeAreaView className='flex-1'>
@@ -125,18 +126,14 @@ const HomeScreen = () => {
               </View>
           }
         </TouchableOpacity>
-        <TouchableOpacity onPress={
-          () => {
-            navigation.navigate('Playlist')
-          }
-        }>
+        <View>
           <Image source={require('@assets/Logo_512.png')} style={{
             width: 128,
             height: 65,
             transform: [{ translateX: -6 }],
             resizeMode: 'contain',
           }} />
-        </TouchableOpacity>
+        </View>
       </View>
       <View className='flex-1 items-center justify-center'>
         <View className='h-full px-2 pt-1 pb-12' style={{ aspectRatio: 9 / 16 }}>

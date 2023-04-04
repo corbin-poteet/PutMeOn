@@ -1,9 +1,10 @@
-import { View, Text, Button, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import * as Haptics from 'expo-haptics';
 
 const LoginScreen = () => {
 
@@ -32,7 +33,10 @@ const LoginScreen = () => {
           <FontAwesome className='p-5' name="spotify" size={24} color="white" />
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Sign in with Spotify</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 rounded-3xl top-8" onPress={ () => {navigation.navigate("Advertiser")}}>
+        <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-5 rounded-3xl top-8" onPress={ () => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          navigation.navigate("Advertiser");
+          }}>
           <Text className="text-white text-xl py-2 text-1 font-semibold">Artist/Advertiser? Press here.</Text>
         </TouchableOpacity>
       </LinearGradient>
