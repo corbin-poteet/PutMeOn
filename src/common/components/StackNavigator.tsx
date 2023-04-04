@@ -21,7 +21,7 @@ const Tabs = createBottomTabNavigator();
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
     <Tabs.Navigator screenOptions={{headerShown: false}}>
-      {/* <Tabs.Screen name="Game" component={GameScreen} /> */}
+      <Tabs.Screen name="Game" component={GameScreen} />
       <Tabs.Screen name="Home" component={HomeScreen} />
       <Tabs.Screen name="User" component={UserScreen} />
     </Tabs.Navigator>
@@ -41,11 +41,11 @@ const StackNavigator = () => {
         }>
           {token ? (
             <>
-              <Stack.Screen name="Tabs" component={Tab} />
+              <Stack.Screen name="Navbar" component={Tab} />
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
-              <Stack.Screen name="Game" component={GameScreen} />
+
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />
               <Stack.Screen name="Finish" component={FinishScreen} />
