@@ -12,7 +12,8 @@ import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
-//import GameScreen from '@/screens/GameScreen';
+import GameScreen from '@/screens/GameScreen';
+import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -44,6 +45,10 @@ const StackNavigator = () => {
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
+              <Stack.Screen name="Game" component={GameScreen} />
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="Tutorial" component={TutorialScreen} />
+              <Stack.Screen name="Finish" component={FinishScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />

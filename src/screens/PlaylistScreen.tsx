@@ -95,11 +95,11 @@ const PlaylistScreen = () => {
           () => {
             selectedPlaylist = playlists[playlist.index].id;
             navigation.navigate('Home')
-            //Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
-            //{
-            //text: 'Okay',
-            //style: 'cancel',
-            //}]);
+            Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+            {
+              text: 'Okay',
+              style: 'cancel',
+            }]);
           }
       }
     ]);
@@ -111,6 +111,7 @@ const PlaylistScreen = () => {
       Animated.timing(fadeAnim, { //Establish Animation
         toValue: 1,
         duration: 750,
+        delay: 1000,
         useNativeDriver: true
       }).start();
     }

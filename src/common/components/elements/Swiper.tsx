@@ -60,6 +60,8 @@ const Swiper = (props: Props) => {
 
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
+    
+
     await spotify.containsMySavedTracks(trackIds).then(
       // after promise returns of containsMySavedTracks
       function (isSavedArr: any[]) {
@@ -81,8 +83,17 @@ const Swiper = (props: Props) => {
     });
     
     trackStack = recResponse.tracks.map((track: any) => track);
+
+    //remove tracks with no preview url
+    trackStack.forEach(element => {
+      if(element.preview_url === null){
+        console.log("Null preview detected, Removing from tracks: " + element.name);
+        trackStack.splice(trackStack.indexOf(element), 1);
+      }
+    });
+
     setTracks(trackStack);
-    setDeckCounter(recResponse.tracks.length);
+    setDeckCounter(trackStack.length);
   }
 
   async function updateTracks() {
@@ -107,12 +118,21 @@ const Swiper = (props: Props) => {
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 5,
+      limit: 30,
       
     });
 
     //Do To: try putting recs in new array and then concat with trackStack
     console.log("RECOMMENDATIONS: " + recResponse.tracks.length);
+
+    //remove tracks with no preview url
+    recResponse.tracks.forEach(element => {
+      if(element.preview_url === null){
+        console.log("Null preview detected in updateTracks(), Removing from tracks: " + element.name);
+        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+      }
+    });
+
     trackStack = trackStack.concat(recResponse.tracks.map((track: any) => track));
     console.log("TRACKSTACK: " + trackStack.length);
 
