@@ -38,7 +38,6 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
-    console.log("PLAY user Id: " + user?.id);
     const response = await spotify.getUserPlaylists(user?.id
     ).then(
       function (data) {
@@ -136,12 +135,13 @@ const PlaylistScreen = () => {
                   navigation.navigate("CreatePlaylist");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                    <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                    <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
                     <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>New Playlist</Text>
                   </View>
                 </TouchableOpacity>
 
                 {componentHandler}
+
               </ScrollView>
             </Animated.View>
           }

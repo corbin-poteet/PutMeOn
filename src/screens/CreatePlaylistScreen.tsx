@@ -42,7 +42,6 @@ const CreatePlaylistScreen = () => {
       
         <TouchableOpacity className='absolute bottom-10 flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' 
           onPress={() => {
-            Alert.alert("lmao");
             {createPlaylist()};
           }}>
           <Text className='font-semibold text-1 text-white text-xl'>Submit</Text>
