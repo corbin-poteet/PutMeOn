@@ -183,7 +183,7 @@ const FinishScreen = () => {
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
             <View className='flex-1 justify-top'>
                 <Animated.View style={{ opacity: fadeAnimWelcome }}>
-                    <Text className='text-white text-4xl text-left px-2 my-16 font-bold'>When you like a song it gets added to a playlist in Spotify: </Text>
+                    <Text className='text-white text-4xl text-left px-2 my-16 font-bold'>When you like a song it gets added to a playlist in Spotify</Text>
                     <Text className='text-white text-2xl text-left px-2 my-2'>Let's go select a Playlist now!</Text>
                 </Animated.View>
             </View>
