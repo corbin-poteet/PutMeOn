@@ -95,11 +95,11 @@ const PlaylistScreen = () => {
           () => {
             selectedPlaylist = playlists[playlist.index].id;
             navigation.navigate('Home')
-            Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
-            {
-              text: 'Okay',
-              style: 'cancel',
-            }]);
+            // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+            // {
+            //   text: 'Okay',
+            //   style: 'cancel',
+            // }]);
           }
       }
     ]);
@@ -134,8 +134,8 @@ const PlaylistScreen = () => {
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
                 <TouchableOpacity onPress={
                   async () => {
+                    console.log('HAHA: ' + user?.id)
                     const response = await spotify.createPlaylist(user?.id)
-                    console.log('Created Playlist userId: ' + user?.id)
                   }
                 }>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
