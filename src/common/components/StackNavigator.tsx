@@ -12,14 +12,17 @@ import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
+//import GameScreen from '@/screens/GameScreen';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
-const tab = () => {
+const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
     <Tabs.Navigator screenOptions={{headerShown: false}}>
+      {/* <Tabs.Screen name="Game" component={GameScreen} /> */}
       <Tabs.Screen name="Home" component={HomeScreen} />
+      <Tabs.Screen name="User" component={UserScreen} />
     </Tabs.Navigator>
   )
 }
@@ -37,8 +40,7 @@ const StackNavigator = () => {
         }>
           {token ? (
             <>
-              <Stack.Screen name="Tabs" component={tab} />
-              <Stack.Screen name="User" component={UserScreen} />
+              <Stack.Screen name="Tabs" component={Tab} />
               <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
