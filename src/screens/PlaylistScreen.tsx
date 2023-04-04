@@ -134,7 +134,12 @@ const PlaylistScreen = () => {
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
                 <TouchableOpacity onPress={
                   async () => {
-                    console.log('HAHA: ' + user?.id)
+                    const inputObject = {
+                      "name": "TOP TEXT",
+                      "description": "BOTTOM TEXT",
+                      "public": true
+                    }
+                    console.log('HAHA: ' + user?.id, inputObject)
                     const response = await spotify.createPlaylist(user?.id)
                   }
                 }>
