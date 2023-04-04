@@ -132,12 +132,9 @@ const PlaylistScreen = () => {
             :
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
-                <TouchableOpacity onPress={
-                  async () => {
-                    console.log('HAHA: ' + user?.id)//, //inputObject)
-                    const response = await spotify.createPlaylist(user?.id)
-                  }
-                }>
+                <TouchableOpacity onPress ={ () => {
+                  navigation.navigate("CreatePlaylist");
+                }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                     <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
                     <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>New Playlist</Text>
