@@ -38,7 +38,7 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
-    const response = await spotify.getUserPlaylists(user?.id
+    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
         playlists = data.items;
