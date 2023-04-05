@@ -390,9 +390,9 @@ const Swiper = (props: Props) => {
         }
 
         console.log("NOPE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
-          trackID: tracks[index].id,
-          trackName: tracks[index].name
+        set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
+          trackID: tracks[index].id, 
+          trackName: tracks[index].name,
         })
       } 
     } onSwipedRight={ //Add liked songs to the liked database
@@ -404,14 +404,31 @@ const Swiper = (props: Props) => {
         }
 
         console.log("LIKE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
+        set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
           trackID: tracks[index].id, 
-          trackName: tracks[index].name
+          trackName: tracks[index].name,
         })
         console.log("Playlist to add to: " + selectedPlaylist)
         const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
+
+        // Query Firebase Test
+        
+        //const dbRef = ref(database);
+        //
+        // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
+        //    if(snapshot.exists()) {
+        //       let temp = snapshot.val().trackName;
+        //       console.log("QUERY TRACK NAME BY ID : " + temp);
+        //       let orary = snapshot.val().trackID;
+        //       console.log("QUERY TRACK ID BY ID : " + orary);
+        //    } else {
+        //       console.log("No valid data was found here");
+        //    }
+        //  }).catch((error) => {
+        //    console.log("Query Failed, error; " + error)
+        //  });
 
       }
     }
