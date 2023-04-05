@@ -39,6 +39,7 @@ const Swiper = (props: Props) => {
   //previously known as getTracks
   async function initializeTracks() {
 
+    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
       function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
@@ -51,13 +52,14 @@ const Swiper = (props: Props) => {
     }) as string[];
 
 
-
+    
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
       limit: 20,
     });
 
+    //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
     
@@ -81,27 +83,27 @@ const Swiper = (props: Props) => {
     ).catch((err) => {
       console.log(err);
     });
-    
-    trackStack = recResponse.tracks.map((track: any) => track);
 
     //remove tracks with no preview url
-    trackStack.forEach(element => {
+    recResponse.tracks.forEach(element => {
       if(element.preview_url === null){
         console.log("Null preview detected, Removing from tracks: " + element.name);
-        trackStack.splice(trackStack.indexOf(element), 1);
+        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
       }
     });
 
+
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
+
+    
+
     setTracks(trackStack);
-    setDeckCounter(trackStack.length);
+    //setDeckCounter(trackStack.length);
   }
 
   async function updateTracks() {
-
     let trackStack = tracks;
-    console.log("trackstack beginning of function: " + trackStack.length);
-    console.log("tracks usestate beginning of function: " + tracks.length);
-
 
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).catch(
       function (err: any) {
@@ -133,39 +135,35 @@ const Swiper = (props: Props) => {
       }
     });
 
+    const trackIds = recResponse.tracks.map((track: any) => track.id);
+
+    await spotify.containsMySavedTracks(trackIds).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("containsSavedTracks Promise returned. Bool array: " + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)]?.name);
+
+            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+            console.log("Updated length: " + recResponse.tracks.length);
+          }
+        });
+        
+      }
+    ).catch((err) => {
+  //console.log(err);
+    });
+
+    //update trackStack
     trackStack = trackStack.concat(recResponse.tracks.map((track: any) => track));
     console.log("TRACKSTACK: " + trackStack.length);
 
-    trackStack.forEach(element => {
-      
-      
-    });
-
-        await spotify.containsMySavedTracks(
-          recResponse.tracks.map((track: any) => track.id)
-         ).then(
-          // after promise returns of containsMySavedTracks
-          function (isSavedArr: any[]) {
-            console.log("PROMISE RETURNED" + isSavedArr);
-            isSavedArr.forEach((element) => {
-              console.log(element);
-              if (element === true) {
-                console.log("Removing from tracks: " + trackStack[isSavedArr.indexOf(element) + (trackStack.length - deckCounter)]?.name);
-
-                trackStack.splice(isSavedArr.indexOf(element) + (trackStack.length - deckCounter), 1);
-
-                console.log("Updated length: " + trackStack.length);
-              }
-            });
-            
-          }
-        ).catch((err) => {
-      //console.log(err);
-        });
 
         setTracks(trackStack);
-        setDeckCounter(trackStack.length);
-
+        //setDeckCounter(trackStack.length);
   }
 
   // async function getRecentlyPlayedTracks() {
@@ -383,9 +381,14 @@ const Swiper = (props: Props) => {
       )
     }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
-        setDeckCounter(deckCounter - 1);
-        console.log("DECK COUNTER: " + deckCounter)
-        if (deckCounter <= 5 && needsReload === false) {
+        //setDeckCounter(deckCounter - 1);
+        //remove swiped song from the tracks array
+        // if(index > 1){
+        //   tracks.splice(index-1, 1);
+        // }
+        console.log("Tracks length: " + tracks.length)
+        console.log("TrackStack length: " + trackStack.length)
+        if (tracks.length <= 5 && needsReload === false) {
           setReload(true);
         }
 
@@ -397,9 +400,16 @@ const Swiper = (props: Props) => {
       } 
     } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
-        setDeckCounter(deckCounter - 1);
-        console.log("DECK COUNTER: " + deckCounter)
-        if (deckCounter <= 5 && needsReload === false) {
+        //setDeckCounter(deckCounter - 1);
+        //remove swiped song from the tracks array
+        // if(index > 1){
+        //   tracks.splice(index-1, 1);
+        // }
+
+        console.log("Tracks length: " + tracks.length)
+        console.log("TrackStack length: " + trackStack.length)
+
+        if (tracks.length <= 5 && needsReload === false) {
           setReload(true);
         }
 
