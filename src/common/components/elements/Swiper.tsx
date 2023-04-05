@@ -394,6 +394,21 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id, 
           trackName: tracks[index].name,
         })
+
+        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
+        //================================================
+        console.log("SWIPED")
+
+        setCardIndex(cardIndex + 1);
+        sound && sound.unloadAsync();
+        setPlaybackPosition(0);
+        loadAudio(tracks[cardIndex + 1]);
+
+        //log tracks.name for all tracks in the array
+        for (let i = 0; i < tracks.length; i++) {
+          console.log("TRACK NAME: " + tracks[i].name)
+        }
+        //================================================
       } 
     } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
@@ -412,6 +427,21 @@ const Swiper = (props: Props) => {
         const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
+
+        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
+        //================================================
+        console.log("SWIPED")
+
+        setCardIndex(cardIndex + 1);
+        sound && sound.unloadAsync();
+        setPlaybackPosition(0);
+        loadAudio(tracks[cardIndex + 1]);
+
+        //log tracks.name for all tracks in the array
+        for (let i = 0; i < tracks.length; i++) {
+          console.log("TRACK NAME: " + tracks[i].name)
+        }
+        //================================================
 
         // Query Firebase Test
         
@@ -433,22 +463,8 @@ const Swiper = (props: Props) => {
       }
     }
       onSwipeEnd={() => {
-        console.log("SWIPED")
-
-        //tracks.shift();
-
-        setCardIndex(cardIndex + 1);
-        sound && sound.unloadAsync();
-        setPlaybackPosition(0);
-        loadAudio(tracks[cardIndex + 1]);
-        
-        
-
-        //log tracks.name for all tracks in the array
-        for (let i = 0; i < tracks.length; i++) {
-          console.log("TRACK NAME: " + tracks[i].name)
-        }
-
+        //now empty, contents moved to the bottom of onswipeleft and onswiperight
+        //onSwipeEnd triggers when your finger leaves the card, not when the card leaves the screen, so you can trigger it by just touching the card, causing issues
       }}
 
 
