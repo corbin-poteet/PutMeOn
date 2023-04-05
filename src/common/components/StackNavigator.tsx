@@ -25,13 +25,19 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
     <Tabs.Navigator screenOptions={{headerShown: false}}>
       <Tabs.Screen name="Game" component={GameScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
-      }/>
+      }
+      
+      />
       <Tabs.Screen name="Home" component={HomeScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
-      }/>
-      <Tabs.Screen name="User" component={UserScreen} listeners={
+      }
+      
+      />
+      <Tabs.Screen name="Settings" component={UserScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
-      }/>
+      }
+      
+      />
     </Tabs.Navigator>
   )
 }
