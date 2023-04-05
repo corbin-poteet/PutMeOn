@@ -432,12 +432,23 @@ const Swiper = (props: Props) => {
 
       }
     }
-      onSwiped={() => {
+      onSwipeEnd={() => {
         console.log("SWIPED")
+
+        //tracks.shift();
+
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
         loadAudio(tracks[cardIndex + 1]);
+        
+        
+
+        //log tracks.name for all tracks in the array
+        for (let i = 0; i < tracks.length; i++) {
+          console.log("TRACK NAME: " + tracks[i].name)
+        }
+
       }}
 
 
