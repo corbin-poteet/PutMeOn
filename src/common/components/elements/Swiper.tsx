@@ -37,7 +37,7 @@ const Swiper = (props: Props) => {
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
-  async function getTracks(seedArtists: string[], seedGenres: string[]) {
+  async function getTracksSeeded(seedArtists: string[], seedGenres: string[]) {
 
     //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
@@ -166,7 +166,7 @@ const Swiper = (props: Props) => {
     
 
     setTracks(trackStack);
-    //setDeckCounter(trackStack.length);
+    setDeckCounter(trackStack.length);
   }
 
   async function updateTracks() {
@@ -277,7 +277,7 @@ const Swiper = (props: Props) => {
 
   React.useEffect(() => {
     if (needsReload) {
-      updateTracks();
+      initializeTracks();
       setReload(false);
     }
   }, [needsReload]);
@@ -448,14 +448,14 @@ const Swiper = (props: Props) => {
       )
     }} onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
-        //setDeckCounter(deckCounter - 1);
+        setDeckCounter(deckCounter - 1);
         //remove swiped song from the tracks array
         // if(index > 1){
         //   tracks.splice(index-1, 1);
         // }
         console.log("Tracks length: " + tracks.length)
-        console.log("TrackStack length: " + trackStack.length)
-        if (tracks.length <= 5 && needsReload === false) {
+        console.log("Deck counter: " + deckCounter)
+        if (deckCounter === 1 && needsReload === false) {
           setReload(true);
         }
 
@@ -482,16 +482,16 @@ const Swiper = (props: Props) => {
       } 
     } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
-        //setDeckCounter(deckCounter - 1);
+        setDeckCounter(deckCounter - 1);
         //remove swiped song from the tracks array
         // if(index > 1){
         //   tracks.splice(index-1, 1);
         // }
 
         console.log("Tracks length: " + tracks.length)
-        console.log("TrackStack length: " + trackStack.length)
+        console.log("Deck counter: " + deckCounter)
 
-        if (tracks.length <= 5 && needsReload === false) {
+        if (deckCounter === 1 && needsReload === false) {
           setReload(true);
         }
 
