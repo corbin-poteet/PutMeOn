@@ -17,11 +17,13 @@ const SecretScreen = () => { //Shhhhhhhh....
       }, [navigation]);
 
     return (
-      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-        <View style={{ padding: 10 }}>
-          <Text className='flex-1 text-center'>MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKSMULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS</Text>
-        </View>
-      </LinearGradient>
+      <View className="flex-1 justify-center">
+        <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }} className='flex-1 justify-center items-center'>
+          <View style={{ padding: 10 }}>
+            <Text className='top-14 text-center text-white'>MULTIPLE DECKS MULTIPLE DECKS MULTIPLE DECKS</Text>
+          </View>
+        </LinearGradient>
+      </View>
     );
 }
   

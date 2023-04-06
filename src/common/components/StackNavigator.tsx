@@ -75,6 +75,7 @@ const StackNavigator = () => {
               <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
+              <Stack.Screen name="Secret" component={SecretScreen} />
 
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />
