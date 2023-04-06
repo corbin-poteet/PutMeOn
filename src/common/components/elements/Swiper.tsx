@@ -393,10 +393,25 @@ const Swiper = (props: Props) => {
         }
 
         console.log("NOPE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/"), {
-          trackID: tracks[index].id,
-          trackName: tracks[index].name
+        set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
+          trackID: tracks[index].id, 
+          trackName: tracks[index].name,
         })
+
+        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
+        //================================================
+        console.log("SWIPED")
+
+        setCardIndex(cardIndex + 1);
+        sound && sound.unloadAsync();
+        setPlaybackPosition(0);
+        loadAudio(tracks[cardIndex + 1]);
+
+        //log tracks.name for all tracks in the array
+        for (let i = 0; i < tracks.length; i++) {
+          console.log("TRACK NAME: " + tracks[i].name)
+        }
+        //================================================
       } 
     } onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
@@ -414,23 +429,52 @@ const Swiper = (props: Props) => {
         }
 
         console.log("LIKE: " + tracks[index].name)
-        push(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/"), {
+        set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
           trackID: tracks[index].id, 
-          trackName: tracks[index].name
+          trackName: tracks[index].name,
         })
         console.log("Playlist to add to: " + selectedPlaylist)
         const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
 
-      }
-    }
-      onSwiped={() => {
+        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
+        //================================================
         console.log("SWIPED")
+
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
         loadAudio(tracks[cardIndex + 1]);
+
+        //log tracks.name for all tracks in the array
+        for (let i = 0; i < tracks.length; i++) {
+          console.log("TRACK NAME: " + tracks[i].name)
+        }
+        //================================================
+
+        // Query Firebase Test
+        
+        //const dbRef = ref(database);
+        //
+        // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
+        //    if(snapshot.exists()) {
+        //       let temp = snapshot.val().trackName;
+        //       console.log("QUERY TRACK NAME BY ID : " + temp);
+        //       let orary = snapshot.val().trackID;
+        //       console.log("QUERY TRACK ID BY ID : " + orary);
+        //    } else {
+        //       console.log("No valid data was found here");
+        //    }
+        //  }).catch((error) => {
+        //    console.log("Query Failed, error; " + error)
+        //  });
+
+      }
+    }
+      onSwipeEnd={() => {
+        //now empty, contents moved to the bottom of onswipeleft and onswiperight
+        //onSwipeEnd triggers when your finger leaves the card, not when the card leaves the screen, so you can trigger it by just touching the card, causing issues
       }}
 
 
