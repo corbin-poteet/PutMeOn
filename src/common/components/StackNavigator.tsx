@@ -16,6 +16,7 @@ import GameScreen from '@/screens/GameScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
 import * as Haptics from 'expo-haptics';
+import { FontAwesome } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -26,17 +27,29 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
       <Tabs.Screen name="Game" component={GameScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
-      
+      options={{
+        tabBarLabel: 'Game',
+        tabBarIcon: () => 
+          <FontAwesome name="gamepad" size={24} color="skyblue" />
+      }}
       />
       <Tabs.Screen name="Home" component={HomeScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
-      
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: () =>
+          <FontAwesome name="home" size={24} color="skyblue" />
+      }}
       />
       <Tabs.Screen name="Settings" component={UserScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
-      
+      options={{
+        tabBarLabel: 'Settings',
+        tabBarIcon: () =>
+          <FontAwesome name="cog" size={24} color="skyblue" />
+      }}
       />
     </Tabs.Navigator>
   )
