@@ -1,11 +1,14 @@
 import React from 'react'
+import * as Haptics from 'expo-haptics';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import useAuth from '@hooks/useAuth';
 import HomeScreen from '@screens/HomeScreen';
 import LoginScreen from '@screens/LoginScreen';
-import useAuth from '@hooks/useAuth';
-import UserScreen from '@screens/UserScreen';
+import SettingsScreen from '@/screens/SettingsScreen';
 import AdvertiserScreen from '@/screens/AdvertiserScreen';
 import ArtistFormScreen from '@/screens/ArtistFormScreen';
 import BusinessFormScreen from '@/screens/BusinessFormScreen';
@@ -13,10 +16,9 @@ import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
 import GameScreen from '@/screens/GameScreen';
-import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
-import * as Haptics from 'expo-haptics';
-import { FontAwesome } from '@expo/vector-icons';
+import SecretScreen from '@/screens/SecretScreen';
+import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -30,25 +32,25 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
       options={{
         tabBarLabel: 'Game',
         tabBarIcon: () => 
-          <FontAwesome name="gamepad" size={24} color="skyblue" />
+          <FontAwesome name="gamepad" size={24} color="deepskyblue" />
       }}
       />
       <Tabs.Screen name="Home" component={HomeScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
       options={{
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Swipe',
         tabBarIcon: () =>
-          <FontAwesome name="home" size={24} color="skyblue" />
+          <MaterialCommunityIcons name="cards" size={24} color="deepskyblue" />
       }}
       />
-      <Tabs.Screen name="Settings" component={UserScreen} listeners={
+      <Tabs.Screen name="Settings" component={SettingsScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
       options={{
         tabBarLabel: 'Settings',
         tabBarIcon: () =>
-          <FontAwesome name="cog" size={24} color="skyblue" />
+          <FontAwesome name="cog" size={24} color="deepskyblue" />
       }}
       />
     </Tabs.Navigator>

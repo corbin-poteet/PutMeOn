@@ -6,7 +6,7 @@ import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const UserScreen = () => {
+const SettingsScreen = () => {
 
   const navigation = useNavigation();
   const { user, logout } = useAuth();
@@ -70,4 +70,4 @@ const UserScreen = () => {
 
 }
 
-export default UserScreen
+export default SettingsScreen
