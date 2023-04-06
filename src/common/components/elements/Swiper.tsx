@@ -33,9 +33,76 @@ const Swiper = (props: Props) => {
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
+  const [isDefaultDeck, setIsDefaultDeck] = React.useState<boolean>(true);
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
+  async function getTracks(seedArtists: string[], seedGenres: string[]) {
+
+    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data: { items: any[]; }) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    }) as string[];
+
+
+    
+
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: seedArtists,
+      seed_genres: seedGenres,
+      limit: 20,
+    });
+
+    //trackIds is an array of the track IDs of the recommendations
+    const trackIds = recResponse.tracks.map((track: any) => track.id);
+
+    
+
+    await spotify.containsMySavedTracks(trackIds).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
+
+            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+            console.log("Updated length: " + recResponse.tracks.length);
+          }
+        });
+          
+        }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    //remove tracks with no preview url
+    recResponse.tracks.forEach(element => {
+      if(element.preview_url === null){
+        console.log("Null preview detected, Removing from tracks: " + element.name);
+        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+      }
+    });
+
+
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
+
+    
+
+    setTracks(trackStack);
+    //setDeckCounter(trackStack.length);
+  }
+  
   //previously known as getTracks
   async function initializeTracks() {
 
