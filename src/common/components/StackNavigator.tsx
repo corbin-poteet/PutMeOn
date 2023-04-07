@@ -15,9 +15,13 @@ import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
-import GameScreen from '@/screens/gamescreens/GameScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
 import SecretScreen from '@/screens/SecretScreen';
+import GameScreen from '@/screens/gamescreens/GameScreen';
+import ScoreScreen from '@/screens/gamescreens/GameScreen';
+import RoundScreen from '@/screens/gamescreens/GameScreen';
+import EndScreen from '@/screens/gamescreens/GameScreen';
+
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
@@ -80,6 +84,10 @@ const StackNavigator = () => {
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />
               <Stack.Screen name="Finish" component={FinishScreen} />
+
+              <Stack.Screen name="Score" component={ScoreScreen} />
+              <Stack.Screen name="Round" component={RoundScreen} />
+              <Stack.Screen name="End" component={EndScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />
