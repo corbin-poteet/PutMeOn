@@ -103,8 +103,8 @@ const Swiper = (props: Props) => {
     //setDeckCounter(trackStack.length);
   }
   
-  //previously known as getTracks
-  async function initializeTracks() {
+  //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
+  async function getTracks() {
 
     //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
@@ -168,70 +168,72 @@ const Swiper = (props: Props) => {
     setTracks(trackStack);
     setDeckCounter(trackStack.length);
   }
+// **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
+  // async function updateTracks() {
+  //   let trackStack = tracks;
 
-  async function updateTracks() {
-    let trackStack = tracks;
+  //   const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).catch(
+  //     function (err: any) {
+  //       //console.error(err);
+  //     }
+  //   ).then(
+  //     function (data) {
+  //       return data?.items.map((artist: any) => artist.id);
+  //     },
+  //     function (err: any) {
+  //       console.error(err);
+  //     }
+  //   ) as string[];
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).catch(
-      function (err: any) {
-        //console.error(err);
-      }
-    ).then(
-      function (data) {
-        return data?.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ) as string[];
-
-    const recResponse = await spotify.getRecommendations({
-      seed_artists: topArtistsIds,
-      limit: 30,
+  //   const recResponse = await spotify.getRecommendations({
+  //     seed_artists: topArtistsIds,
+  //     limit: 30,
       
-    });
+  //   });
 
-    //Do To: try putting recs in new array and then concat with trackStack
-    console.log("RECOMMENDATIONS: " + recResponse.tracks.length);
+  //   //Do To: try putting recs in new array and then concat with trackStack
+  //   console.log("RECOMMENDATIONS: " + recResponse.tracks.length);
 
-    //remove tracks with no preview url
-    recResponse.tracks.forEach(element => {
-      if(element.preview_url === null){
-        console.log("Null preview detected in updateTracks(), Removing from tracks: " + element.name);
-        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-      }
-    });
+  //   //remove tracks with no preview url
+  //   recResponse.tracks.forEach(element => {
+  //     if(element.preview_url === null){
+  //       console.log("Null preview detected in updateTracks(), Removing from tracks: " + element.name);
+  //       recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+  //     }
+  //   });
 
-    const trackIds = recResponse.tracks.map((track: any) => track.id);
+  //   const trackIds = recResponse.tracks.map((track: any) => track.id);
 
-    await spotify.containsMySavedTracks(trackIds).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("containsSavedTracks Promise returned. Bool array: " + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)]?.name);
+  //   await spotify.containsMySavedTracks(trackIds).then(
+  //     // after promise returns of containsMySavedTracks
+  //     function (isSavedArr: any[]) {
+  //       console.log("containsSavedTracks Promise returned. Bool array: " + isSavedArr);
+  //       isSavedArr.forEach((element) => {
+  //         console.log(element);
+  //         if (element === true) {
+  //           console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)]?.name);
 
-            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+  //           recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
 
-            console.log("Updated length: " + recResponse.tracks.length);
-          }
-        });
+  //           console.log("Updated length: " + recResponse.tracks.length);
+  //         }
+  //       });
         
-      }
-    ).catch((err) => {
-  //console.log(err);
-    });
+  //     }
+  //   ).catch((err) => {
+  // //console.log(err);
+  //   });
 
-    //update trackStack
-    trackStack = trackStack.concat(recResponse.tracks.map((track: any) => track));
-    console.log("TRACKSTACK: " + trackStack.length);
+  //   //update trackStack
+  //   trackStack = trackStack.concat(recResponse.tracks.map((track: any) => track));
+  //   console.log("TRACKSTACK: " + trackStack.length);
 
 
-        setTracks(trackStack);
-        //setDeckCounter(trackStack.length);
-  }
+  //       setTracks(trackStack);
+  //       //setDeckCounter(trackStack.length);
+  // }
+// **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
+
 
   // async function getRecentlyPlayedTracks() {
   //   const response = await spotify.getMyRecentlyPlayedTracks();
@@ -256,7 +258,7 @@ const Swiper = (props: Props) => {
 
   React.useEffect(() => {
     //previously known as getTracks
-    initializeTracks();
+    getTracks();
   }, []);
 
   // React.useEffect(() => {
@@ -276,8 +278,8 @@ const Swiper = (props: Props) => {
 
 
   React.useEffect(() => {
-    if (needsReload) {
-      initializeTracks();
+    if (needsReload === true) {
+      getTracks();
       setReload(false);
     }
   }, [needsReload]);
