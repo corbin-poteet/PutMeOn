@@ -159,6 +159,38 @@ const Swiper = (props: Props) => {
       }
     });
 
+    //remove song if detected as swiped from database, currently splice is not working
+    const dbRef = ref(database);
+    const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
+    dbTrackIds.forEach((trackId: string) => {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot)=>{
+        if(snapshot.exists()) {
+            console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+
+            recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+        } else {
+            console.log("Swiped song not found");
+        }
+      }).catch((error) => {
+        console.log("Query Failed, error; " + error)
+      });
+
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot)=>{
+        if(snapshot.exists()) {
+          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
+          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+      } else {
+          console.log("Swiped song not found");
+      }
+      }).catch((error) => {
+          console.log("Query Failed, error; " + error)
+      });
+
+    })
+    
+
+    
+
 
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
@@ -524,20 +556,20 @@ const Swiper = (props: Props) => {
 
         // Query Firebase Test
         
-        //const dbRef = ref(database);
-        //
-        // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
-        //    if(snapshot.exists()) {
-        //       let temp = snapshot.val().trackName;
-        //       console.log("QUERY TRACK NAME BY ID : " + temp);
-        //       let orary = snapshot.val().trackID;
-        //       console.log("QUERY TRACK ID BY ID : " + orary);
-        //    } else {
-        //       console.log("No valid data was found here");
-        //    }
-        //  }).catch((error) => {
-        //    console.log("Query Failed, error; " + error)
-        //  });
+          // const dbRef = ref(database);
+          
+          // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
+          //   if(snapshot.exists()) {
+          //       let temp = snapshot.val().trackName;
+          //       console.log("QUERY TRACK NAME BY ID : " + temp);
+          //       let orary = snapshot.val().trackID;
+          //       console.log("QUERY TRACK ID BY ID : " + orary);
+          //   } else {
+          //       console.log("No valid data was found here");
+          //   }
+          // }).catch((error) => {
+          //   console.log("Query Failed, error; " + error)
+          // });
 
       }
     }
