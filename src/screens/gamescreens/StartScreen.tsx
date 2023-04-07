@@ -52,7 +52,7 @@ const StartScreen = () => { //Game Welcome Screen
             </View>
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center bg-green-500 px-5 rounded-3xl"
-                    onPress={() => { console.log("HI"); navigation.navigate('Game') }}>
+                    onPress={() => { navigation.navigate('Game') }}>
                     <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Play Track Trivia</Text>
                 </TouchableOpacity>
             </View>

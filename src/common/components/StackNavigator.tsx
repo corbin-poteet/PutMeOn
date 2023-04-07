@@ -30,7 +30,7 @@ const Tabs = createBottomTabNavigator();
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
     <Tabs.Navigator screenOptions={{headerShown: false}}>
-      <Tabs.Screen name="Game" component={StartScreen} listeners={
+      <Tabs.Screen name="Start" component={StartScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
       options={{

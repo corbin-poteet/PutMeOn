@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
 });
 
 const GameScreen = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
-  const [score, setScore] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = React.useState(0);
+  const [answers, setAnswers] = React.useState(Array(questions.length).fill(null));
+  const [score, setScore] = React.useState(null);
   const navigation = useNavigation();
 
   const handleAnswer = (choiceIndex) => {
