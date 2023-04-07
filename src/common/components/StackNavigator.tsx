@@ -15,7 +15,7 @@ import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
-import GameScreen from '@/screens/GameScreen';
+import GameScreen from '@/screens/gamescreens/GameScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
 import SecretScreen from '@/screens/SecretScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
