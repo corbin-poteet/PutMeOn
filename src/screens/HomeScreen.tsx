@@ -134,7 +134,7 @@ const HomeScreen = () => {
           }
         </TouchableOpacity>
         <View>
-          <TouchableOpacity onPress={ () => setKonami(konami + 1)}>
+          <TouchableOpacity activeOpacity={1} onPress={ () => setKonami(konami + 1)}>
             <Image source={require('@assets/Logo_512.png')} style={{
               width: 128,
               height: 65,
