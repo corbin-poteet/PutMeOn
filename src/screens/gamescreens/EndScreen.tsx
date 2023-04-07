@@ -3,7 +3,7 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const EndScreen = () => { //Display App information
+const EndScreen = () => {
     
     const navigation = useNavigation();
 
