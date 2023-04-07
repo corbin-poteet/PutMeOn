@@ -38,8 +38,7 @@ const PlaylistScreen = () => {
   const result: any[] = [];
 
   async function getPlaylists() {
-    console.log("PLAY user Id: " + user?.id);
-    const response = await spotify.getUserPlaylists(user?.id
+    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
         playlists = data.items;
@@ -95,11 +94,11 @@ const PlaylistScreen = () => {
           () => {
             selectedPlaylist = playlists[playlist.index].id;
             navigation.navigate('Home')
-            Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
-            {
-              text: 'Okay',
-              style: 'cancel',
-            }]);
+            // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
+            // {
+            //   text: 'Okay',
+            //   style: 'cancel',
+            // }]);
           }
       }
     ]);
@@ -132,19 +131,17 @@ const PlaylistScreen = () => {
             :
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
-                <TouchableOpacity onPress={
-                  async () => {
-                    const response = await spotify.createPlaylist(user?.id)
-                    console.log('Created Playlist userId: ' + user?.id)
-                  }
-                }>
+                <TouchableOpacity onPress ={ () => {
+                  navigation.navigate("CreatePlaylist");
+                }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                    <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                    <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
                     <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>New Playlist</Text>
                   </View>
                 </TouchableOpacity>
 
                 {componentHandler}
+
               </ScrollView>
             </Animated.View>
           }

@@ -30,7 +30,7 @@
     "nativewind": "latest",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-native": "0.69.6",
+    "react-native": "0.69.9",
     "react-native-cards-swipe": "^1.2.1",
     "react-native-deck-swiper": "^2.0.13",
     "react-native-gesture-handler": "~2.5.0",
