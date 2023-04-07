@@ -3,17 +3,9 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
-const ScoreScreen = () => { //Display App information
+const ScoreScreen = () => {
     
     const navigation = useNavigation();
-
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-          headerShown: true,
-          headerTitle: 'App Information',         
-        });
-      }, [navigation]);
 
     return (
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
@@ -24,5 +16,4 @@ const ScoreScreen = () => { //Display App information
     );
 }
   
-
 export default ScoreScreen
