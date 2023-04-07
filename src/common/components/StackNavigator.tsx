@@ -18,9 +18,9 @@ import AppInfo from '@/screens/InfoScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
 import SecretScreen from '@/screens/SecretScreen';
 import GameScreen from '@/screens/gamescreens/GameScreen';
-import ScoreScreen from '@/screens/gamescreens/GameScreen';
-import RoundScreen from '@/screens/gamescreens/GameScreen';
-import EndScreen from '@/screens/gamescreens/GameScreen';
+import ScoreScreen from '@/screens/gamescreens/ScoreScreen';
+import RoundScreen from '@/screens/gamescreens/RoundScreen';
+import EndScreen from '@/screens/gamescreens/EndScreen';
 import StartScreen from '@/screens/gamescreens/StartScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 

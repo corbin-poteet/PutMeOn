@@ -13,8 +13,7 @@ const StartScreen = () => { //Game Welcome Screen
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
-            headerShown: true,
-            headerTitle: 'App Information',
+            headerShown: false,
         });
     }, [navigation]);
 
@@ -33,14 +32,16 @@ const StartScreen = () => { //Game Welcome Screen
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
             <View className='flex-1 justify-top'>
                 <View>
-                    <Text className='text-white text-4xl text-left px-1 my-16 font-bold'>Discover new music with Put Me On</Text>
-                    <Text className='text-white text-2xl text-left px-1 my-2'>Swipe right on a song to like it!</Text>
-                    <Text className='text-white text-2xl text-left px-1 my-2'>Swipe left on a song to dislike it!</Text>
+                    <Text className='text-white text-4xl text-center px-1 my-24 font-bold'>Track Trivia</Text>
+                    <Text className='text-white text-2xl text-center px-1 my-1'>
+                    Put Me On Track Trivia gameifies music discovery! </Text>
+                    <Text className='text-white text-2xl text-center px-1 my-1'>
+                    The faster the guess each song, the more points you earn!</Text>
                 </View>
             </View>
             <View className='flex-1 justify-center'>
                 <View>
-                    <Image source={require('@assets/swipe_logo.png')} style={{
+                    <Image source={require('@assets/Logo_512_White.png')} style={{
                         width: 256,
                         height: 256,
                         transform: [{ translateX: -6 }],
@@ -49,10 +50,10 @@ const StartScreen = () => { //Game Welcome Screen
                         className="mb-20" />
                 </View>
             </View>
-            <View style={{ alignItems: 'right' }}>
-                <TouchableOpacity style={{ backgroundColor: '#014871', width: '60%', height: 56, alignItems: 'center', justifyContent: 'center', borderRadius: 10, marginBottom: 50 }}
-                    onPress={() => { navigation.navigate('Finish') }}>
-                    <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={35} color="white" />
+            <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center bg-green-500 px-5 rounded-3xl"
+                    onPress={() => { console.log("HI"); navigation.navigate('Game') }}>
+                    <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Play Track Trivia</Text>
                 </TouchableOpacity>
             </View>
         </LinearGradient>

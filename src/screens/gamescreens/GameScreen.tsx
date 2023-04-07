@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native'
+import React from 'react'
+import useAuth from '@hooks/useAuth';
+import { useNavigation } from '@react-navigation/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { fromJSON } from 'postcss';
 
 const questions = [
   {
@@ -41,10 +47,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const Quiz = () => {
+const GameScreen = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
   const [score, setScore] = useState(null);
+  const navigation = useNavigation();
 
   const handleAnswer = (choiceIndex) => {
     const newAnswers = [...answers];
@@ -82,4 +89,4 @@ const Quiz = () => {
   );
 };
 
-export default Quiz;
+export default GameScreen;
