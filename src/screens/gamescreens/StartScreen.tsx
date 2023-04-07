@@ -29,35 +29,35 @@ const StartScreen = () => { //Game Welcome Screen
     }, []);
 
     return (
-        <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-            <View className='flex-1 justify-top'>
-                <View>
-                    <Text className='text-white text-4xl text-center px-1 my-24 font-bold'>Track Trivia</Text>
-                    <Text className='text-white text-2xl text-center px-1 my-1'>
-                    Put Me On Track Trivia gameifies music discovery! </Text>
-                    <Text className='text-white text-2xl text-center px-1 my-1'>
-                    The faster the guess each song, the more points you earn!</Text>
-                </View>
-            </View>
-            <View className='flex-1 justify-center'>
-                <View>
-                    <Image source={require('@assets/Logo_512_White.png')} style={{
-                        width: 256,
-                        height: 256,
+        <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1 }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Image source={require('@assets/PMO_MU_Logo.png')} style={{
+                        width: 320,
+                        height: 120,
                         transform: [{ translateX: -6 }],
                         resizeMode: 'contain',
                     }}
                         className="mb-20" />
-                </View>
+             <View style={{ paddingTop: 40 }}>
+                  <Text style={{ fontWeight: 'bold' }} className='text-white text-2xl text-center px-1 my-1'>
+                    Put Me On Match-Up makes music discovery fun! 
+                   </Text>
+                  <Text style={{ fontWeight: 'bold' }} className='text-white text-2xl text-center px-1 my-10'>
+                      The faster you guess each song, the more points you'll earn!
+                 </Text>
+             </View>
             </View>
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center bg-green-500 px-5 rounded-3xl"
-                    onPress={() => { navigation.navigate('Round') }}>
-                    <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Play Track Trivia</Text>
+                    onPress={() => { navigation.navigate('Game') }}>
+                    <Text className="text-white text-xl px-8 py-2 text-1 font-bold">Match-Up!</Text>
                 </TouchableOpacity>
             </View>
         </LinearGradient>
     );
+    
+
+
 }
 
 
