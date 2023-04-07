@@ -7,10 +7,19 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { fromJSON } from 'postcss';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import { push, ref, set, child, get } from 'firebase/database';
 
 const GameScreen = () => {
 
   const navigation = useNavigation();
+  
+  const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [sound, setSound] = React.useState<Audio.Sound>();
+  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
+  const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
   return (
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
@@ -75,7 +84,6 @@ const GameScreen = () => {
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Multiple Decks{}</Text>
         </TouchableOpacity>
       </View>
-
 
     </LinearGradient>
   );
