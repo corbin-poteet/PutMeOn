@@ -15,9 +15,13 @@ import BusinessFormScreen from '@/screens/BusinessFormScreen';
 import PlaylistScreen from '@/screens/PlaylistScreen';
 import UserDetails from '@/screens/UserDetails';
 import AppInfo from '@/screens/InfoScreen';
-import GameScreen from '@/screens/GameScreen';
 import CreatePlaylistScreen from '@/screens/CreatePlaylistScreen';
 import SecretScreen from '@/screens/SecretScreen';
+import GameScreen from '@/screens/gamescreens/GameScreen';
+import ScoreScreen from '@/screens/gamescreens/ScoreScreen';
+import RoundScreen from '@/screens/gamescreens/RoundScreen';
+import EndScreen from '@/screens/gamescreens/EndScreen';
+import StartScreen from '@/screens/gamescreens/StartScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
@@ -26,7 +30,7 @@ const Tabs = createBottomTabNavigator();
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
     <Tabs.Navigator screenOptions={{headerShown: false}}>
-      <Tabs.Screen name="Game" component={GameScreen} listeners={
+      <Tabs.Screen name="Start" component={StartScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
       options={{
@@ -80,6 +84,11 @@ const StackNavigator = () => {
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />
               <Stack.Screen name="Finish" component={FinishScreen} />
+
+              <Stack.Screen name="Score" component={ScoreScreen} />
+              <Stack.Screen name="Round" component={RoundScreen} />
+              <Stack.Screen name="End" component={EndScreen} />
+              <Stack.Screen name="Game" component={GameScreen} />
             </>
           ) : (
             <Stack.Screen name="Login" component={LoginScreen} />
