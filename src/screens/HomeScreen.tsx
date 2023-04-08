@@ -15,7 +15,7 @@ import { selectedPlaylist } from '@screens/PlaylistScreen';
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
   const navigation = useNavigation(); //Establish stack navigation
-
+  const [konami, setKonami] = React.useState<number>(0);
   const { spotify, user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   //const [tracks, setTracks] = React.useState<any[]>([]);
@@ -58,6 +58,13 @@ const HomeScreen = () => {
   //       style: 'cancel',
   //     }]);
   // }, []);
+
+
+  React.useEffect(() => { 
+    if(konami >= 20) {
+      navigation.navigate('Secret') //shhh....
+    }
+  }, [konami]);
 
   async function playPreview(this: any, cardIndex: number) {
     const currentTrack = tracks[cardIndex];
@@ -113,7 +120,7 @@ const HomeScreen = () => {
       <View className='items-center relative'>
         <TouchableOpacity className='absolute left-5 top-3' onPress={
           () => {
-            navigation.navigate('User')
+            navigation.navigate('Settings')
           }
         }>
           {
@@ -127,12 +134,14 @@ const HomeScreen = () => {
           }
         </TouchableOpacity>
         <View>
-          <Image source={require('@assets/Logo_512.png')} style={{
-            width: 128,
-            height: 65,
-            transform: [{ translateX: -6 }],
-            resizeMode: 'contain',
-          }} />
+          <TouchableOpacity activeOpacity={1} onPress={ () => setKonami(konami + 1)}>
+            <Image source={require('@assets/Logo_512.png')} style={{
+              width: 128,
+              height: 65,
+              transform: [{ translateX: -6 }],
+              resizeMode: 'contain',
+            }} />
+          </TouchableOpacity>
         </View>
       </View>
       <View className='flex-1 items-center justify-center'>
