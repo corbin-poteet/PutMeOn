@@ -115,11 +115,11 @@ const HomeScreen = () => {
   }, [loaded]); //check for cached credentials so we know if this is first time load 
 
   return (
-    <SafeAreaView className='flex-1 bg-green-500' edges={['top']}>
+    <SafeAreaView className='flex-1' edges={['top']}>
       {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
       {/* Header */}
-      <View className='items-center relative bg-yellow-500'>
+      <View className='items-center relative'>
         <TouchableOpacity className='absolute left-5 top-3' onPress={
           () => {
             navigation.navigate('UserDetails')
@@ -148,8 +148,8 @@ const HomeScreen = () => {
       </View>
 
       {/* Body */}
-      <View className='flex-1 items-center justify-center bg-red-500'>
-        <View className='h-full px-4 pt-1 pb-2 bg-blue-500' style={{ aspectRatio: 10 / 16 }}>
+      <View className='flex-1 items-center justify-center'>
+        <View className='h-full px-4 pt-1 pb-2' style={{ aspectRatio: 10 / 16 }}>
           <Swiper tracks={tracks} />
         </View>
       </View>
