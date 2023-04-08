@@ -1,6 +1,6 @@
 # PutMeOn
 
-Pre-Alpha 0.8.1 - The take me everywhere update
+Pre-Alpha 0.8.7 - The put me down update
 
 ### A music recommendation application
 
