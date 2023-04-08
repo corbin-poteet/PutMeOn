@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import * as Haptics from 'expo-haptics';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -61,9 +61,12 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
   )
 }
 
+
+
 const StackNavigator = () => {
 
-  const { token } = useAuth();
+  const { user } = useAuth();
+
   //DUETO
   return (
     <NavigationContainer>
@@ -72,7 +75,7 @@ const StackNavigator = () => {
             headerShown: false,
           }
         }>
-          {token ? (
+          {user != "" ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
               <Stack.Screen name="Playlist" component={PlaylistScreen} />

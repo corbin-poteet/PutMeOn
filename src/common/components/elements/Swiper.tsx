@@ -480,15 +480,31 @@ const Swiper = (props: Props) => {
           </View>
         </LinearGradient >
       )
-    }} onSwipedLeft={ //Add disliked song to the disliked database
+    }} 
+
+    onSwiped={(index: number) => {
+      console.log("SWIPED")
+
+      setCardIndex(cardIndex + 1);
+      sound && sound.unloadAsync();
+      setPlaybackPosition(0);
+      loadAudio(tracks[cardIndex + 1]);
+
+      //log tracks.name for all tracks in the array
+      for (let i = 0; i < tracks.length; i++) {
+        console.log("TRACK NAME: " + tracks[i].name)
+        }
+    }}
+    
+    onSwipedLeft={ //Add disliked song to the disliked database
       (index: number) => {
         setDeckCounter(deckCounter - 1);
         //remove swiped song from the tracks array
         // if(index > 1){
         //   tracks.splice(index-1, 1);
         // }
-        console.log("Tracks length: " + tracks.length)
-        console.log("Deck counter: " + deckCounter)
+        //console.log("Tracks length: " + tracks.length)
+        //console.log("Deck counter: " + deckCounter)
         if (deckCounter === 1 && needsReload === false) {
           setReload(true);
         }
@@ -499,22 +515,11 @@ const Swiper = (props: Props) => {
           trackName: tracks[index].name,
         })
 
-        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
-        //================================================
-        console.log("SWIPED")
-
-        setCardIndex(cardIndex + 1);
-        sound && sound.unloadAsync();
-        setPlaybackPosition(0);
-        loadAudio(tracks[cardIndex + 1]);
-
-        //log tracks.name for all tracks in the array
-        for (let i = 0; i < tracks.length; i++) {
-          console.log("TRACK NAME: " + tracks[i].name)
-        }
-        //================================================
+        
       } 
-    } onSwipedRight={ //Add liked songs to the liked database
+    } 
+    
+    onSwipedRight={ //Add liked songs to the liked database
       (index: number) => {
         setDeckCounter(deckCounter - 1);
         //remove swiped song from the tracks array
@@ -522,8 +527,8 @@ const Swiper = (props: Props) => {
         //   tracks.splice(index-1, 1);
         // }
 
-        console.log("Tracks length: " + tracks.length)
-        console.log("Deck counter: " + deckCounter)
+        //console.log("Tracks length: " + tracks.length)
+        //console.log("Deck counter: " + deckCounter)
 
         if (deckCounter === 1 && needsReload === false) {
           setReload(true);
@@ -534,24 +539,14 @@ const Swiper = (props: Props) => {
           trackID: tracks[index].id, 
           trackName: tracks[index].name,
         })
-        console.log("Playlist to add to: " + selectedPlaylist)
+        //console.log("Playlist to add to: " + selectedPlaylist)
         const likedTrack: string[] = []
         likedTrack.push(tracks[index].uri)
         addToPlaylist(likedTrack)
 
         //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
         //================================================
-        console.log("SWIPED")
-
-        setCardIndex(cardIndex + 1);
-        sound && sound.unloadAsync();
-        setPlaybackPosition(0);
-        loadAudio(tracks[cardIndex + 1]);
-
-        //log tracks.name for all tracks in the array
-        for (let i = 0; i < tracks.length; i++) {
-          console.log("TRACK NAME: " + tracks[i].name)
-        }
+        
         //================================================
 
         // Query Firebase Test
@@ -573,10 +568,6 @@ const Swiper = (props: Props) => {
 
       }
     }
-      onSwipeEnd={() => {
-        //now empty, contents moved to the bottom of onswipeleft and onswiperight
-        //onSwipeEnd triggers when your finger leaves the card, not when the card leaves the screen, so you can trigger it by just touching the card, causing issues
-      }}
 
 
     />
