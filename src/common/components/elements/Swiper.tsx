@@ -105,8 +105,8 @@ const Swiper = (props: Props) => {
         continue;
       }
 
-      const newTracks = recResponse.tracks.map((track: any) => track);
-      const newTracksArray = tracks.concat(newTracks);
+      const newTrack = recResponse.tracks.map((track: any) => track);
+      const newTracksArray = tracks.concat(newTrack);
       setTracks(newTracksArray);
       isValid = true;
       break;
