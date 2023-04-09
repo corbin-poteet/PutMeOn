@@ -7,7 +7,7 @@ import gameContext from '@/common/hooks/gameContext';
 const ScoreScreen = () => {
     
     const navigation = useNavigation();
-    const { round, score, earnings } = useContext(gameContext);
+    const { round, setRound, score, earnings } = useContext(gameContext);
 
     React.useLayoutEffect(() => {
       navigation.setOptions({
@@ -16,7 +16,11 @@ const ScoreScreen = () => {
       });
     }, [navigation]);
 
-    if(round < 5) { //if game not over, render this component
+    React.useEffect(() => {
+      setRound(round + 1);
+    }, []);
+
+    if(round <= 5) { //if game not over, render this component
       return(
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
         <View className='flex-1 justify-center'>
@@ -40,9 +44,9 @@ const ScoreScreen = () => {
           <Text className='text-white text-6xl text-center px-1 font-bold'>Game Over!</Text>
           <Text className='text-white text-2xl text-center px-2 font-bold'>You earned {earnings} points that round!</Text>
           <Text className='text-white text-2xl text-center px-2 font-bold'>Final Score: {score}</Text>
-          <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+          <TouchableOpacity className="flex-row items-center justify-center bg-red-500 px-2 m-2 rounded-3xl"
             onPress={() => { navigation.navigate('End') }}>
-          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Multiple Decks</Text>
+          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Navigate to end page</Text>
         </TouchableOpacity>
         </View>
         </LinearGradient>

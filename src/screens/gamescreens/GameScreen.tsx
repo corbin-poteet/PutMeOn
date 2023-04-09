@@ -23,7 +23,7 @@ let correctTrack: any;
 const GameScreen = () => {
 
   const navigation = useNavigation();
-  const { round, setRound, score, setScore, setEarnings } = useContext(gameContext);
+  const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify} = useAuth();
 
   //sound states
@@ -33,9 +33,9 @@ const GameScreen = () => {
 
   //track states
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
-  //const [correctTrack, setCorrectTrack] = React.useState<SpotifyApi.TrackObjectFull>();
 
-  async function getTracks() { //get tracks -- pulled from swiper.tsx - pulls 4 tracks from API and puts them into the useState array
+  //getTracks (pulled from swiper.tsx) - pulls 4 tracks from API and puts them into the useState array
+  async function getTracks() {
 
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( // This is a good start but will need to exclude seen songs before
       function (data: { items: any[]; }) {
@@ -71,15 +71,15 @@ const GameScreen = () => {
     if(loaded && tracks) {
       correctTrack = tracks[0];
       console.log("PRE SHUFFLE: " + tracks);
-      correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index
+      correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index, also this works (get it together VSCode)
 
-      let trackStack = tracks;
+      let tempTracks = tracks; //temp array for swap
     
-      let temp = trackStack[correctIndex]; //Swap tracks
-      trackStack[correctIndex] = trackStack[0]; //Correct track starts at the beginning of the array
-      trackStack[0] = temp;
+      let temp = tempTracks[correctIndex]; //Swap tracks
+      tempTracks[correctIndex] = tempTracks[0]; //Correct track starts at the beginning of the array
+      tempTracks[0] = temp;
 
-      setTracks(trackStack);
+      setTracks(tempTracks); //set useState array with final shuffled tracks
       
       console.log("POST SHUFFLE: " + tracks);
       console.log("correct index: " + correctIndex);
@@ -190,7 +190,6 @@ const GameScreen = () => {
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Choice 4</Text>
         </TouchableOpacity>
       </View>
-
     </LinearGradient>
   );
 };
