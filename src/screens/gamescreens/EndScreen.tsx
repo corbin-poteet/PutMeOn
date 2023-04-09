@@ -9,6 +9,13 @@ const EndScreen = () => {
     const navigation = useNavigation();
     const { round } = useGameContext();
 
+    React.useLayoutEffect(() => {
+      navigation.setOptions({
+        gestureEnabled: true, //can be set to false to disable swipe out of page
+        gestureDirection: 'horizontal',
+      });
+    }, [navigation]);
+
     if(round > 5) {
       return (
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>

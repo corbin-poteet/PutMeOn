@@ -15,8 +15,7 @@ import useGameContext from '@/common/hooks/gameContext';
 const GameScreen = () => {
 
   const navigation = useNavigation();
-  const { round, score, earnings } = useGameContext();
-
+  
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
