@@ -24,7 +24,7 @@ const GameScreen = () => {
 
   const navigation = useNavigation();
   const { round, setRound, score, setScore, setEarnings } = useContext(gameContext);
-  const { spotify, user } = useAuth();
+  const { spotify} = useAuth();
 
   //sound states
   const [sound, setSound] = React.useState<Audio.Sound>();
@@ -120,7 +120,7 @@ const GameScreen = () => {
       <View className='flex-1 justify-center absolute top-32'>
         {/*track Image*/}
         <View className='flex-1 items-center p-2'>
-          <Image source={{uri: correctTrack.album.images[0].url }} className='w-60 h-60' />
+          <Image source={require('@assets/blank_playlist.png')/*{ uri: correctTrack.album.images[0].url }*/} className='w-60 h-60' />
         </View>
         {/*Track Name*/}
         <View className='flex-row items-center px-2'>
@@ -136,9 +136,8 @@ const GameScreen = () => {
         <View className='flex-row items-center opacity-80 px-2'>
           <FontAwesome5 name="user-alt" size={16} color="white" />
           <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <Text className='px-2 text-white text-2xl font-bold'>{
-              /*track.artists.map((artist: any) => artist.name).join(', ')
-            */}Artist Name</Text>
+            <Text className='px-2 text-white text-2xl font-bold'>
+              {/*correctTrack.artists.map((artist: any) => artist.name).join(', ')*/}Artist Name</Text>
           </Animated.ScrollView>
         </View>
         {/* Album Name */}
@@ -152,7 +151,7 @@ const GameScreen = () => {
 
       {/*Question*/}
       <View className='flex-1 justify-center'>
-        <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} of this track?{/* Add variable instead of _ later with question type */}</Text>
+        <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} of this track?</Text>
         
         {/*Button choices*/}
         <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
