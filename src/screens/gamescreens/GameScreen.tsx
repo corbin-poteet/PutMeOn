@@ -14,6 +14,13 @@ import { push, ref, set, child, get } from 'firebase/database';
 const GameScreen = () => {
 
   const navigation = useNavigation();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: true, //can be set to false to disable swipe out of page
+      gestureDirection: 'horizontal',
+    });
+  }, [navigation]);
   
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
