@@ -28,6 +28,7 @@ const Swiper = (props: Props) => {
 
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [trackToBeAdded, setTrackToBeAdded] = React.useState<SpotifyApi.TrackObjectFull>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [needsReload, setReload] = React.useState<boolean>(false);
   const [deckCounter, setDeckCounter] = React.useState<number>(0);
@@ -44,13 +45,75 @@ const Swiper = (props: Props) => {
 
   
 
-  async function addTrack(newTrack: SpotifyApi.TrackObjectFull | undefined) {
-    if (newTrack === undefined) {
-      return;
-    }
+  async function addTrack() {
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data: { items: any[]; }) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    }) as string[];
 
-    const newTracksArray = tracks.concat(newTrack);
-    setTracks(newTracksArray);
+    let isValid: boolean = false;
+
+    while (isValid === false){
+      const recResponse = await spotify.getRecommendations({
+        seed_artists: topArtistsIds,
+        limit: 1,
+      });
+
+      const trackId = recResponse.tracks.map((track: any) => track.id);
+
+      await spotify.containsMySavedTracks(trackId).then(
+        // after promise returns of containsMySavedTracks
+        function (isSavedArr: any[]) {
+          console.log("PROMISE RETURNED" + isSavedArr);
+          isSavedArr.forEach((element) => {
+            console.log(element);
+            if (element === true) {
+              console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
+
+              recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+              console.log("Updated length: " + recResponse.tracks.length);
+            }
+          });
+
+        }
+      ).catch((err) => {
+        console.log(err);
+      });
+
+      if (recResponse.tracks.length === 0) {
+        isValid = false;
+        continue;
+      }
+
+      //remove tracks with no preview url
+      recResponse.tracks.forEach(element => {
+        if (element.preview_url === null) {
+          console.log("Null preview detected, Removing from tracks: " + element.name);
+          recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+        }
+      });
+
+      if (recResponse.tracks.length === 0) {
+        isValid = false;
+        continue;
+      }
+
+      const newTracks = recResponse.tracks.map((track: any) => track);
+      const newTracksArray = tracks.concat(newTracks);
+      setTracks(newTracksArray);
+      isValid = true;
+      break;
+      
+    }
+    
+    
   }
 
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
@@ -70,7 +133,7 @@ const Swiper = (props: Props) => {
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 5,
+      limit: 15,
     });
 
     //trackIds is an array of the track IDs of the recommendations
@@ -320,12 +383,12 @@ const Swiper = (props: Props) => {
   }, []);
 
 
-  React.useEffect(() => {
-    if (needsReload === true) {
-      getTracks();
-      setReload(false);
-    }
-  }, [needsReload]);
+  // React.useEffect(() => {
+  //   if (needsReload === true) {
+  //     getTracks();
+  //     setReload(false);
+  //   }
+  // }, [needsReload]);
 
   if (tracks.length === 0) { //Loading Activity Indicator Animation
     return (
@@ -421,19 +484,8 @@ const Swiper = (props: Props) => {
         setPlaybackPosition(0);
         loadAudio(tracks[cardIndex + 1]);
 
-        spotify.getTrack("6SpLc7EXZIPpy0sVko0aoU").then((data) => {
-          var newTrack = data as SpotifyApi.TrackObjectFull;
-          console.log("Track name: " + newTrack.name)
-          
-          addTrack(newTrack);
-          addTrack(newTrack);
-          addTrack(newTrack);
-          addTrack(newTrack);
-          addTrack(newTrack);
-
-
-        })
-
+        addTrack();
+        console.log("tracks length: " + tracks.length);
 
       }}
 
