@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import gameContext from '@/common/hooks/gameContext';
 
+//DUETO: Find out why the timer only works on the first round
+
 const RoundScreen = () => {
     
     const navigation = useNavigation();

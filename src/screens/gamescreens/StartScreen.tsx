@@ -1,11 +1,7 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, Animated } from 'react-native'
 import React from 'react'
-import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { fromJSON } from 'postcss';
 
 const StartScreen = () => { //Game Welcome Screen
 
@@ -49,7 +45,7 @@ const StartScreen = () => { //Game Welcome Screen
             </View>
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center bg-green-500 px-5 rounded-3xl"
-                    onPress={() => { navigation.navigate('Round') }}>
+                    onPress={() => { navigation.navigate('Game') }}>
                     <Text className="text-white text-xl px-8 py-2 text-1 font-bold">Match-Up!</Text>
                 </TouchableOpacity>
             </View>
