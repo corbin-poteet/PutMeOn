@@ -9,7 +9,7 @@ import "./styles";
 
 export default function App({children}) {
 
-  const [round, setRound] = useState(0);
+  const [round, setRound] = useState(1);
   const [score, setScore] = useState(0);
   const [earnings, setEarnings] = useState(0);
 
