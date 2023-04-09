@@ -1,3 +1,4 @@
+/* IMPORT STATEMENTS */
 import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import useAuth from '@/common/hooks/useAuth';
@@ -23,6 +24,8 @@ type Props = {
 
 const Swiper = (props: Props) => {
 
+  /* VARIABLE/USESTATE DECLARATION */
+
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [loaded, setLoaded] = React.useState<boolean>(false);
@@ -37,6 +40,113 @@ const Swiper = (props: Props) => {
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
+    /****************************** FUNCTION DECLARATIONS *********************************/
+
+  
+
+  async function addTrack(newTrack: SpotifyApi.TrackObjectFull | undefined) {
+    if (newTrack === undefined) {
+      return;
+    }
+
+    const newTracksArray = tracks.concat(newTrack);
+    setTracks(newTracksArray);
+  }
+
+  //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
+  async function getTracks() {
+
+    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data: { items: any[]; }) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    }) as string[];
+
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: topArtistsIds,
+      limit: 5,
+    });
+
+    //trackIds is an array of the track IDs of the recommendations
+    const trackIds = recResponse.tracks.map((track: any) => track.id);
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
+
+    setTracks(trackStack);
+    setDeckCounter(trackStack.length);
+    return;
+
+    await spotify.containsMySavedTracks(trackIds).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("PROMISE RETURNED" + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
+
+            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+            console.log("Updated length: " + recResponse.tracks.length);
+          }
+        });
+
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    //remove tracks with no preview url
+    recResponse.tracks.forEach(element => {
+      if (element.preview_url === null) {
+        console.log("Null preview detected, Removing from tracks: " + element.name);
+        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+      }
+    });
+
+    //remove song if detected as swiped from database, currently splice is not working
+    const dbRef = ref(database);
+    const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
+    dbTrackIds.forEach((trackId: string) => {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+
+          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+        } else {
+          console.log("Swiped song not found");
+        }
+      }).catch((error) => {
+        console.log("Query Failed, error; " + error)
+      });
+
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
+          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+        } else {
+          console.log("Swiped song not found");
+        }
+      }).catch((error) => {
+        console.log("Query Failed, error; " + error)
+      });
+
+    })
+
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
+
+    setTracks(trackStack);
+    setDeckCounter(trackStack.length);
+  }
+
+  // Same as getTracks, but takes in seed parameters
   async function getTracksSeeded(seedArtists: string[], seedGenres: string[]) {
 
     //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
@@ -103,184 +213,6 @@ const Swiper = (props: Props) => {
     //setDeckCounter(trackStack.length);
   }
 
-  async function addTrack(newTrack: SpotifyApi.TrackObjectFull | undefined) {
-    if (newTrack === undefined) {
-      return;
-    }
-
-    const newTracksArray = tracks.concat(newTrack);
-    setTracks(newTracksArray);
-  }
-
-  //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
-  async function getTracks() {
-
-    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    }) as string[];
-
-
-
-
-    const recResponse = await spotify.getRecommendations({
-      seed_artists: topArtistsIds,
-      limit: 5,
-    });
-
-    //trackIds is an array of the track IDs of the recommendations
-    const trackIds = recResponse.tracks.map((track: any) => track.id);
-    //Update trackStack
-    trackStack = recResponse.tracks.map((track: any) => track);
-
-
-
-    setTracks(trackStack);
-    setDeckCounter(trackStack.length);
-    return;
-
-    await spotify.containsMySavedTracks(trackIds).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("PROMISE RETURNED" + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
-
-            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-            console.log("Updated length: " + recResponse.tracks.length);
-          }
-        });
-
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-
-    //remove tracks with no preview url
-    recResponse.tracks.forEach(element => {
-      if (element.preview_url === null) {
-        console.log("Null preview detected, Removing from tracks: " + element.name);
-        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-      }
-    });
-
-    //remove song if detected as swiped from database, currently splice is not working
-    const dbRef = ref(database);
-    const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
-    dbTrackIds.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
-
-          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
-        } else {
-          console.log("Swiped song not found");
-        }
-      }).catch((error) => {
-        console.log("Query Failed, error; " + error)
-      });
-
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
-          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
-        } else {
-          console.log("Swiped song not found");
-        }
-      }).catch((error) => {
-        console.log("Query Failed, error; " + error)
-      });
-
-    })
-
-
-
-
-
-    //Update trackStack
-    trackStack = recResponse.tracks.map((track: any) => track);
-
-
-
-    setTracks(trackStack);
-    setDeckCounter(trackStack.length);
-  }
-  // **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
-  // async function updateTracks() {
-  //   let trackStack = tracks;
-
-  //   const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).catch(
-  //     function (err: any) {
-  //       //console.error(err);
-  //     }
-  //   ).then(
-  //     function (data) {
-  //       return data?.items.map((artist: any) => artist.id);
-  //     },
-  //     function (err: any) {
-  //       console.error(err);
-  //     }
-  //   ) as string[];
-
-  //   const recResponse = await spotify.getRecommendations({
-  //     seed_artists: topArtistsIds,
-  //     limit: 30,
-
-  //   });
-
-  //   //Do To: try putting recs in new array and then concat with trackStack
-  //   console.log("RECOMMENDATIONS: " + recResponse.tracks.length);
-
-  //   //remove tracks with no preview url
-  //   recResponse.tracks.forEach(element => {
-  //     if(element.preview_url === null){
-  //       console.log("Null preview detected in updateTracks(), Removing from tracks: " + element.name);
-  //       recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-  //     }
-  //   });
-
-  //   const trackIds = recResponse.tracks.map((track: any) => track.id);
-
-  //   await spotify.containsMySavedTracks(trackIds).then(
-  //     // after promise returns of containsMySavedTracks
-  //     function (isSavedArr: any[]) {
-  //       console.log("containsSavedTracks Promise returned. Bool array: " + isSavedArr);
-  //       isSavedArr.forEach((element) => {
-  //         console.log(element);
-  //         if (element === true) {
-  //           console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)]?.name);
-
-  //           recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-  //           console.log("Updated length: " + recResponse.tracks.length);
-  //         }
-  //       });
-
-  //     }
-  //   ).catch((err) => {
-  // //console.log(err);
-  //   });
-
-  //   //update trackStack
-  //   trackStack = trackStack.concat(recResponse.tracks.map((track: any) => track));
-  //   console.log("TRACKSTACK: " + trackStack.length);
-
-
-  //       setTracks(trackStack);
-  //       //setDeckCounter(trackStack.length);
-  // }
-  // **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
-
 
   // async function getRecentlyPlayedTracks() {
   //   const response = await spotify.getMyRecentlyPlayedTracks();
@@ -288,55 +220,9 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
-
-  async function needsToBeRemoved(tracks: any[]) {
-    const trackIds = tracks.map((track: any) => track.id);
-    const response = await spotify.containsMySavedTracks(trackIds);
-
-  }
-
-
-
   async function addToPlaylist(trackURIs: string[]) {
     //console.log("PLAYLIST ID: "+selectedPlaylist);
     const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
-  }
-
-
-  React.useEffect(() => {
-    //previously known as getTracks
-    getTracks();
-  }, []);
-
-  // React.useEffect(() => {
-  //   getRecentlyPlayedTracks();
-  // }, []);
-
-
-
-  React.useEffect(() => {
-    sound ? sound.unloadAsync() : null;
-
-    loadAudio(tracks[cardIndex]);
-  }, []);
-
-
-
-
-
-  React.useEffect(() => {
-    if (needsReload === true) {
-      getTracks();
-      setReload(false);
-    }
-  }, [needsReload]);
-
-  if (tracks.length === 0) { //Loading Activity Indicator Animation
-    return (
-      <View style={{ flex: 1, marginTop: 300 }}>
-        <ActivityIndicator size="large" color="#014871" />
-      </View>
-    )
   }
 
   const b = false;
@@ -420,6 +306,36 @@ const Swiper = (props: Props) => {
     }
   }
 
+
+/******************** USE EFFECTS ***********************/
+  React.useEffect(() => {
+    //previously known as getTracks
+    getTracks();
+  }, []);
+
+  React.useEffect(() => {
+    sound ? sound.unloadAsync() : null;
+
+    loadAudio(tracks[cardIndex]);
+  }, []);
+
+
+  React.useEffect(() => {
+    if (needsReload === true) {
+      getTracks();
+      setReload(false);
+    }
+  }, [needsReload]);
+
+  if (tracks.length === 0) { //Loading Activity Indicator Animation
+    return (
+      <View style={{ flex: 1, marginTop: 300 }}>
+        <ActivityIndicator size="large" color="#014871" />
+      </View>
+    )
+  }
+
+  
 
 
   return (
