@@ -95,7 +95,10 @@ const GameScreen = () => {
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
-    else console.log("WRONGCHOICE");
+    else {
+      console.log("WRONGCHOICE");
+      setEarnings(0);
+    } 
     navigation.navigate('Score');
   };
   function handleChoice2() {
@@ -104,7 +107,10 @@ const GameScreen = () => {
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
-    else console.log("WRONGCHOICE");
+    else {
+      console.log("WRONGCHOICE");
+      setEarnings(0);
+    } 
     navigation.navigate('Score');
   };
   function handleChoice3() {
@@ -113,7 +119,10 @@ const GameScreen = () => {
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
-    else console.log("WRONGCHOICE");
+    else {
+      console.log("WRONGCHOICE");
+      setEarnings(0);
+    } 
     navigation.navigate('Score');
   };
   function handleChoice4() {
@@ -122,7 +131,10 @@ const GameScreen = () => {
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
-    else console.log("WRONGCHOICE");
+    else {
+      console.log("WRONGCHOICE");
+      setEarnings(0);
+    } 
     navigation.navigate('Score');
   };
   

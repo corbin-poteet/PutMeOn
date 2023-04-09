@@ -19,10 +19,10 @@ const EndScreen = () => {
       });
     }, [navigation]);
 
-    function clearGame(); { //wipes game stats so player can start again
+    function clearGame() { //wipes game stats so player can start again
       setScore(0);
       setEarnings(0);
-      setRound(0);
+      setRound(1);
     }
 
     return (
