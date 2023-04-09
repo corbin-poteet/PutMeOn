@@ -12,6 +12,8 @@ const SecretScreen = () => { //Shhhhhhhh....
     React.useLayoutEffect(() => {
         navigation.setOptions({
           headerShown: false,
+          gestureEnabled: false, //this page bricks the app, locking the user on the screen until the end of time so they may devolve into madness
+          gestureDirection: 'horizontal',
         });
       }, [navigation]);
 
