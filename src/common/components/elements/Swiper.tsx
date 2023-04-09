@@ -435,21 +435,11 @@ const Swiper = (props: Props) => {
         })
 
 
-        // //log tracks.name for all tracks in the array
-        // for (let i = 0; i < tracks.length; i++) {
-        //   console.log("TRACK NAME: " + tracks[i].name)
-        //   }
       }}
 
       onSwipedLeft={ //Add disliked song to the disliked database
         (index: number) => {
           setDeckCounter(deckCounter - 1);
-          //remove swiped song from the tracks array
-          // if(index > 1){
-          //   tracks.splice(index-1, 1);
-          // }
-          //console.log("Tracks length: " + tracks.length)
-          //console.log("Deck counter: " + deckCounter)
           if (deckCounter === 1 && needsReload === false) {
             //setReload(true);
           }
@@ -467,14 +457,6 @@ const Swiper = (props: Props) => {
       onSwipedRight={ //Add liked songs to the liked database
         (index: number) => {
           setDeckCounter(deckCounter - 1);
-          //remove swiped song from the tracks array
-          // if(index > 1){
-          //   tracks.splice(index-1, 1);
-          // }
-
-          //console.log("Tracks length: " + tracks.length)
-          //console.log("Deck counter: " + deckCounter)
-
           if (deckCounter === 1 && needsReload === false) {
             //setReload(true);
           }
@@ -494,22 +476,6 @@ const Swiper = (props: Props) => {
 
           //================================================
 
-          // Query Firebase Test
-
-          // const dbRef = ref(database);
-
-          // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
-          //   if(snapshot.exists()) {
-          //       let temp = snapshot.val().trackName;
-          //       console.log("QUERY TRACK NAME BY ID : " + temp);
-          //       let orary = snapshot.val().trackID;
-          //       console.log("QUERY TRACK ID BY ID : " + orary);
-          //   } else {
-          //       console.log("No valid data was found here");
-          //   }
-          // }).catch((error) => {
-          //   console.log("Query Failed, error; " + error)
-          // });
 
         }
       }
