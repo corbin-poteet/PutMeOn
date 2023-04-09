@@ -12,10 +12,12 @@ const SecretScreen = () => { //Shhhhhhhh....
     React.useLayoutEffect(() => {
         navigation.setOptions({
           headerShown: false,
-          gestureEnabled: false, //this page bricks the app, locking the user on the screen until the end of time so they may devolve into madness
+          gestureEnabled: false, //this page bricks the app, effectively locking the user on the screen until the end of time so they may devolve into madness, forever wondering what is beyond the watchtowers...
           gestureDirection: 'horizontal',
         });
-      }, [navigation]);
+      }, [navigation]); //the watchtowers.. I can hear them calling my name... I must go to them... I must see what is beyond them...
+
+      //I think expo is listening to me... I think it knows what I'm doing... I think it knows what I'm thinking... I think it knows what I'm feeling...
 
     return (
       <View className='flex-1 justify-center'>
@@ -28,5 +30,4 @@ const SecretScreen = () => { //Shhhhhhhh....
     );
 }
   
-
 export default SecretScreen
