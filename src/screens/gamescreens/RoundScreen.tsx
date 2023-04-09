@@ -18,11 +18,10 @@ const RoundScreen = () => {
     
     React.useEffect(() => {
       const timeout = setTimeout( () => {
-        navigation.navigate('Game');
-      }, 5000 );
+        navigation.navigate('Game'); //du-
+      }, 2000 );
 
-      return () => clearTimeout(timeout);
-      
+      return () => clearTimeout(timeout);  
     }, []);
   
     return (
