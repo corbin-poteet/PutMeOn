@@ -283,6 +283,71 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
+  async function cleanTracks(tracks: SpotifyApi.TrackObjectSimplified[]){
+    const trackIds = tracks.map((track: any) => track.id);
+
+    //Removes tracks that are already in the user's library
+    await spotify.containsMySavedTracks(trackIds).then(
+      // after promise returns of containsMySavedTracks
+      function (isSavedArr: any[]) {
+        console.log("containsMySavedTracks Promise Returned: " + isSavedArr);
+        isSavedArr.forEach((element) => {
+          console.log(element);
+          if (element === true) {
+            console.log("Removing from tracks: " + tracks[isSavedArr.indexOf(element)].name);
+
+            tracks.splice(isSavedArr.indexOf(element), 1);
+
+            console.log("Updated length: " + tracks.length);
+          }
+        });
+
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    //Removes tracks with no preview url
+    tracks.forEach(element => {
+      if (element.preview_url === null) {
+        console.log("Null preview detected, Removing from tracks: " + element.name);
+        tracks.splice(tracks.indexOf(element), 1);
+      }
+    });
+
+    //remove song if detected as swiped from database, currently splice is not working
+    const dbRef = ref(database);
+    const trackIds2 = tracks.map((track: any) => track.id);
+    trackIds2.forEach((trackId: string) => {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
+          tracks.splice(trackIds2.indexOf(trackId), 1);
+          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+
+        } else {
+          console.log("Swiped song not found");
+        }
+      }).catch((error) => {
+        console.log("Query Failed, error; " + error)
+      });
+    })
+
+    trackIds2.forEach((trackId: string) => {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
+          tracks.splice(trackIds2.indexOf(trackId), 1);
+          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
+
+        } else {
+          console.log("Swiped song not found");
+        }
+      }).catch((error) => {
+        console.log("Query Failed, error; " + error)
+      });
+    })
+
+  }
+
   async function addToPlaylist(trackURIs: string[]) {
     //console.log("PLAYLIST ID: "+selectedPlaylist);
     const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
