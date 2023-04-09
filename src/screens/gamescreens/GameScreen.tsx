@@ -79,7 +79,7 @@ const GameScreen = () => {
   //functions to handle the press of buttons 1 - 4
   function handleChoice1() {
     if(correctTrack == tracks[0]){
-      setScore(score + 10);
+      setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
