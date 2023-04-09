@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { AuthProvider } from "@hooks/useAuth";
-import { GameProvider } from "@hooks/gameContext";
 import gameContext from "@hooks/gameContext";
 import StackNavigator from "@components/StackNavigator";
 import "./styles";
