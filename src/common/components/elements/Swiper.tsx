@@ -406,7 +406,7 @@ const Swiper = (props: Props) => {
 
   
 
-
+// ***************************************** CARD RENDERING ********************************
   return (
 
     <CardsSwipe cards={tracks} renderCard={(track: SpotifyApi.TrackObjectFull) => {
