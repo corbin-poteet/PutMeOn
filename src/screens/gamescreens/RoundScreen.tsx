@@ -20,7 +20,9 @@ const RoundScreen = () => {
       const timeout = setTimeout( () => {
         navigation.navigate('Game');
       }, 5000 );
-      clearTimeout(timeout)
+
+      return () => clearTimeout(timeout);
+      
     }, []);
   
     return (
