@@ -19,7 +19,9 @@ import { Audio } from 'expo-av';
 
 
 var questionTypes: string[] = ['artist name', 'album name', 'name']; //lmao classic instance variable moment
-  
+let correctIndex: number;  
+let correctTrack: any;
+
 const GameScreen = () => {
 
   const navigation = useNavigation();
@@ -29,16 +31,15 @@ const GameScreen = () => {
   //sound states
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [loaded, setLoaded] = React.useState<boolean>(false);
 
   //track states
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
-  const [correctTrack, setCorrectTrack] = React.useState<SpotifyApi.TrackObjectFull>();
-
-  console.log("EUHHHHGGHHHHHHHHHHH"); //its 4 in the morning please kill me
+  //const [correctTrack, setCorrectTrack] = React.useState<SpotifyApi.TrackObjectFull>();
 
   async function getTracks() { //get tracks -- pulled from swiper.tsx - pulls 4 tracks from API and puts them into the useState array
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then(
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( // This is a good start but will need to exclude seen songs before
       function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
       },
@@ -57,6 +58,7 @@ const GameScreen = () => {
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
     setTracks(trackIds);
+    setLoaded(true);
     return;
   }
 
@@ -68,14 +70,21 @@ const GameScreen = () => {
   }, []);
 
   React.useEffect(() => {
-    setCorrectTrack(tracks[0]);
-  }, [tracks]);
+    if(loaded && tracks) {
+      correctTrack = tracks[0];
+      console.log("PRE SHUFFLE: " + tracks);
+      correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index
+    
+      let temp = tracks[correctIndex]; //Swap tracks
+      tracks[correctIndex] = tracks[0]; //Correct track starts at the beginning of the array
+      tracks[0] = temp;
+      
+      console.log("POST SHUFFLE: " + tracks);
+      console.log("correct index: " + correctIndex);
+      console.log("correct track: "); //come back 
+    }
+  }, [loaded]);
   
-
-  console.log("PRE SHUFFLE: " + tracks);
-  //shuffle the array
-  console.log("POST SHUFFLE: " + tracks);
-
   //functions to handle the press of buttons 1 - 4
   function handleChoice1() {
     if(correctTrack == tracks[0]){
@@ -129,7 +138,7 @@ const GameScreen = () => {
             showsHorizontalScrollIndicator={false}
             scrollEnabled={false}
           >
-            <Text className='text-white text-3xl font-bold'>{/*correctTrack.name*/}Track Name</Text>
+            <Text className='text-white text-3xl font-bold'>{correctTrack?.name}</Text>
           </ScrollView>
         </View>
         {/* Artist Name */}
