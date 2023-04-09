@@ -10,11 +10,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { push, ref, set, child, get } from 'firebase/database';
+import useGameContext from '@/common/hooks/gameContext';
 
 const GameScreen = () => {
 
   const navigation = useNavigation();
-  
+  const { round, score, earnings } = useGameContext();
+
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
@@ -24,7 +26,7 @@ const GameScreen = () => {
   return (
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <View className='flex-1 items-center relative'>
-        <Text className='text-white text-4xl text-center px-1 my-16 font-bold'>Round 1{/*Round Variable*/}</Text>
+        <Text className='text-white text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
       </View>
 
       <View className='flex-1 justify-center absolute top-32'>
