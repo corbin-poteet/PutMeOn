@@ -12,8 +12,6 @@ import { Audio } from 'expo-av';
 
 //DUETO List of stuff left to do on this page (delete as you finish them)
   //Create 3 different render screens for the 3 different question types
-  //Shuffle the array to prevent question 1 from being correct every time
-  //Put the shuffled array tracks into the four buttons
   //Play the audio of correct track
   //Find a way to make the page load a sec before displaying the album art, artist, and name. The info is undefined on render until the API call is made, so it crashes the app rn
 
@@ -74,25 +72,31 @@ const GameScreen = () => {
       correctTrack = tracks[0];
       console.log("PRE SHUFFLE: " + tracks);
       correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index
+
+      let trackStack = tracks;
     
-      let temp = tracks[correctIndex]; //Swap tracks
-      tracks[correctIndex] = tracks[0]; //Correct track starts at the beginning of the array
-      tracks[0] = temp;
+      let temp = trackStack[correctIndex]; //Swap tracks
+      trackStack[correctIndex] = trackStack[0]; //Correct track starts at the beginning of the array
+      trackStack[0] = temp;
+
+      setTracks(trackStack);
       
       console.log("POST SHUFFLE: " + tracks);
       console.log("correct index: " + correctIndex);
-      console.log("correct track: "); //come back 
+      console.log("correct track: " + correctTrack);
     }
-  }, [loaded]);
+  }, [loaded, tracks]);
   
   //functions to handle the press of buttons 1 - 4
   function handleChoice1() {
+    console.log(tracks[0]);
     if(correctTrack == tracks[0]){
       setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
     else console.log("WRONGCHOICE");
+    navigation.navigate('Score');
   };
   function handleChoice2() {
     if(correctTrack == tracks[1]){
@@ -101,6 +105,7 @@ const GameScreen = () => {
       console.log("CORRECTCHOICE");
     }
     else console.log("WRONGCHOICE");
+    navigation.navigate('Score');
   };
   function handleChoice3() {
     if(correctTrack == tracks[2]){
@@ -109,6 +114,7 @@ const GameScreen = () => {
       console.log("CORRECTCHOICE");
     }
     else console.log("WRONGCHOICE");
+    navigation.navigate('Score');
   };
   function handleChoice4() {
     if(correctTrack == tracks[3]){
@@ -117,6 +123,7 @@ const GameScreen = () => {
       console.log("CORRECTCHOICE");
     }
     else console.log("WRONGCHOICE");
+    navigation.navigate('Score');
   };
   
 
