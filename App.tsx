@@ -1,18 +1,24 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import { AuthProvider } from "@hooks/useAuth";
 import { GameProvider } from "@hooks/gameContext";
-import StackNavigator from "@components/StackNavigator";
 import gameContext from "@hooks/gameContext";
+import StackNavigator from "@components/StackNavigator";
 import "./styles";
 
-export default function App() {
+
+export default function App({children}) {
+
+  const [round, setRound] = useState(0);
+  const [score, setScore] = useState(0);
+  const [earnings, setEarnings] = useState(0);
+
   return (
     <AuthProvider>
-      <GameProvider>
+      <gameContext.Provider value = {{round, setRound, score, setScore, earnings, setEarnings}}>
         <StackNavigator />
         <StatusBar style="auto" />
-      </GameProvider>
+      </gameContext.Provider>
     </AuthProvider>
   );
 }

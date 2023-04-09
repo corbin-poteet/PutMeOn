@@ -1,14 +1,13 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import useGameContext from '@/common/hooks/gameContext';
-import { useContext } from 'react';
+import gameContext from '@/common/hooks/gameContext';
 
 const RoundScreen = () => {
     
     const navigation = useNavigation();
-    const { round } = useGameContext();
+    const { round } = useContext(gameContext);
     
     setTimeout( () => {
       navigation.navigate('Game');

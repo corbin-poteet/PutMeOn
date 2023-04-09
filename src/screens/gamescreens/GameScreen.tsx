@@ -1,21 +1,18 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, Animated, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity, Image, ScrollView, Animated } from 'react-native'
+import React, { useContext } from 'react'
+import gameContext from '@/common/hooks/gameContext';
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { fromJSON } from 'postcss';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { push, ref, set, child, get } from 'firebase/database';
-import useGameContext from '@/common/hooks/gameContext';
 
 const GameScreen = () => {
 
   const navigation = useNavigation();
-  const { round, score, earnings } = useGameContext();
+  const { round, setRound } = useContext(gameContext);
 
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
@@ -72,7 +69,7 @@ const GameScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-          onPress={() => { /*Navigate based on correct, etc.*/ }}>
+          onPress={() => { setRound(70); console.log("AHHHHHHH"); }}>
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Multiple Decks{}</Text>
         </TouchableOpacity>
 
