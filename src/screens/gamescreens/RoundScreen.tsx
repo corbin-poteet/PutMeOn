@@ -16,10 +16,12 @@ const RoundScreen = () => {
       });
     }, [navigation]);
     
-    setTimeout( () => {
-      navigation.navigate('Game');
-    }, 5000 );
-
+    React.useEffect(() => {
+      setInterval( () => {
+        navigation.navigate('Game');
+      }, 5000 );
+    }, []);
+  
     return (
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
         <View className='flex-1 justify-center'>

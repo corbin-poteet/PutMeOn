@@ -15,7 +15,8 @@ import useGameContext from '@/common/hooks/gameContext';
 const GameScreen = () => {
 
   const navigation = useNavigation();
-  
+  const { round, score, earnings } = useGameContext();
+
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
@@ -66,7 +67,7 @@ const GameScreen = () => {
         <Text className='p-2 text-white text-3xl font-bold'>What is the _ of this _?{/*Question details here*/}</Text>
         
         <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-          onPress={() => { /*Navigate based on correct, etc.*/ }}>
+          onPress={() => { navigation.navigate('Score') }}>
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Multiple Decks{}</Text>
         </TouchableOpacity>
 
