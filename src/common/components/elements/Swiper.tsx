@@ -133,80 +133,79 @@ const Swiper = (props: Props) => {
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 15,
+      limit: 20,
     });
-
-    //trackIds is an array of the track IDs of the recommendations
-    const trackIds = recResponse.tracks.map((track: any) => track.id);
-    //Update trackStack
-    trackStack = recResponse.tracks.map((track: any) => track);
-
-    setTracks(trackStack);
-    setDeckCounter(trackStack.length);
-    return;
-
-    await spotify.containsMySavedTracks(trackIds).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("PROMISE RETURNED" + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
-
-            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-            console.log("Updated length: " + recResponse.tracks.length);
-          }
-        });
-
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-
-    //remove tracks with no preview url
-    recResponse.tracks.forEach(element => {
-      if (element.preview_url === null) {
-        console.log("Null preview detected, Removing from tracks: " + element.name);
-        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-      }
-    });
-
-    //remove song if detected as swiped from database, currently splice is not working
-    const dbRef = ref(database);
-    const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
-    dbTrackIds.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
-
-          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
-        } else {
-          console.log("Swiped song not found");
-        }
-      }).catch((error) => {
-        console.log("Query Failed, error; " + error)
-      });
-
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
-          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
-        } else {
-          console.log("Swiped song not found");
-        }
-      }).catch((error) => {
-        console.log("Query Failed, error; " + error)
-      });
-
-    })
 
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
+    //Cleaning time
+    cleanTracks(trackStack);
 
     setTracks(trackStack);
     setDeckCounter(trackStack.length);
+
+    // await spotify.containsMySavedTracks(trackIds).then(
+    //   // after promise returns of containsMySavedTracks
+    //   function (isSavedArr: any[]) {
+    //     console.log("PROMISE RETURNED" + isSavedArr);
+    //     isSavedArr.forEach((element) => {
+    //       console.log(element);
+    //       if (element === true) {
+    //         console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
+
+    //         recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+    //         console.log("Updated length: " + recResponse.tracks.length);
+    //       }
+    //     });
+
+    //   }
+    // ).catch((err) => {
+    //   console.log(err);
+    // });
+
+    // //remove tracks with no preview url
+    // recResponse.tracks.forEach(element => {
+    //   if (element.preview_url === null) {
+    //     console.log("Null preview detected, Removing from tracks: " + element.name);
+    //     recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+    //   }
+    // });
+
+    // //remove song if detected as swiped from database, currently splice is not working
+    // const dbRef = ref(database);
+    // const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
+    // dbTrackIds.forEach((trackId: string) => {
+    //   get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //       console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+
+    //       recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+    //     } else {
+    //       console.log("Swiped song not found");
+    //     }
+    //   }).catch((error) => {
+    //     console.log("Query Failed, error; " + error)
+    //   });
+
+    //   get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //       console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
+    //       recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+    //     } else {
+    //       console.log("Swiped song not found");
+    //     }
+    //   }).catch((error) => {
+    //     console.log("Query Failed, error; " + error)
+    //   });
+
+    // })
+
+    // //Update trackStack
+    // trackStack = recResponse.tracks.map((track: any) => track);
+
+    // setTracks(trackStack);
+    // setDeckCounter(trackStack.length);
   }
 
   // Same as getTracks, but takes in seed parameters
@@ -283,7 +282,7 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
-  async function cleanTracks(tracks: SpotifyApi.TrackObjectSimplified[]){
+  async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]){
     const trackIds = tracks.map((track: any) => track.id);
 
     //Removes tracks that are already in the user's library
@@ -345,6 +344,9 @@ const Swiper = (props: Props) => {
         console.log("Query Failed, error; " + error)
       });
     })
+
+    console.log("Tracks length: " + tracks.length);
+    return tracks;
 
   }
 
