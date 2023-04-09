@@ -7,7 +7,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import database from "../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { push, ref, set, child, get } from 'firebase/database';
 import Scrubber from 'react-native-scrubber';
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
 import { selectedPlaylist } from '@screens/PlaylistScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -52,7 +52,7 @@ const Swiper = (props: Props) => {
     }) as string[];
 
 
-    
+
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: seedArtists,
@@ -63,7 +63,7 @@ const Swiper = (props: Props) => {
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
-    
+
 
     await spotify.containsMySavedTracks(trackIds).then(
       // after promise returns of containsMySavedTracks
@@ -79,15 +79,15 @@ const Swiper = (props: Props) => {
             console.log("Updated length: " + recResponse.tracks.length);
           }
         });
-          
-        }
+
+      }
     ).catch((err) => {
       console.log(err);
     });
 
     //remove tracks with no preview url
     recResponse.tracks.forEach(element => {
-      if(element.preview_url === null){
+      if (element.preview_url === null) {
         console.log("Null preview detected, Removing from tracks: " + element.name);
         recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
       }
@@ -97,12 +97,21 @@ const Swiper = (props: Props) => {
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
 
-    
+
 
     setTracks(trackStack);
     //setDeckCounter(trackStack.length);
   }
-  
+
+  async function addTrack(newTrack: SpotifyApi.TrackObjectFull | undefined) {
+    if (newTrack === undefined) {
+      return;
+    }
+
+    const newTracksArray = tracks.concat(newTrack);
+    setTracks(newTracksArray);
+  }
+
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
   async function getTracks() {
 
@@ -119,17 +128,23 @@ const Swiper = (props: Props) => {
     }) as string[];
 
 
-    
+
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 20,
+      limit: 5,
     });
 
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
 
-    
+
+
+    setTracks(trackStack);
+    setDeckCounter(trackStack.length);
+    return;
 
     await spotify.containsMySavedTracks(trackIds).then(
       // after promise returns of containsMySavedTracks
@@ -145,15 +160,15 @@ const Swiper = (props: Props) => {
             console.log("Updated length: " + recResponse.tracks.length);
           }
         });
-          
-        }
+
+      }
     ).catch((err) => {
       console.log(err);
     });
 
     //remove tracks with no preview url
     recResponse.tracks.forEach(element => {
-      if(element.preview_url === null){
+      if (element.preview_url === null) {
         console.log("Null preview detected, Removing from tracks: " + element.name);
         recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
       }
@@ -163,44 +178,44 @@ const Swiper = (props: Props) => {
     const dbRef = ref(database);
     const dbTrackIds = recResponse.tracks.map((track: any) => track.id);
     dbTrackIds.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot)=>{
-        if(snapshot.exists()) {
-            console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
 
-            recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
+          recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
         } else {
-            console.log("Swiped song not found");
+          console.log("Swiped song not found");
         }
       }).catch((error) => {
         console.log("Query Failed, error; " + error)
       });
 
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot)=>{
-        if(snapshot.exists()) {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
+        if (snapshot.exists()) {
           console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
           recResponse.tracks.splice(dbTrackIds.indexOf(trackId), 1);
-      } else {
+        } else {
           console.log("Swiped song not found");
-      }
+        }
       }).catch((error) => {
-          console.log("Query Failed, error; " + error)
+        console.log("Query Failed, error; " + error)
       });
 
     })
-    
 
-    
+
+
 
 
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
 
-    
+
 
     setTracks(trackStack);
     setDeckCounter(trackStack.length);
   }
-// **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
+  // **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
   // async function updateTracks() {
   //   let trackStack = tracks;
 
@@ -220,7 +235,7 @@ const Swiper = (props: Props) => {
   //   const recResponse = await spotify.getRecommendations({
   //     seed_artists: topArtistsIds,
   //     limit: 30,
-      
+
   //   });
 
   //   //Do To: try putting recs in new array and then concat with trackStack
@@ -250,7 +265,7 @@ const Swiper = (props: Props) => {
   //           console.log("Updated length: " + recResponse.tracks.length);
   //         }
   //       });
-        
+
   //     }
   //   ).catch((err) => {
   // //console.log(err);
@@ -264,7 +279,7 @@ const Swiper = (props: Props) => {
   //       setTracks(trackStack);
   //       //setDeckCounter(trackStack.length);
   // }
-// **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
+  // **********************************************************************************UPDATE TRACKS FUNCTION****************************************************************
 
 
   // async function getRecentlyPlayedTracks() {
@@ -277,7 +292,7 @@ const Swiper = (props: Props) => {
   async function needsToBeRemoved(tracks: any[]) {
     const trackIds = tracks.map((track: any) => track.id);
     const response = await spotify.containsMySavedTracks(trackIds);
-    
+
   }
 
 
@@ -322,7 +337,7 @@ const Swiper = (props: Props) => {
         <ActivityIndicator size="large" color="#014871" />
       </View>
     )
-  } 
+  }
 
   const b = false;
   //const [sound, setSound] = React.useState<any>();
@@ -388,7 +403,7 @@ const Swiper = (props: Props) => {
     if (sound == null) {
       return;
     }
-    
+
     setPlaybackPosition(position);
     await sound.setPositionAsync(position);
   }
@@ -405,7 +420,7 @@ const Swiper = (props: Props) => {
     }
   }
 
-  
+
 
   return (
 
@@ -447,7 +462,7 @@ const Swiper = (props: Props) => {
                 </View>
                 {track?.preview_url ?
                   <View>
-                <View className='flex-row'>
+                    <View className='flex-row'>
                       <Scrubber
                         value={sound ? playbackPosition / 1000 : 0}
                         onSlidingComplete={(value: number) => {
@@ -464,8 +479,8 @@ const Swiper = (props: Props) => {
                         totalDuration={sound ? Math.ceil(playbackDuration / 1000) : 0}
                         trackColor='#29A3DA'
                         scrubbedColor='#29A3DA'
-                  />
-                </View>
+                      />
+                    </View>
                     <View className='flex-row justify-center items-center w-full'>
                       <View className='flex-row justify-center items-center align-center'>
                         <TouchableOpacity className='rounded-full py-0' onPress={() => { togglePlayAudio(); }}>
@@ -480,79 +495,93 @@ const Swiper = (props: Props) => {
           </View>
         </LinearGradient >
       )
-    }} 
-
-    onSwiped={(index: number) => {
-      console.log("SWIPED")
-
-      setCardIndex(cardIndex + 1);
-      sound && sound.unloadAsync();
-      setPlaybackPosition(0);
-      loadAudio(tracks[cardIndex + 1]);
-
-      //log tracks.name for all tracks in the array
-      for (let i = 0; i < tracks.length; i++) {
-        console.log("TRACK NAME: " + tracks[i].name)
-        }
     }}
-    
-    onSwipedLeft={ //Add disliked song to the disliked database
-      (index: number) => {
-        setDeckCounter(deckCounter - 1);
-        //remove swiped song from the tracks array
-        // if(index > 1){
-        //   tracks.splice(index-1, 1);
-        // }
-        //console.log("Tracks length: " + tracks.length)
-        //console.log("Deck counter: " + deckCounter)
-        if (deckCounter === 1 && needsReload === false) {
-          setReload(true);
-        }
 
-        console.log("NOPE: " + tracks[index].name)
-        set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
-          trackID: tracks[index].id, 
-          trackName: tracks[index].name,
-        })
+      onSwiped={(index: number) => {
+        console.log("SWIPED")
 
-        
-      } 
-    } 
-    
-    onSwipedRight={ //Add liked songs to the liked database
-      (index: number) => {
-        setDeckCounter(deckCounter - 1);
-        //remove swiped song from the tracks array
-        // if(index > 1){
-        //   tracks.splice(index-1, 1);
-        // }
+        setCardIndex(cardIndex + 1);
+        sound && sound.unloadAsync();
+        setPlaybackPosition(0);
+        loadAudio(tracks[cardIndex + 1]);
 
-        //console.log("Tracks length: " + tracks.length)
-        //console.log("Deck counter: " + deckCounter)
-
-        if (deckCounter === 1 && needsReload === false) {
-          setReload(true);
-        }
-
-        console.log("LIKE: " + tracks[index].name)
-        set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
-          trackID: tracks[index].id, 
-          trackName: tracks[index].name,
-        })
-        //console.log("Playlist to add to: " + selectedPlaylist)
-        const likedTrack: string[] = []
-        likedTrack.push(tracks[index].uri)
-        addToPlaylist(likedTrack)
-
-        //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
-        //================================================
-        
-        //================================================
-
-        // Query Firebase Test
-        
-          // const dbRef = ref(database);
+        spotify.getTrack("6SpLc7EXZIPpy0sVko0aoU").then((data) => {
+          var newTrack = data as SpotifyApi.TrackObjectFull;
+          console.log("Track name: " + newTrack.name)
           
+          addTrack(newTrack);
+          addTrack(newTrack);
+          addTrack(newTrack);
+          addTrack(newTrack);
+          addTrack(newTrack);
+
+
+        })
+
+
+        // //log tracks.name for all tracks in the array
+        // for (let i = 0; i < tracks.length; i++) {
+        //   console.log("TRACK NAME: " + tracks[i].name)
+        //   }
+      }}
+
+      onSwipedLeft={ //Add disliked song to the disliked database
+        (index: number) => {
+          setDeckCounter(deckCounter - 1);
+          //remove swiped song from the tracks array
+          // if(index > 1){
+          //   tracks.splice(index-1, 1);
+          // }
+          //console.log("Tracks length: " + tracks.length)
+          //console.log("Deck counter: " + deckCounter)
+          if (deckCounter === 1 && needsReload === false) {
+            //setReload(true);
+          }
+
+          console.log("NOPE: " + tracks[index].name)
+          set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
+            trackID: tracks[index].id,
+            trackName: tracks[index].name,
+          })
+
+
+        }
+      }
+
+      onSwipedRight={ //Add liked songs to the liked database
+        (index: number) => {
+          setDeckCounter(deckCounter - 1);
+          //remove swiped song from the tracks array
+          // if(index > 1){
+          //   tracks.splice(index-1, 1);
+          // }
+
+          //console.log("Tracks length: " + tracks.length)
+          //console.log("Deck counter: " + deckCounter)
+
+          if (deckCounter === 1 && needsReload === false) {
+            //setReload(true);
+          }
+
+          console.log("LIKE: " + tracks[index].name)
+          set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
+            trackID: tracks[index].id,
+            trackName: tracks[index].name,
+          })
+          //console.log("Playlist to add to: " + selectedPlaylist)
+          const likedTrack: string[] = []
+          likedTrack.push(tracks[index].uri)
+          addToPlaylist(likedTrack)
+
+          //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
+          //================================================
+
+          //================================================
+
+          // Query Firebase Test
+
+          // const dbRef = ref(database);
+
           // get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/0pa7VuLNtAOxFZPAMSZsZs/")).then((snapshot)=>{
           //   if(snapshot.exists()) {
           //       let temp = snapshot.val().trackName;
@@ -566,8 +595,8 @@ const Swiper = (props: Props) => {
           //   console.log("Query Failed, error; " + error)
           // });
 
+        }
       }
-    }
 
 
     />
