@@ -122,7 +122,7 @@ const HomeScreen = () => {
       <View className='items-center relative'>
         <TouchableOpacity className='absolute left-5 top-3' onPress={
           () => {
-            navigation.navigate('UserDetails')
+            navigation.navigate('Settings')
           }
         }>
           {
