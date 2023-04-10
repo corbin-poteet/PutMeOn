@@ -10,6 +10,13 @@ const RoundScreen = () => {
     
     const navigation = useNavigation();
     const { round } = useContext(gameContext);
+
+    React.useLayoutEffect(() => {
+      navigation.setOptions({
+        gestureEnabled: false, //can be set to false to disable swipe out of page
+        gestureDirection: 'horizontal',
+      });
+    }, [navigation]);
     
     setTimeout( () => {
       navigation.navigate('Game');

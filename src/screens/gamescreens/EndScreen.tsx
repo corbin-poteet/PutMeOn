@@ -14,7 +14,7 @@ const EndScreen = () => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      gestureEnabled: true, //can be set to false to disable swipe out of page
+      gestureEnabled: false, //can be set to false to disable swipe out of page
       gestureDirection: 'horizontal',
     });
   }, [navigation]);

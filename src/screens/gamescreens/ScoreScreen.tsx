@@ -11,7 +11,7 @@ const ScoreScreen = () => {
 
     React.useLayoutEffect(() => {
       navigation.setOptions({
-        gestureEnabled: true, //will be set to false to disable swipe out of page
+        gestureEnabled: false, //will be set to false to disable swipe out of page
         gestureDirection: 'horizontal',
       });
     }, [navigation]);

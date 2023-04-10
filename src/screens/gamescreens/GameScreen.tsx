@@ -27,6 +27,13 @@ const GameScreen = () => {
   const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify } = useAuth();
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false, //can be set to false to disable swipe out of page
+      gestureDirection: 'horizontal',
+    });
+  }, [navigation]);
+
   //sound states
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
