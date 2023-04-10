@@ -12,10 +12,8 @@ import { useIsFocused } from '@react-navigation/native'
 
 
 //DUETO List of stuff left to do on this page (delete as you finish them)
-//Create 3 different render screens for the 3 different question types
 //Play the audio of correct track
-//Find a way to make the page load a sec before displaying the album art, artist, and name. The info is undefined on render until the API call is made, so it crashes the app rn
-
+//Fix issue where if you get the question wrong, the button choices are the same next round
 
 var questionTypes: string[] = ['artist name', 'album name', 'name']; //lmao classic instance variable moment
 let correctIndex: number;
