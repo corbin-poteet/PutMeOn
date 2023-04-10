@@ -22,7 +22,7 @@ let correctTrack: SpotifyApi.TrackObjectFull;
 const GameScreen = () => {
 
   const isFocused = useIsFocused() //Checks if screen is being looked at
-
+  const [fadeAnim] = React.useState(new Animated.Value(0))
   const navigation = useNavigation();
   const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify } = useAuth();
@@ -67,6 +67,13 @@ const GameScreen = () => {
     if(isFocused == true) {
       console.log("GETTING TRACKS")
       getTracks();
+      Animated.timing(fadeAnim, { //Establish Animation
+        toValue: 1,
+        duration: 750,
+        delay: 1000,
+        useNativeDriver: true
+      }).start();
+
     }    
   }, [isFocused]);
 
@@ -97,13 +104,13 @@ const GameScreen = () => {
     if (correctTrack == tracks[index]) {
       setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
-      setLoaded(false);
       console.log("CORRECTCHOICE");
     }
     else {
       console.log("WRONGCHOICE");
       setEarnings(0);
     }
+    setLoaded(false);
     navigation.navigate('Score');
   };
 
@@ -125,11 +132,11 @@ const GameScreen = () => {
         <Text className='text-white text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
       </View>
       {!(loaded) ?
-        <View style={{ flex: 1, marginTop: 300 }}>
+        <View className='flex-1 justify-center'>
           <ActivityIndicator size="large" color="#014871" />
         </View>
         :
-        <View className='flex-1 justify-center absolute top-32 px-2'>
+        <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center absolute top-32 px-2' >
           <View className='flex-1 justify-center'>
             {/*track Image*/}
             <View className='flex-1 items-center p-2'>
@@ -187,7 +194,7 @@ const GameScreen = () => {
               <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(3)}</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       }
     </LinearGradient>
   );
