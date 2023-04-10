@@ -26,7 +26,7 @@ const GameScreen = () => {
   const isFocused = useIsFocused() //Checks if screen is being looked at
 
   const navigation = useNavigation();
-  const { round, setRound, score, setScore, setEarnings } = useContext(gameContext);
+  const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify } = useAuth();
 
   //sound states
@@ -93,59 +93,31 @@ const GameScreen = () => {
     }
   }, [tracks]);
 
-  //functions to handle the press of buttons 1 - 4
-  function handleChoice1() {
-    console.log(tracks[0]);
-    if (correctTrack == tracks[0]) {
+  //function to handle the press of buttons 1 - 4
+  function handleChoice(index: number) {
+    console.log(tracks[index]);
+    if (correctTrack == tracks[index]) {
       setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
       setLoaded(false);
       console.log("CORRECTCHOICE");
     }
-    else console.log("WRONGCHOICE");
-    navigation.navigate('Score');
-  };
-  function handleChoice2() {
-    if (correctTrack == tracks[1]) {
-      setScore(score + 10);
-      setEarnings(10);
-      setLoaded(false);
-      console.log("CORRECTCHOICE");
+    else {
+      console.log("WRONGCHOICE");
+      setEarnings(0);
     }
-    else console.log("WRONGCHOICE");
-    navigation.navigate('Score');
-  };
-  function handleChoice3() {
-    if (correctTrack == tracks[2]) {
-      setScore(score + 10);
-      setEarnings(10);
-      setLoaded(false);
-      console.log("CORRECTCHOICE");
-    }
-    else console.log("WRONGCHOICE");
-    navigation.navigate('Score');
-  };
-  function handleChoice4() {
-    if (correctTrack == tracks[3]) {
-      setScore(score + 10);
-      setEarnings(10);
-      setLoaded(false);
-      console.log("CORRECTCHOICE");
-    }
-    else console.log("WRONGCHOICE");
-    setLoaded(false);
     navigation.navigate('Score');
   };
 
   function buttonContent(buttonNum: number) {
     if(questionType = "name"){
-      return "";
+      return tracks[buttonNum].name;
     }
     else if (questionType = "artist name"){
-      return "";
+      return correctTrack?.artists?.map((artist: any) => artist?.name).join(', ');
     }
     else if (questionType = "album name"){
-      return "";
+      return correctTrack?.album?.name;
     }
   }
 
@@ -198,23 +170,23 @@ const GameScreen = () => {
 
             {/*Button choices*/}
             <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-              onPress={() => { handleChoice1(); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{tracks[0]?.name}</Text>
+              onPress={() => { handleChoice(0); }}>
+              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(0)}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-              onPress={() => { handleChoice2(); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{tracks[1]?.name}</Text>
+              onPress={() => { handleChoice(1); }}>
+              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(1)}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-              onPress={() => { handleChoice3(); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{tracks[2]?.name}</Text>
+              onPress={() => { handleChoice(2); }}>
+              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(2)}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
-              onPress={() => { handleChoice4(); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{tracks[3]?.name}</Text>
+              onPress={() => { handleChoice(3); }}>
+              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(3)}</Text>
             </TouchableOpacity>
           </View>
         </View>
