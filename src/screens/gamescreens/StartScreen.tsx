@@ -1,11 +1,7 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, Animated } from 'react-native'
 import React from 'react'
-import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { fromJSON } from 'postcss';
 
 const StartScreen = () => { //Game Welcome Screen
 
