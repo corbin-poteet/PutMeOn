@@ -122,7 +122,7 @@ const HomeScreen = () => {
       <View className='items-center relative'>
         <TouchableOpacity className='absolute left-5 top-3' onPress={
           () => {
-            navigation.navigate('UserDetails')
+            navigation.navigate('UserInfo')
           }
         }>
           {
@@ -149,7 +149,7 @@ const HomeScreen = () => {
 
       {/* Body */}
       <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-4 pt-1 pb-2' style={{ aspectRatio: 10 / 16 }}>
+        <View className='h-full px-8 pt-1 pb-4' style={{ aspectRatio: 10 / 16 }}>
           <Swiper tracks={tracks} />
         </View>
       </View>
