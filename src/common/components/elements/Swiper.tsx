@@ -135,6 +135,15 @@ const Swiper = (props: Props) => {
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
       limit: 20,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
     });
 
     //Update trackStack
@@ -170,7 +179,17 @@ const Swiper = (props: Props) => {
       seed_artists: seedArtists,
       seed_genres: seedGenres,
       limit: 20,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
     });
+    
 
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
@@ -198,7 +217,7 @@ const Swiper = (props: Props) => {
     });
 
     //remove tracks with no preview url
-    recResponse.tracks.forEach(element => {
+    recResponse.tracks.forEach((element: { preview_url: null; name: string; }) => {
       if (element.preview_url === null) {
         console.log("Null preview detected, Removing from tracks: " + element.name);
         recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
