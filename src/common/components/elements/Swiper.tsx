@@ -59,6 +59,7 @@ const Swiper = (props: Props) => {
 
     let isValid: boolean = false;
 
+    //Keeps pulling a new track until the track is valid (new and has a preview url)
     while (isValid === false){
       const recResponse = await spotify.getRecommendations({
         seed_artists: topArtistsIds,
