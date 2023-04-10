@@ -41,9 +41,9 @@ const Swiper = (props: Props) => {
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
-    /****************************** FUNCTION DECLARATIONS *********************************/
+  /****************************** FUNCTION DECLARATIONS *********************************/
 
-  
+
 
   async function addTrack() {
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
@@ -60,7 +60,7 @@ const Swiper = (props: Props) => {
     let isValid: boolean = false;
 
     //Keeps pulling a new track until the track is valid (new and has a preview url)
-    while (isValid === false){
+    while (isValid === false) {
       const recResponse = await spotify.getRecommendations({
         seed_artists: topArtistsIds,
         limit: 1,
@@ -111,10 +111,10 @@ const Swiper = (props: Props) => {
       setTracks(newTracksArray);
       isValid = true;
       break;
-      
+
     }
-    
-    
+
+
   }
 
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
@@ -145,7 +145,7 @@ const Swiper = (props: Props) => {
     setTracks(trackStack);
     setDeckCounter(trackStack.length);
 
-    
+
   }
 
   // Same as getTracks, but takes in seed parameters
@@ -222,7 +222,7 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
-  async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]){
+  async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]) {
     const trackIds = tracks.map((track: any) => track.id);
 
     //Removes tracks that are already in the user's library
@@ -377,7 +377,7 @@ const Swiper = (props: Props) => {
   }
 
 
-/******************** USE EFFECTS ***********************/
+  /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
     //previously known as getTracks
     getTracks();
@@ -405,13 +405,17 @@ const Swiper = (props: Props) => {
     )
   }
 
-  
 
-// ***************************************** CARD RENDERING ********************************
+
+  // ***************************************** CARD RENDERING ********************************
   return (
 
-    <CardsSwipe cards={tracks} renderCard={(track: SpotifyApi.TrackObjectFull) => {
+    <CardsSwipe 
+      cards={tracks} 
 
+      rotationAngle={30}
+
+      renderCard={(track: SpotifyApi.TrackObjectFull) => {
       return (
         <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67, 1]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl"  >
           <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
@@ -539,9 +543,55 @@ const Swiper = (props: Props) => {
         }
       }
 
+      renderYep={() => (
+        <View style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginLeft: 30,
+          marginTop: 20,
+          borderColor: 'lightgreen',
+          transform: [{ rotateZ: '-22deg' }],
+        }}>
+          <Text style={{
+            fontSize: 32,
+            color: 'lightgreen',
+            fontWeight: 'bold',
+          }}>YEP</Text>
+        </View>
+      )}
+
+      renderNope={() => (
+        <View style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginRight: 30,
+          marginTop: 25,
+          borderColor: 'red',
+          transform: [{ rotateZ: '22deg' }],
+        }}>
+          <Text style={{
+            fontSize: 32,
+            color: 'red',
+            fontWeight: 'bold',
+          }}>NOPE</Text>
+        </View>
+      )}
+
+      renderNoMoreCard={() => (
+        <View className='flex-1 justify-center items-center'>
+          <Text className='text-white text-5xl font-bold'>Fuck.</Text>
+        </View>
+      )}
+
 
     />
   )
+
+
 }
 
+
 export default Swiper
+
