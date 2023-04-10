@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }) => {
         setUser(user);
       });
     } else {
-      setUser({});
+      setUser("");
     }
   }
 
@@ -154,6 +154,7 @@ export const AuthProvider = ({ children }) => {
    */
   function clearAccessToken() {
     setAccessToken("");
+    AsyncStorage.removeItem('token');
   }
 
   /**
@@ -162,6 +163,8 @@ export const AuthProvider = ({ children }) => {
    */
   function logout() {
     clearAccessToken();
+    setUser("");
+
   }
 
   return (

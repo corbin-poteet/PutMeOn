@@ -106,6 +106,7 @@ const HomeScreen = () => {
     }
   }, [user]);
 
+  // TODO: Change this to check the database to see if the user has swiped on any songs
   React.useEffect(() => { 
     if(!selectedPlaylist && loaded) {
       //navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
@@ -114,13 +115,14 @@ const HomeScreen = () => {
   }, [loaded]); //check for cached credentials so we know if this is first time load 
 
   return (
-    <SafeAreaView className='flex-1'>
+    <SafeAreaView className='flex-1' edges={['top']}>
       {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
+      {/* Header */}
       <View className='items-center relative'>
         <TouchableOpacity className='absolute left-5 top-3' onPress={
           () => {
-            navigation.navigate('Settings')
+            navigation.navigate('UserInfo')
           }
         }>
           {
@@ -144,8 +146,10 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Body */}
       <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-2 pt-1 pb-2' style={{ aspectRatio: 9 / 16 }}>
+        <View className='h-full px-8 pt-1 pb-4' style={{ aspectRatio: 10 / 16 }}>
           <Swiper tracks={tracks} />
         </View>
       </View>
