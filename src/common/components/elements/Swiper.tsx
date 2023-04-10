@@ -497,10 +497,10 @@ const Swiper = (props: Props) => {
 
       onSwipedLeft={ //Add disliked song to the disliked database
         (index: number) => {
-          setDeckCounter(deckCounter - 1);
-          if (deckCounter === 1 && needsReload === false) {
-            //setReload(true);
-          }
+          //setDeckCounter(deckCounter - 1);
+          // if (deckCounter === 1 && needsReload === false) {
+          //   //setReload(true);
+          // }
 
           console.log("NOPE: " + tracks[index].name)
           set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
@@ -514,10 +514,10 @@ const Swiper = (props: Props) => {
 
       onSwipedRight={ //Add liked songs to the liked database
         (index: number) => {
-          setDeckCounter(deckCounter - 1);
-          if (deckCounter === 1 && needsReload === false) {
-            //setReload(true);
-          }
+          // setDeckCounter(deckCounter - 1);
+          // if (deckCounter === 1 && needsReload === false) {
+          //   //setReload(true);
+          // }
 
           console.log("LIKE: " + tracks[index].name)
           set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
