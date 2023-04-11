@@ -6,33 +6,33 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 const UserDetails = () => { //Display User information
-    
-    const navigation = useNavigation();
-    const { user, logout } = useAuth();
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-          headerShown: true,
-          headerTitle: 'User Information',         
-        });
-      }, [navigation]);
+  const navigation = useNavigation();
+  const { user, logout } = useAuth();
 
-    return (
-      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-        <View style={{ padding: 10 }}>
-          <Text style={{ fontSize: 30, color: 'white' }}>Account Name: {user?.display_name}</Text>
-          <Text style={{ fontSize: 30, color: 'white' }}>Country: {user?.country}</Text>
-          <Text style={{ fontSize: 30, color: 'white' }}>Email: {user?.email}</Text>
-          <Text style={{ fontSize: 30, color: 'white' }}>Subscription Type: {user?.product}</Text>
-        </View>
-        <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-        <TouchableOpacity style={{ backgroundColor: 'red', width: '60%', height: 50, alignItems: 'center', justifyContent: 'center', borderRadius: 10, marginBottom: 50 }} onPress={logout}>
-          <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>Logout</Text>
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'User Information',
+    });
+  }, [navigation]);
+
+  return (
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+      <View className='justify-center py-2'>
+        <Text className = 'p-2 font-bold' style={{ fontSize: 28, color: 'white' }}>Account Name: <Text className='font-normal'>{user?.display_name}</Text></Text>
+        <Text className = 'p-2 font-bold' style={{ fontSize: 28, color: 'white' }}>Country: <Text className='font-normal'>{user?.country}</Text></Text>
+        <Text className = 'p-2 font-bold' style={{ fontSize: 28, color: 'white' }}>Email: <Text className='font-normal'>{user?.email}</Text></Text>
+        <Text className = 'p-2 font-bold' style={{ fontSize: 28, color: 'white' }}>Subscription Type: <Text className='font-normal'>{(user?.product)=='premium'?'Premium' : 'Free'}</Text></Text>
+      </View>
+      <View className='flex-1 justify-center items-center'>
+        <TouchableOpacity className='flex-row bg-red-500 px-2 m-2 rounded-3xl absolute bottom-20' onPress={logout}>
+          <Text className='text-white text-xl px-8 py-2 text-1 font-semibold'>Logout</Text>
         </TouchableOpacity>
       </View>
-      </LinearGradient>
-    );
+    </LinearGradient>
+  );
 }
-  
+
 
 export default UserDetails
