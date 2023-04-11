@@ -33,10 +33,13 @@ const SettingsScreen = () => {
             <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', marginBottom: 5, marginTop: 5 }}>Account</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={
+          () => {
+            navigation.navigate('GameSettings')
+          }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
             <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="game-controller" size={35} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Game Settings</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Match-Up Settings</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={

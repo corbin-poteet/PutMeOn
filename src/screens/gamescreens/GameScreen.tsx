@@ -71,29 +71,6 @@ const GameScreen = () => {
 
   var questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]; //randomize question type for the round (instance varibale Xdddd)
 
-
-  async function loadAudio(track: SpotifyApi.TrackObjectFull) {
-    if (track == null) {
-      return;
-    }
-
-    if (track.preview_url == null) {
-      return;
-    }
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: track.preview_url },
-      { shouldPlay: true }
-    );
-
-    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
-    sound.setProgressUpdateIntervalAsync(25);
-    setSound(sound);
-
-    await sound.playAsync();
-    setIsPlaying(true);
-  }
-
   //useEffect to get tracks once on load and set the correct track
   React.useEffect(() => {
     if(isFocused == true) {
@@ -168,7 +145,7 @@ const GameScreen = () => {
           <ActivityIndicator size="large" color="#014871" />
         </View>
         :
-        <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center absolute top-32 px-2' >
+        <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center items-center absolute top-32 mx-2' >
           <View className='flex-1 justify-center'>
             {/*track Image*/}
             <View className='flex-1 items-center p-2'>
@@ -220,7 +197,7 @@ const GameScreen = () => {
             <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} for this track?</Text>
 
             {/*Button choices*/}
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className="flex-row items-center justify-center px-2 m-2 rounded-3xl" style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(0); }}>
               <TextTicker 
                 scrollSpeed={speed} 
@@ -232,7 +209,7 @@ const GameScreen = () => {
                 className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(0)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(1); }}>
               <TextTicker 
                 scrollSpeed={speed} 
@@ -244,7 +221,7 @@ const GameScreen = () => {
                 className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(1)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(2); }}>
               <TextTicker 
                 scrollSpeed={speed} 
@@ -256,7 +233,7 @@ const GameScreen = () => {
                 className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(2)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(3); }}>
               <TextTicker 
                 scrollSpeed={speed} 
