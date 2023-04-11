@@ -1,5 +1,5 @@
 /* IMPORT STATEMENTS */
-import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, Image, Slider, ScrollView, ActivityIndicator, Easing } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,7 +16,9 @@ import { Foundation } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { StretchInX } from 'react-native-reanimated';
+import TextTicker from 'react-native-text-ticker'
 
+let speed: number = 25;
 
 type Props = {
   tracks: SpotifyApi.TrackObjectFull[];
@@ -445,29 +447,42 @@ const Swiper = (props: Props) => {
               <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
                 {/* Track Name */}
                 <View className='flex-row items-end'>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    scrollEnabled={false}
-                  >
-                    <Text className='text-white text-5xl font-bold'>{track.name}</Text>
-                  </ScrollView>
+                <TextTicker 
+                  scrollSpeed={speed} 
+                  loop 
+                  numberOfLines={1} 
+                  animationType={'scroll'} 
+                  easing={Easing.linear} 
+                  repeatSpacer={25} 
+                  className='text-white text-5xl font-bold'>{track.name}
+                </TextTicker>
                 </View>
                 {/* Artist Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
                   <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{
-                      track.artists.map((artist: any) => artist.name).join(', ')
-                    }</Text>
+                  <TextTicker 
+                    scrollSpeed={speed} 
+                    loop 
+                    numberOfLines={1} 
+                    animationType={'scroll'} 
+                    easing={Easing.linear} 
+                    repeatSpacer={25} className='px-2 text-white text-xl'>{
+                    track.artists.map((artist: any) => artist.name).join(', ')
+                    }</TextTicker>
                   </Animated.ScrollView>
                 </View>
                 {/* Album Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{track.album.name}</Text>
-                  </ScrollView>
+                  <TextTicker 
+                    scrollSpeed={speed} 
+                    loop 
+                    numberOfLines={1} 
+                    animationType={'scroll'} 
+                    easing={Easing.linear} 
+                    repeatSpacer={25} className='px-2 text-white text-xl'>{track.album.name}
+                  </TextTicker>
                 </View>
                 {track?.preview_url ?
                   <View>

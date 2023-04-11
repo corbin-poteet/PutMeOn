@@ -71,6 +71,29 @@ const GameScreen = () => {
 
   var questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)]; //randomize question type for the round (instance varibale Xdddd)
 
+
+  async function loadAudio(track: SpotifyApi.TrackObjectFull) {
+    if (track == null) {
+      return;
+    }
+
+    if (track.preview_url == null) {
+      return;
+    }
+
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: track.preview_url },
+      { shouldPlay: true }
+    );
+
+    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate)
+    sound.setProgressUpdateIntervalAsync(25);
+    setSound(sound);
+
+    await sound.playAsync();
+    setIsPlaying(true);
+  }
+
   //useEffect to get tracks once on load and set the correct track
   React.useEffect(() => {
     if(isFocused == true) {
