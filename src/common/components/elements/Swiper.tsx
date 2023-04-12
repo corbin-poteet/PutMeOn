@@ -431,7 +431,7 @@ const Swiper = (props: Props) => {
     <CardsSwipe 
       cards={tracks} 
 
-      rotationAngle={30}
+      rotationAngle={15}
 
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
       return (
