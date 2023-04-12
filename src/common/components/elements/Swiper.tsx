@@ -38,6 +38,16 @@ const Swiper = (props: Props) => {
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
   const [isDefaultDeck, setIsDefaultDeck] = React.useState<boolean>(true);
+  const [currentDeck, setCurrentDeck] = React.useState<{
+    seedArtistIds: string[], 
+    seedGenres: string[], 
+    playlistId: string, 
+    deckName: string}>({
+      seedArtistIds: [],
+      seedGenres: [],
+      playlistId: "",
+      deckName: ""
+    });
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
