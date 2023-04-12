@@ -41,8 +41,8 @@ const Swiper = (props: Props) => {
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
   const [isDefaultDeck, setIsDefaultDeck] = React.useState<boolean>(true);
   const [currentDeck, setCurrentDeck] = React.useState<{
-    seedArtistIds: string[], 
-    seedGenres: string[], 
+    seedArtistIds?: string[], 
+    seedGenres?: string[], 
     playlistId: string, 
     deckName: string}>({
       seedArtistIds: [],
@@ -289,10 +289,10 @@ const Swiper = (props: Props) => {
     const dbRef = ref(database);
     const trackIds2 = tracks.map((track: any) => track.id);
     trackIds2.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/DislikedTracks/" + trackId)).then((snapshot) => {
+      get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId)).then((snapshot) => {
         if (snapshot.exists()) {
           tracks.splice(trackIds2.indexOf(trackId), 1);
-          console.log("SWIPED SONG DETECTED IN DislikedTracks DB, REMOVING: " + snapshot.val().trackName);
+          console.log("SWIPED SONG DETECTED IN DB, REMOVING: " + snapshot.val().trackName);
 
         } else {
           console.log("Swiped song not found");
@@ -302,19 +302,6 @@ const Swiper = (props: Props) => {
       });
     })
 
-    trackIds2.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/LikedTracks/" + trackId)).then((snapshot) => {
-        if (snapshot.exists()) {
-          tracks.splice(trackIds2.indexOf(trackId), 1);
-          console.log("SWIPED SONG DETECTED IN LikedTracks DB, REMOVING: " + snapshot.val().trackName);
-
-        } else {
-          console.log("Swiped song not found");
-        }
-      }).catch((error) => {
-        console.log("Query Failed, error; " + error)
-      });
-    })
 
     console.log("Tracks length: " + tracks.length);
     return tracks;
