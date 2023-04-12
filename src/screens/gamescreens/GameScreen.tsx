@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView, Animated, Easing } from 'react-native'
 import React, { useContext } from 'react'
 import gameContext from '@/common/hooks/gameContext';
 import useAuth from '@hooks/useAuth';
@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useIsFocused } from '@react-navigation/native'
+import TextTicker from 'react-native-text-ticker'
 //import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 //import { push, ref, set, child, get } from 'firebase/database';
 
@@ -18,14 +19,22 @@ import { useIsFocused } from '@react-navigation/native'
 var questionTypes: string[] = ['artist name', 'album name', 'name']; //lmao classic instance variable moment
 let correctIndex: number;
 let correctTrack: SpotifyApi.TrackObjectFull;
+let speed: number = 25;
 
 const GameScreen = () => {
 
   const isFocused = useIsFocused() //Checks if screen is being looked at
-
+  const [fadeAnim] = React.useState(new Animated.Value(0))
   const navigation = useNavigation();
   const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify } = useAuth();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false, //can be set to false to disable swipe out of page
+      gestureDirection: 'horizontal',
+    });
+  }, [navigation]);
 
   //sound states
   const [sound, setSound] = React.useState<Audio.Sound>();
@@ -67,6 +76,13 @@ const GameScreen = () => {
     if(isFocused == true) {
       console.log("GETTING TRACKS")
       getTracks();
+      Animated.timing(fadeAnim, { //Establish Animation
+        toValue: 1,
+        duration: 750,
+        delay: 1000,
+        useNativeDriver: true
+      }).start();
+
     }    
   }, [isFocused]);
 
@@ -97,25 +113,25 @@ const GameScreen = () => {
     if (correctTrack == tracks[index]) {
       setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
-      setLoaded(false);
       console.log("CORRECTCHOICE");
     }
     else {
       console.log("WRONGCHOICE");
       setEarnings(0);
     }
+    setLoaded(false);
     navigation.navigate('Score');
   };
 
   function buttonContent(buttonNum: number) {
-    if(questionType = "name"){
+    if(questionType == "name"){
       return tracks[buttonNum].name;
     }
-    else if (questionType = "artist name"){
-      return correctTrack?.artists?.map((artist: any) => artist?.name).join(', ');
+    else if (questionType == "artist name"){
+      return tracks[buttonNum].artists?.map((artist: any) => artist?.name).join(', ');
     }
-    else if (questionType = "album name"){
-      return correctTrack?.album?.name;
+    else if (questionType == "album name"){
+      return tracks[buttonNum].album?.name;
     }
   }
 
@@ -125,11 +141,11 @@ const GameScreen = () => {
         <Text className='text-white text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
       </View>
       {!(loaded) ?
-        <View style={{ flex: 1, marginTop: 300 }}>
+        <View className='flex-1 justify-center'>
           <ActivityIndicator size="large" color="#014871" />
         </View>
         :
-        <View className='flex-1 justify-center absolute top-32 px-2'>
+        <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center items-center absolute top-32 mx-2' >
           <View className='flex-1 justify-center'>
             {/*track Image*/}
             <View className='flex-1 items-center p-2'>
@@ -137,57 +153,99 @@ const GameScreen = () => {
             </View>
             {/*Track Name*/}
             <View className='flex-row items-center px-2'>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                scrollEnabled={false}
-              >
-                <Text className='text-white text-3xl font-bold'>{correctTrack?.name}</Text>
-              </ScrollView>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className='text-white text-2xl font-bold'>{(questionType == 'name')? '???????' : correctTrack?.name}
+              </TextTicker>       
             </View>
             {/* Artist Name */}
             <View className='flex-row items-center opacity-80 px-2'>
               <FontAwesome5 name="user-alt" size={16} color="white" />
-              <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                <Text className='px-2 text-white text-2xl font-bold'>
-                  {correctTrack?.artists?.map((artist: any) => artist?.name).join(', ')}</Text>
-              </Animated.ScrollView>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className='px-2 text-white text-xl font-bold'>
+                {(questionType == 'artist name')? '???????' : correctTrack?.artists?.map((artist: any) => artist?.name).join(', ')}
+              </TextTicker>
             </View>
             {/* Album Name */}
             <View className='flex-row items-center opacity-80 px-2'>
               <FontAwesome5 name="compact-disc" size={16} color="white" />
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                <Text className='px-2 text-white text-2xl font-bold'>{correctTrack?.album?.name}</Text>
-              </ScrollView>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25}
+                className='px-2 text-white text-xl font-bold'>{(questionType == 'album name')? '???????' : correctTrack?.album?.name}
+              </TextTicker>
             </View>
           </View>
 
           {/*Question*/}
           <View className='flex-1 justify-center'>
-            <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} of this track?</Text>
+            <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} for this track?</Text>
 
             {/*Button choices*/}
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className="flex-row items-center justify-center px-2 m-2 rounded-3xl" style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(0); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(0)}</Text>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(0)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(1); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(1)}</Text>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(1)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(2); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(2)}</Text>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(2)}</TextTicker>
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl"
+            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-2 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
               onPress={() => { handleChoice(3); }}>
-              <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(3)}</Text>
+              <TextTicker 
+                scrollSpeed={speed} 
+                loop 
+                numberOfLines={1} 
+                animationType={'scroll'} 
+                easing={Easing.linear} 
+                repeatSpacer={25} 
+                className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(3)}</TextTicker>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       }
     </LinearGradient>
   );

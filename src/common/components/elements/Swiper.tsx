@@ -1,5 +1,5 @@
 /* IMPORT STATEMENTS */
-import { View, Text, Image, Slider, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, Image, Slider, ScrollView, ActivityIndicator, Easing } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import useAuth from '@/common/hooks/useAuth';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,7 +16,9 @@ import { Foundation } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { StretchInX } from 'react-native-reanimated';
+import TextTicker from 'react-native-text-ticker'
 
+let speed: number = 25;
 
 type Props = {
   tracks: SpotifyApi.TrackObjectFull[];
@@ -51,9 +53,9 @@ const Swiper = (props: Props) => {
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
-    /****************************** FUNCTION DECLARATIONS *********************************/
+  /****************************** FUNCTION DECLARATIONS *********************************/
 
-  
+
 
   async function addTrack() {
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
@@ -70,7 +72,7 @@ const Swiper = (props: Props) => {
     let isValid: boolean = false;
 
     //Keeps pulling a new track until the track is valid (new and has a preview url)
-    while (isValid === false){
+    while (isValid === false) {
       const recResponse = await spotify.getRecommendations({
         seed_artists: topArtistsIds,
         limit: 1,
@@ -121,10 +123,10 @@ const Swiper = (props: Props) => {
       setTracks(newTracksArray);
       isValid = true;
       break;
-      
+
     }
-    
-    
+
+
   }
 
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
@@ -145,6 +147,15 @@ const Swiper = (props: Props) => {
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
       limit: 20,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
     });
 
     //Update trackStack
@@ -155,7 +166,7 @@ const Swiper = (props: Props) => {
     setTracks(trackStack);
     setDeckCounter(trackStack.length);
 
-    
+
   }
 
   // Same as getTracks, but takes in seed parameters
@@ -180,7 +191,17 @@ const Swiper = (props: Props) => {
       seed_artists: seedArtists,
       seed_genres: seedGenres,
       limit: 20,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
     });
+    
 
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
@@ -208,7 +229,7 @@ const Swiper = (props: Props) => {
     });
 
     //remove tracks with no preview url
-    recResponse.tracks.forEach(element => {
+    recResponse.tracks.forEach((element: { preview_url: null; name: string; }) => {
       if (element.preview_url === null) {
         console.log("Null preview detected, Removing from tracks: " + element.name);
         recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
@@ -232,7 +253,7 @@ const Swiper = (props: Props) => {
   //   setRecentTracks(tracks);
   // }
 
-  async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]){
+  async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]) {
     const trackIds = tracks.map((track: any) => track.id);
 
     //Removes tracks that are already in the user's library
@@ -387,7 +408,7 @@ const Swiper = (props: Props) => {
   }
 
 
-/******************** USE EFFECTS ***********************/
+  /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
     //previously known as getTracks
     getTracks();
@@ -415,13 +436,17 @@ const Swiper = (props: Props) => {
     )
   }
 
-  
 
-// ***************************************** CARD RENDERING ********************************
+
+  // ***************************************** CARD RENDERING ********************************
   return (
 
-    <CardsSwipe cards={tracks} renderCard={(track: SpotifyApi.TrackObjectFull) => {
+    <CardsSwipe 
+      cards={tracks} 
 
+      rotationAngle={30}
+
+      renderCard={(track: SpotifyApi.TrackObjectFull) => {
       return (
         <LinearGradient start={{ x: 0, y: 0 }} locations={[0.67, 1]} colors={['#3F3F3F', 'rgba(1,1,1,1)']} className="relative w-full h-full rounded-2xl"  >
           <View className='absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0'>
@@ -432,29 +457,42 @@ const Swiper = (props: Props) => {
               <View className='pt-2 px-0 w-full justify-start items-start pt-4'>
                 {/* Track Name */}
                 <View className='flex-row items-end'>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    scrollEnabled={false}
-                  >
-                    <Text className='text-white text-5xl font-bold'>{track.name}</Text>
-                  </ScrollView>
+                <TextTicker 
+                  scrollSpeed={speed} 
+                  loop 
+                  numberOfLines={1} 
+                  animationType={'scroll'} 
+                  easing={Easing.linear} 
+                  repeatSpacer={25} 
+                  className='text-white text-5xl font-bold'>{track.name}
+                </TextTicker>
                 </View>
                 {/* Artist Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="user-alt" size={16} color="white" />
                   <Animated.ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{
-                      track.artists.map((artist: any) => artist.name).join(', ')
-                    }</Text>
+                  <TextTicker 
+                    scrollSpeed={speed} 
+                    loop 
+                    numberOfLines={1} 
+                    animationType={'scroll'} 
+                    easing={Easing.linear} 
+                    repeatSpacer={25} className='px-2 text-white text-xl'>{
+                    track.artists.map((artist: any) => artist.name).join(', ')
+                    }</TextTicker>
                   </Animated.ScrollView>
                 </View>
                 {/* Album Name */}
                 <View className='flex-row items-center opacity-80'>
                   <FontAwesome5 name="compact-disc" size={16} color="white" />
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <Text className='px-2 text-white text-xl'>{track.album.name}</Text>
-                  </ScrollView>
+                  <TextTicker 
+                    scrollSpeed={speed} 
+                    loop 
+                    numberOfLines={1} 
+                    animationType={'scroll'} 
+                    easing={Easing.linear} 
+                    repeatSpacer={25} className='px-2 text-white text-xl'>{track.album.name}
+                  </TextTicker>
                 </View>
                 {track?.preview_url ?
                   <View>
@@ -508,10 +546,10 @@ const Swiper = (props: Props) => {
 
       onSwipedLeft={ //Add disliked song to the disliked database
         (index: number) => {
-          setDeckCounter(deckCounter - 1);
-          if (deckCounter === 1 && needsReload === false) {
-            //setReload(true);
-          }
+          //setDeckCounter(deckCounter - 1);
+          // if (deckCounter === 1 && needsReload === false) {
+          //   //setReload(true);
+          // }
 
           console.log("NOPE: " + tracks[index].name)
           set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
@@ -525,10 +563,10 @@ const Swiper = (props: Props) => {
 
       onSwipedRight={ //Add liked songs to the liked database
         (index: number) => {
-          setDeckCounter(deckCounter - 1);
-          if (deckCounter === 1 && needsReload === false) {
-            //setReload(true);
-          }
+          // setDeckCounter(deckCounter - 1);
+          // if (deckCounter === 1 && needsReload === false) {
+          //   //setReload(true);
+          // }
 
           console.log("LIKE: " + tracks[index].name)
           set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
@@ -549,9 +587,55 @@ const Swiper = (props: Props) => {
         }
       }
 
+      renderYep={() => (
+        <View style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginLeft: 30,
+          marginTop: 20,
+          borderColor: 'lightgreen',
+          transform: [{ rotateZ: '-22deg' }],
+        }}>
+          <Text style={{
+            fontSize: 32,
+            color: 'lightgreen',
+            fontWeight: 'bold',
+          }}>YEP</Text>
+        </View>
+      )}
+
+      renderNope={() => (
+        <View style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginRight: 30,
+          marginTop: 25,
+          borderColor: 'red',
+          transform: [{ rotateZ: '22deg' }],
+        }}>
+          <Text style={{
+            fontSize: 32,
+            color: 'red',
+            fontWeight: 'bold',
+          }}>NOPE</Text>
+        </View>
+      )}
+
+      renderNoMoreCard={() => (
+        <View className='flex-1 justify-center items-center'>
+          <Text className='text-white text-5xl font-bold'>Fuck.</Text>
+        </View>
+      )}
+
 
     />
   )
+
+
 }
 
+
 export default Swiper
+
