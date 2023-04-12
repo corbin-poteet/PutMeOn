@@ -552,12 +552,10 @@ const Swiper = (props: Props) => {
           // }
 
           console.log("NOPE: " + tracks[index].name)
-          set(ref(database, "SwipedTracks/" + user?.id + "/DislikedTracks/" + tracks[index].id), {
+          set(ref(database, "SwipedTracks/" + user?.id +"/"+ tracks[index].id), {
             trackID: tracks[index].id,
-            trackName: tracks[index].name,
+            liked: false,
           })
-
-
         }
       }
 
@@ -569,9 +567,9 @@ const Swiper = (props: Props) => {
           // }
 
           console.log("LIKE: " + tracks[index].name)
-          set(ref(database, "SwipedTracks/" + user?.id + "/LikedTracks/" + tracks[index].id), {
+          set(ref(database, "SwipedTracks/" + user?.id + "/" + tracks[index].id), {
             trackID: tracks[index].id,
-            trackName: tracks[index].name,
+            liked: true,
           })
           //console.log("Playlist to add to: " + selectedPlaylist)
           const likedTrack: string[] = []

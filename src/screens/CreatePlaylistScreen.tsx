@@ -4,6 +4,11 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import useAuth from '@hooks/useAuth';
+import { push, ref, set, child, get } from 'firebase/database';
+import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+
+let playlists: any[];
+let createdPlaylist: any;
 
 const CreatePlaylistScreen = () => {
 
@@ -13,17 +18,40 @@ const CreatePlaylistScreen = () => {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [loaded, setLoaded] = useState<boolean>(false);
+  
+    const inputObject = {
+      "name": name,
+      "description": description,
+      "public": false
+      }
+  
+    React.useEffect(() => {
+      if(loaded == true) {
+        console.log("PLAYLIST: "+createdPlaylist?.id);
 
-  const inputObject = {
-    "name": name,
-    "description": description,
-    "public": false
-    }
+        set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id), {
+          playlistId: createdPlaylist?.id,
+          playlistName: createdPlaylist?.name
+        });
+      }
+    }, [loaded]);
+
+  async function getPlaylists() {
+    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
+    ).then(
+      function (data) {
+        playlists = data.items;
+        createdPlaylist = playlists[0]; //Because our newest playlist will, without a doubt, be our first one in the array.
+      });
+      setLoaded(true);
+  }
 
   async function createPlaylist() {
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
       Alert.alert("Playlist Created!");
-      navigation.navigate("Home");
+      getPlaylists();
+      //navigation.navigate('Home');
     });
   }
 
@@ -36,7 +64,7 @@ const CreatePlaylistScreen = () => {
   return (
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-        <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Create New Playlist:</Text>
+        <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Creating a new Deck creates a playlist in Spotify. Let's give it a name!</Text>
         <TextInput placeholder='Playlist Name' onChangeText={setName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-5 px-8 py-3'></TextInput>
         <TextInput placeholder='Playlist Description' onChangeText={setDescription} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
       
@@ -44,7 +72,7 @@ const CreatePlaylistScreen = () => {
           onPress={() => {
             {createPlaylist()};
           }}>
-          <Text className='font-semibold text-1 text-white text-xl'>Submit</Text>
+          <Text className='font-semibold text-1 text-white text-xl'>Create Playlist</Text>
         </TouchableOpacity>
       </LinearGradient>
     </View>

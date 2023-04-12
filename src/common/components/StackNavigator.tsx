@@ -7,6 +7,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useAuth from '@hooks/useAuth';
 import HomeScreen from '@screens/HomeScreen';
+import DeckScreen from '@screens/DeckScreen';
 import LoginScreen from '@screens/LoginScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
 import AdvertiserScreen from '@/screens/AdvertiserScreen';
@@ -78,7 +79,7 @@ const StackNavigator = () => {
           {user != "" ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
-              <Stack.Screen name="Playlist" component={PlaylistScreen} />
+              <Stack.Screen name="Playlist" component={DeckScreen} />
               <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
