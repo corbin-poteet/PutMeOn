@@ -40,6 +40,7 @@ const Swiper = (props: Props) => {
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
   const [isDefaultDeck, setIsDefaultDeck] = React.useState<boolean>(true);
+  //Current deck object will be set to either default deck, or last deck used, no matter what
   const [currentDeck, setCurrentDeck] = React.useState<{
     seedArtistIds?: string[], 
     seedGenres?: string[], 
