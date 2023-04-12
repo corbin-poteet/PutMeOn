@@ -57,8 +57,8 @@ const Swiper = (props: Props) => {
   /****************************** FUNCTION DECLARATIONS *********************************/
 
 
-
-  async function addTrack() {
+  //function gets user's top 5 artists and returns them as an array of artist ids
+  async function getTopArtists() {
     const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
       function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
@@ -69,6 +69,13 @@ const Swiper = (props: Props) => {
     ).catch((err) => {
       console.log(err);
     }) as string[];
+
+    return topArtistsIds;
+  }
+
+
+  async function addTrack() {
+    const topArtistsIds = await getTopArtists();
 
     let isValid: boolean = false;
 
@@ -134,19 +141,11 @@ const Swiper = (props: Props) => {
   async function getTracks() {
 
     //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    }) as string[];
+    const topArtistsIds = await getTopArtists();
 
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
+      seed_genres: [],
       limit: 20,
     }).then(
       function (data: any) {
@@ -163,35 +162,17 @@ const Swiper = (props: Props) => {
     trackStack = recResponse.tracks.map((track: any) => track);
     //Cleaning time
     cleanTracks(trackStack);
-
+    //Update tracks usestate
     setTracks(trackStack);
-    setDeckCounter(trackStack.length);
-
-
   }
 
   // Same as getTracks, but takes in seed parameters
   async function getTracksSeeded(seedArtists: string[], seedGenres: string[]) {
 
-    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    }) as string[];
-
-
-
-
     const recResponse = await spotify.getRecommendations({
       seed_artists: seedArtists,
       seed_genres: seedGenres,
-      limit: 20,
+      limit: 25,
     }).then(
       function (data: any) {
         return data;
@@ -208,51 +189,14 @@ const Swiper = (props: Props) => {
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
 
-
-    await spotify.containsMySavedTracks(trackIds).then(
-      // after promise returns of containsMySavedTracks
-      function (isSavedArr: any[]) {
-        console.log("PROMISE RETURNED" + isSavedArr);
-        isSavedArr.forEach((element) => {
-          console.log(element);
-          if (element === true) {
-            console.log("Removing from tracks: " + recResponse.tracks[isSavedArr.indexOf(element)].name);
-
-            recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-            console.log("Updated length: " + recResponse.tracks.length);
-          }
-        });
-
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
-
-    //remove tracks with no preview url
-    recResponse.tracks.forEach((element: { preview_url: null; name: string; }) => {
-      if (element.preview_url === null) {
-        console.log("Null preview detected, Removing from tracks: " + element.name);
-        recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-      }
-    });
-
-
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
-
-
-
+    //Cleaning time
+    cleanTracks(trackStack);
+    //Update tracks usestate
     setTracks(trackStack);
-    //setDeckCounter(trackStack.length);
   }
 
-
-  // async function getRecentlyPlayedTracks() {
-  //   const response = await spotify.getMyRecentlyPlayedTracks();
-  //   const tracks = response.items.map((item: any) => item.track);
-  //   setRecentTracks(tracks);
-  // }
 
   async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]) {
     const trackIds = tracks.map((track: any) => track.id);
@@ -398,7 +342,7 @@ const Swiper = (props: Props) => {
 
   /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
-    //previously known as getTracks
+    //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
     getTracks();
   }, []);
 
