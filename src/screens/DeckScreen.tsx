@@ -11,18 +11,21 @@ import database from "../../firebaseConfig.tsx"; //ignore this error the interpr
 
 let selectedPlaylist: string;
 let playlists: any[];
+let decks: any[];
+
 //let loaded: boolean = false;
 //Maybe add these values as props?
 const DeckScreen = () => {
 
   const navigation = useNavigation();
+  const dbRef = ref(database);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
-  
+
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
@@ -108,6 +111,21 @@ const DeckScreen = () => {
 
   React.useEffect(() => {
     if (user != undefined && user.id != undefined) { //Load Playlists only after user credentials are retrieved
+
+
+      get(child(dbRef, "Decks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
+        var data = snapshot.val();
+        if (snapshot.exists()) {
+          for(let key in data){
+            console.log("DECK: "+data[key])
+            decks.push(data[key]); //Push database item to decks array
+          }
+        } else {
+          console.log("Failed to retrieve data from database")
+        }
+      });
+
+
       getPlaylists();
       Animated.timing(fadeAnim, { //Establish Animation
         toValue: 1,
@@ -133,7 +151,7 @@ const DeckScreen = () => {
             :
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
-                <TouchableOpacity onPress ={ () => {
+                <TouchableOpacity onPress={() => {
                   navigation.navigate("CreatePlaylist");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
