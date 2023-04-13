@@ -255,6 +255,30 @@ const Swiper = (props: Props) => {
 
   }
 
+  async function loadDefaultDeck(){
+    
+  }
+
+  async function loadCurrentDeck(){
+    const dbRef = ref(database);
+    get(child(dbRef, "Decks/" + user?.id + "/lastDeckUsed")).then((snapshot) => {
+      if (snapshot.exists()) {
+        if(snapshot.val().isDefaultDeck === true){
+          console.log("Default deck found in db, loading default deck");
+          getTracks();
+        } else {
+        console.log("Deck found in db, loading deck");
+        getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
+        }
+      } else {
+        console.log("Deck not found in db, loading default deck");
+        getTracks();
+      }
+    }).catch((error) => {
+      console.log("Query Failed, error; " + error)
+    });
+  }
+
   async function addToPlaylist(trackURIs: string[]) {
     //console.log("PLAYLIST ID: "+selectedPlaylist);
     const response = await spotify.addTracksToPlaylist(selectedPlaylist, trackURIs);
