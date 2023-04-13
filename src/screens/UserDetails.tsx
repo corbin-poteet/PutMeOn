@@ -27,7 +27,7 @@ const UserDetails = () => { //Display User information
       </View>
       <View className='flex-1 justify-center items-center'>
         <TouchableOpacity className='flex-row bg-red-500 px-2 m-2 rounded-3xl absolute bottom-20' onPress={logout}>
-          <Text className='text-white text-xl px-8 py-2 text-1 font-semibold'>Logout</Text>
+          <Text className='text-white text-xl px-8 py-2 font-bold'>Logout</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>

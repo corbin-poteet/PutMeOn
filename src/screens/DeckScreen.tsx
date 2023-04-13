@@ -1,28 +1,29 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
-import { fromJSON } from 'postcss';
-import { push, ref, set, child, get } from 'firebase/database';
+import { ref, child, get } from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let selectedPlaylist: string;
 let playlists: any[];
+let decks: string[];
+let temp: string[];
+
 //let loaded: boolean = false;
 //Maybe add these values as props?
 const DeckScreen = () => {
 
   const navigation = useNavigation();
+  const dbRef = ref(database);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
-  
+
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
@@ -56,7 +57,7 @@ const DeckScreen = () => {
               }
             );
           }
-          console.log("Playlists Names: " + playlists[i].name)
+          //console.log("Playlists Names: " + playlists[i].name)
         }
         const listItems = result.map(
           (element) => {
@@ -83,6 +84,8 @@ const DeckScreen = () => {
         setLoaded(true)
         //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
       });
+
+      console.log("DECKS:: "+decks)
   }
 
   function createAlert(playlist: any) { //Confirm playlist selection alert
@@ -108,6 +111,21 @@ const DeckScreen = () => {
 
   React.useEffect(() => {
     if (user != undefined && user.id != undefined) { //Load Playlists only after user credentials are retrieved
+
+
+      get(child(dbRef, "Decks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
+        var data = snapshot.val();
+        if (snapshot.exists()) {
+          for(let key in data){
+            console.log("PLAY IDs in DECKS object: "+data[key].playlistId);
+            //decks.push(data[key].playlistId); //Push database item to decks array
+            temp = data[key].playlistId;
+          }
+        } else {
+          console.log("Failed to retrieve data from database")
+        }
+      });
+
       getPlaylists();
       Animated.timing(fadeAnim, { //Establish Animation
         toValue: 1,
@@ -133,7 +151,7 @@ const DeckScreen = () => {
             :
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
-                <TouchableOpacity onPress ={ () => {
+                <TouchableOpacity onPress={() => {
                   navigation.navigate("CreatePlaylist");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
