@@ -79,7 +79,8 @@ const StackNavigator = () => {
           {user != undefined ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
-              <Stack.Screen name="Playlist" component={DeckScreen} />
+              <Stack.Screen name="Decks" component={DeckScreen} />
+              <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />

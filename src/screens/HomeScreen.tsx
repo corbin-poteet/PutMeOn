@@ -148,7 +148,7 @@ const HomeScreen = () => {
         </View>
           <TouchableOpacity className='absolute right-5 top-3' onPress={
             () => {
-              navigation.navigate('Playlist')
+              navigation.navigate('Decks')
             }
           }>
             <MaterialCommunityIcons className='' name="cards-outline" size={40} color="deepskyblue" />
