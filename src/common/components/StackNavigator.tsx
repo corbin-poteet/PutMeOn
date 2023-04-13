@@ -76,7 +76,7 @@ const StackNavigator = () => {
             headerShown: false,
           }
         }>
-          {user != "" ? (
+          {user != undefined ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
               <Stack.Screen name="Playlist" component={DeckScreen} />
