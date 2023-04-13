@@ -11,7 +11,8 @@ import database from "../../firebaseConfig.tsx"; //ignore this error the interpr
 
 let selectedPlaylist: string;
 let playlists: any[];
-let decks: any[];
+let decks: string[];
+let temp: string[];
 
 //let loaded: boolean = false;
 //Maybe add these values as props?
@@ -59,7 +60,7 @@ const DeckScreen = () => {
               }
             );
           }
-          console.log("Playlists Names: " + playlists[i].name)
+          //console.log("Playlists Names: " + playlists[i].name)
         }
         const listItems = result.map(
           (element) => {
@@ -86,6 +87,8 @@ const DeckScreen = () => {
         setLoaded(true)
         //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
       });
+
+      console.log("DECKS:: "+decks)
   }
 
   function createAlert(playlist: any) { //Confirm playlist selection alert
@@ -117,14 +120,14 @@ const DeckScreen = () => {
         var data = snapshot.val();
         if (snapshot.exists()) {
           for(let key in data){
-            console.log("DECK: "+data[key])
-            decks.push(data[key]); //Push database item to decks array
+            console.log("PLAY IDs in DECKS object: "+data[key].playlistId);
+            //decks.push(data[key].playlistId); //Push database item to decks array
+            temp = data[key].playlistId;
           }
         } else {
           console.log("Failed to retrieve data from database")
         }
       });
-
 
       getPlaylists();
       Animated.timing(fadeAnim, { //Establish Animation
