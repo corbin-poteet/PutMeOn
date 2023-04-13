@@ -106,7 +106,7 @@ const Swiper = (props: Props) => {
               if (element === true) {
                 console.log(
                   "Removing from tracks: " +
-                    recResponse.tracks[isSavedArr.indexOf(element)].name
+                  recResponse.tracks[isSavedArr.indexOf(element)].name
                 );
 
                 recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
@@ -240,7 +240,7 @@ const Swiper = (props: Props) => {
             if (element === true) {
               console.log(
                 "Removing from tracks: " +
-                  recResponse.tracks[isSavedArr.indexOf(element)].name
+                recResponse.tracks[isSavedArr.indexOf(element)].name
               );
 
               recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
@@ -294,7 +294,7 @@ const Swiper = (props: Props) => {
             if (element === true) {
               console.log(
                 "Removing from tracks: " +
-                  tracks[isSavedArr.indexOf(element)].name
+                tracks[isSavedArr.indexOf(element)].name
               );
 
               tracks.splice(isSavedArr.indexOf(element), 1);
@@ -328,7 +328,7 @@ const Swiper = (props: Props) => {
             tracks.splice(trackIds2.indexOf(trackId), 1);
             console.log(
               "SWIPED SONG DETECTED IN DB, REMOVING: " +
-                snapshot.val().trackName
+              snapshot.val().trackName
             );
           } else {
             console.log("Swiped song not found");
@@ -431,6 +431,39 @@ const Swiper = (props: Props) => {
     }
   }
 
+  async function onSwipeLeft(index: number) {
+    if (!user) {
+      return;
+    }
+
+    console.log("NOPE: " + tracks[index].name);
+    set(
+      ref(database, "SwipedTracks/" + user.id + "/" + tracks[index].id),
+      {
+        trackID: tracks[index].id,
+        liked: false,
+      }
+    );
+  }
+
+  async function onSwipeRight(index: number) {
+    if (!user) {
+      return;
+    }
+
+    console.log("LIKE: " + tracks[index].name);
+    set(
+      ref(database, "SwipedTracks/" + user.id + "/" + tracks[index].id),
+      {
+        trackID: tracks[index].id,
+        liked: true,
+      }
+    );
+    //console.log("Playlist to add to: " + selectedPlaylist)
+    const likedTrack: string[] = [];
+    likedTrack.push(tracks[index].uri);
+    addToPlaylist(likedTrack);
+  }
   /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
     //previously known as getTracks
@@ -597,46 +630,13 @@ const Swiper = (props: Props) => {
       onSwipedLeft={
         //Add disliked song to the disliked database
         (index: number) => {
-          //setDeckCounter(deckCounter - 1);
-          // if (deckCounter === 1 && needsReload === false) {
-          //   //setReload(true);
-          // }
-
-          console.log("NOPE: " + tracks[index].name);
-          set(
-            ref(database, "SwipedTracks/" + user?.id + "/" + tracks[index].id),
-            {
-              trackID: tracks[index].id,
-              liked: false,
-            }
-          );
+          onSwipeLeft(index).catch((err) => console.log(err));
         }
       }
       onSwipedRight={
         //Add liked songs to the liked database
         (index: number) => {
-          // setDeckCounter(deckCounter - 1);
-          // if (deckCounter === 1 && needsReload === false) {
-          //   //setReload(true);
-          // }
-
-          console.log("LIKE: " + tracks[index].name);
-          set(
-            ref(database, "SwipedTracks/" + user?.id + "/" + tracks[index].id),
-            {
-              trackID: tracks[index].id,
-              liked: true,
-            }
-          );
-          //console.log("Playlist to add to: " + selectedPlaylist)
-          const likedTrack: string[] = [];
-          likedTrack.push(tracks[index].uri);
-          addToPlaylist(likedTrack);
-
-          //CODE ORIGINALLY FROM ONSWIPEEND, SEE REASON IN ONSWIPEEND
-          //================================================
-
-          //================================================
+          onSwipeRight(index).catch((err) => console.log(err));
         }
       }
       renderYep={() => (
