@@ -1,9 +1,12 @@
-import React, { createContext, useContext, useState } from 'react'
-import { Platform } from 'react-native'
-import { makeRedirectUri, ResponseType, useAuthRequest } from 'expo-auth-session';
-import SpotifyWebApi from 'spotify-web-api-js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import React, { createContext, useContext, useState } from "react";
+import { Platform } from "react-native";
+import {
+  makeRedirectUri,
+  ResponseType,
+  useAuthRequest,
+} from "expo-auth-session";
+import SpotifyWebApi from "spotify-web-api-js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // this is the config for the spotify auth request
 const config = {
@@ -33,21 +36,17 @@ const config = {
   // also we need to add this uri to the list of redirect uris on the spotify developer dashboard
   // also this is the reason authentication doesn't work on the web version of the app currently, need to figure that out
   // TODO: change this so the web version of the app works too
-  redirectUri: 'exp://127.0.0.1:19000/',
-
+  redirectUri: "exp://127.0.0.1:19000/",
 
   // this is the discovery document for spotify's oauth2 api
   discovery: {
     // the authorization endpoint is the url that we will send the user to in order to log in
-    authorizationEndpoint:
-      "https://accounts.spotify.com/authorize",
+    authorizationEndpoint: "https://accounts.spotify.com/authorize",
 
     // the token endpoint is the url that we will send the user to in order to get an access token
-    tokenEndpoint:
-      "https://accounts.spotify.com/api/token",
-  }
+    tokenEndpoint: "https://accounts.spotify.com/api/token",
+  },
 };
-
 
 /**
  * This is the context that we will use to store the auth state
@@ -60,9 +59,9 @@ const AuthContext = createContext({
     });
   },
   token: "",
-  logout: () => { },
+  logout: () => {},
   spotify: new SpotifyWebApi(),
-  user: null,
+  user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
 
 /**
@@ -71,10 +70,8 @@ const AuthContext = createContext({
  * @returns the auth state
  */
 export const AuthProvider = ({ children }) => {
-
-
   const [token, setToken] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
 
   // this is the spotify api object
   const [spotify, setSpotify] = useState(new SpotifyWebApi());
@@ -91,26 +88,28 @@ export const AuthProvider = ({ children }) => {
     config.discovery
   );
 
-
   // only re-render if token changes
-  React.useMemo(() => ({
-    signInWithSpotify,
-    token,
-    logout,
-    spotify,
-    user
-  }),
-    [token]);
+  React.useMemo(
+    () => ({
+      signInWithSpotify,
+      token,
+      logout,
+      spotify,
+      user,
+    }),
+    [token]
+  );
 
   React.useEffect(() => {
-
     if (Platform.OS == "web") {
-      setAccessToken("BQBYhn0084rKmH7p8n9Vmf6xIX2A7oH2ayrRW7CsSIkvQoJg1gNH8cCSm3kawqjQR9M2GId-10SI4fqpfciCmjhze65He54lI9mozsefIsNFcQpBpHekMqf8J9soFN6j8B8dhoNfFoq-jRefb917Iy3pLjpk43LulBXfuyc3vsImU_lJh80LFL7YlPCmBVHmX2Ok0PQd04pB5D0AtadTyiTXPt6BXlxs9tKyA0Cuzkyc0odDBPykFmURdgVhXUzmQAkAzjaqHtjONPCUAiAknvHDAD0CVga9Xqgtiv3Q")
+      setAccessToken(
+        "BQBYhn0084rKmH7p8n9Vmf6xIX2A7oH2ayrRW7CsSIkvQoJg1gNH8cCSm3kawqjQR9M2GId-10SI4fqpfciCmjhze65He54lI9mozsefIsNFcQpBpHekMqf8J9soFN6j8B8dhoNfFoq-jRefb917Iy3pLjpk43LulBXfuyc3vsImU_lJh80LFL7YlPCmBVHmX2Ok0PQd04pB5D0AtadTyiTXPt6BXlxs9tKyA0Cuzkyc0odDBPykFmURdgVhXUzmQAkAzjaqHtjONPCUAiAknvHDAD0CVga9Xqgtiv3Q"
+      );
       return;
     }
 
     // check if there is a token stored in async storage
-    AsyncStorage.getItem('token').then((token) => {
+    AsyncStorage.getItem("token").then((token) => {
       if (token) {
         // if there is a token, set it and pass it to the spotify api
         setAccessToken(token);
@@ -138,14 +137,14 @@ export const AuthProvider = ({ children }) => {
   async function setAccessToken(token: string) {
     setToken(token);
     spotify.setAccessToken(token);
-    await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem("token", token);
 
     if (token) {
       spotify.getMe().then((user) => {
         setUser(user);
       });
     } else {
-      setUser("");
+      setUser(undefined);
     }
   }
 
@@ -154,7 +153,7 @@ export const AuthProvider = ({ children }) => {
    */
   function clearAccessToken() {
     setAccessToken("");
-    AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem("token");
   }
 
   /**
@@ -163,18 +162,19 @@ export const AuthProvider = ({ children }) => {
    */
   function logout() {
     clearAccessToken();
-    setUser("");
-
+    setUser(undefined);
   }
 
   return (
-    <AuthContext.Provider value={{
-      signInWithSpotify: signInWithSpotify,
-      token: token,
-      logout: logout,
-      spotify: spotify,
-      user: user
-    }}>
+    <AuthContext.Provider
+      value={{
+        signInWithSpotify: signInWithSpotify,
+        token: token,
+        logout: logout,
+        spotify: spotify,
+        user: user,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

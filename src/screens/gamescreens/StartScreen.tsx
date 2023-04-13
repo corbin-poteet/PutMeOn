@@ -44,9 +44,9 @@ const StartScreen = () => { //Game Welcome Screen
              </View>
             </View>
             <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center bg-green-500 px-5 rounded-3xl"
+                <TouchableOpacity className="absolute bottom-10 flex-row items-center justify-center px-5 rounded-3xl" style={{ backgroundColor: '#014871' }}
                     onPress={() => { navigation.navigate('Game') }}>
-                    <Text className="text-white text-xl px-8 py-2 text-1 font-bold">Match-Up!</Text>
+                    <Text className="text-white text-xl px-8 py-2 font-bold">Match-Up!</Text>
                 </TouchableOpacity>
             </View>
         </LinearGradient>

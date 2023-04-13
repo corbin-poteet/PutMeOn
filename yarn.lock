@@ -10182,6 +10182,11 @@ react-native-scrubber@^1.1.5:
   resolved "https://registry.yarnpkg.com/react-native-scrubber/-/react-native-scrubber-1.1.5.tgz#21c41c607f2d8decd6befb238933d456f7a168f3"
   integrity sha512-7kceYBVrFQ8drt4gop5FK/zWIr0y5GdsuDupOyFP/zp28E/uX4qk8SuO6QRUw13gelqVxlSUS6NBYQyk/DNhwQ==
 
+react-native-text-ticker@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/react-native-text-ticker/-/react-native-text-ticker-1.14.0.tgz#dc537d2c587efc18ef19db9a85dc678a28aa8c57"
+  integrity sha512-8TNGTcW43dfnCqIuXVA7F1Ny8SKGrw0pIrNS5nM7eda+6AsuPTZh3JQ2CwmSRYfsrlnS4QFrpyo5ykpI8nvtCw==
+
 react-native-web@0.18.7:
   version "0.18.7"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.18.7.tgz#2b688502b3d389c49346fa3d8c9a20cfd52f507f"

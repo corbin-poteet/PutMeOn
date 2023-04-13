@@ -149,7 +149,7 @@ const HomeScreen = () => {
 
       {/* Body */}
       <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-8 pt-1 pb-4' style={{ aspectRatio: 10 / 16 }}>
+        <View className='h-full px-8 pt-1 pb-1' style={{ aspectRatio: 11 / 16 }}>
           <Swiper tracks={tracks} />
         </View>
       </View>
