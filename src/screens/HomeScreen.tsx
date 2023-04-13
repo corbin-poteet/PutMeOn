@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import Swiper from '@/common/components/elements/Swiper';
 import { selectedPlaylist } from '@screens/PlaylistScreen';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
@@ -145,11 +146,18 @@ const HomeScreen = () => {
             }} />
           </TouchableOpacity>
         </View>
+          <TouchableOpacity className='absolute right-5 top-3' onPress={
+            () => {
+              navigation.navigate('Playlist')
+            }
+          }>
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="deepskyblue" />
+          </TouchableOpacity>
       </View>
 
       {/* Body */}
       <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-8 pt-1 pb-1' style={{ aspectRatio: 11 / 16 }}>
+        <View className='h-full px-12 pt-1 pb-2' style={{ aspectRatio: 11 / 16 }}>
           <Swiper tracks={tracks} />
         </View>
       </View>
