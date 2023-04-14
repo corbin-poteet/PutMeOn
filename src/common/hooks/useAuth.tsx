@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import { Platform } from "react-native";
 import {
+  AuthRequestPromptOptions,
   makeRedirectUri,
+  Prompt,
   ResponseType,
   useAuthRequest,
 } from "expo-auth-session";
@@ -45,8 +47,12 @@ const config = {
 
     // the token endpoint is the url that we will send the user to in order to get an access token
     tokenEndpoint: "https://accounts.spotify.com/api/token",
+
+    show_dialog: true,
   },
 };
+
+var promptUser = false;
 
 /**
  * This is the context that we will use to store the auth state
@@ -59,10 +65,14 @@ const AuthContext = createContext({
     });
   },
   token: "",
-  logout: () => {},
+  logout: () => { },
   spotify: new SpotifyWebApi(),
   user: undefined as SpotifyApi.CurrentUsersProfileResponse | undefined,
 });
+
+const extraParams = {
+  show_dialog: true,
+};
 
 /**
  * This is the hook that we will use to access the auth state
@@ -84,8 +94,14 @@ export const AuthProvider = ({ children }) => {
       scopes: config.scopes,
       usePKCE: false,
       redirectUri: config.redirectUri,
+      prompt: Prompt.Login,
+      extraParams: {
+        show_dialog: promptUser ? "true" : "false",
+      }
+
     },
-    config.discovery
+    config.discovery,
+    
   );
 
   // only re-render if token changes
@@ -101,13 +117,6 @@ export const AuthProvider = ({ children }) => {
   );
 
   React.useEffect(() => {
-    if (Platform.OS == "web") {
-      setAccessToken(
-        "BQBYhn0084rKmH7p8n9Vmf6xIX2A7oH2ayrRW7CsSIkvQoJg1gNH8cCSm3kawqjQR9M2GId-10SI4fqpfciCmjhze65He54lI9mozsefIsNFcQpBpHekMqf8J9soFN6j8B8dhoNfFoq-jRefb917Iy3pLjpk43LulBXfuyc3vsImU_lJh80LFL7YlPCmBVHmX2Ok0PQd04pB5D0AtadTyiTXPt6BXlxs9tKyA0Cuzkyc0odDBPykFmURdgVhXUzmQAkAzjaqHtjONPCUAiAknvHDAD0CVga9Xqgtiv3Q"
-      );
-      return;
-    }
-
     // check if there is a token stored in async storage
     AsyncStorage.getItem("token").then((token) => {
       if (token) {
@@ -116,6 +125,8 @@ export const AuthProvider = ({ children }) => {
       }
     });
   }, []);
+
+
 
   /**
    * Prompts the user to log in with spotify
@@ -163,7 +174,10 @@ export const AuthProvider = ({ children }) => {
   function logout() {
     clearAccessToken();
     setUser(undefined);
+    promptUser = true;
   }
+
+
 
   return (
     <AuthContext.Provider
