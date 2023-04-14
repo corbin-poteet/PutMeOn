@@ -194,7 +194,7 @@ const FinishScreen = () => {
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
                 <TouchableOpacity className='flex-row px-6 py-2 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
-                    onPress={() => { navigation.navigate('Playlist') }}>
+                    onPress={() => { navigation.navigate('Decks') }}>
                     <Text className='px-12 text-white text-xl text-center font-bold'>Select Playlist</Text>
                 </TouchableOpacity>
             </Animated.View>
