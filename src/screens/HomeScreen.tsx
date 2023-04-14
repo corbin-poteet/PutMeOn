@@ -61,8 +61,9 @@ const HomeScreen = () => {
   // }, []);
 
 
-  React.useEffect(() => { 
-    if(konami >= 20) {
+  React.useEffect(() => {
+    if (konami >= 20) {
+      // @ts-ignore
       navigation.navigate('Secret') //shhh....
     }
   }, [konami]);
@@ -108,63 +109,66 @@ const HomeScreen = () => {
   }, [user]);
 
   // TODO: Change this to check the database to see if the user has swiped on any songs
-  React.useEffect(() => { 
-    if(!selectedPlaylist && loaded) {
+  React.useEffect(() => {
+    if (!selectedPlaylist && loaded) {
       //navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
+      // @ts-ignore
       navigation.navigate('Welcome') //Navigate to the welcome demo screen if user has not selected a playlist, change later
     }
   }, [loaded]); //check for cached credentials so we know if this is first time load 
 
   return (
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-     <SafeAreaView className='flex-1' edges={['top']}>
-       {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
+      <SafeAreaView className='flex-1' edges={['top']}>
+        {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
-       {/* Header */}
-       <View className='items-center relative'>
-  <TouchableOpacity className='absolute left-5 top-3' onPress={
-    () => {
-      navigation.navigate('UserInfo')
-    }
-  }>
-    {
-      userImage !== null
-        ?
-        <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'white' }} />
-        :
-        <View>
-          <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
+        {/* Header */}
+        <View className='items-center relative'>
+          <TouchableOpacity className='absolute left-5 top-3' onPress={
+            () => {
+              // @ts-ignore
+              navigation.navigate('UserInfo')
+            }
+          }>
+            {
+              userImage !== null
+                ?
+                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'white' }} />
+                :
+                <View>
+                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
+                </View>
+            }
+          </TouchableOpacity>
+          <View>
+            <TouchableOpacity activeOpacity={1} onPress={() => setKonami(konami + 1)}>
+              <Image source={require('@assets/Logo_512_White.png')} style={{
+                width: 128,
+                height: 65,
+                transform: [{ translateX: -6 }],
+                resizeMode: 'contain',
+              }} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity className='absolute right-5 top-3' onPress={
+            () => {
+              // @ts-ignore
+              navigation.navigate('Decks')
+            }
+          }>
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="white" />
+          </TouchableOpacity>
         </View>
-    }
-  </TouchableOpacity>
-  <View>
-    <TouchableOpacity activeOpacity={1} onPress={ () => setKonami(konami + 1)}>
-      <Image source={require('@assets/Logo_512_White.png')} style={{
-        width: 128,
-        height: 65,
-        transform: [{ translateX: -6 }],
-        resizeMode: 'contain',
-      }} />
-    </TouchableOpacity>
-  </View>
-  <TouchableOpacity className='absolute right-5 top-3' onPress={
-    () => {
-      navigation.navigate('Decks')
-    }
-  }>
-    <MaterialCommunityIcons className='' name="cards-outline" size={40} color="white" />
-  </TouchableOpacity>
-</View>
 
-{/* Body */}
-<View className='flex-1 items-center justify-center'>
-  <View className='h-full px-12 pt-1 pb-2' style={{ aspectRatio: 11 / 16 }}>
-    <Swiper tracks={tracks} />
-  </View>
-</View>
-</SafeAreaView>
-</LinearGradient>
-)
+        {/* Body */}
+        <View className='flex-1 items-center justify-center'>
+          <View className='h-full px-12 pt-1 pb-2' style={{ aspectRatio: 11 / 16 }}>
+            <Swiper tracks={tracks} />
+          </View>
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
+  )
 }
 
 export default HomeScreen;

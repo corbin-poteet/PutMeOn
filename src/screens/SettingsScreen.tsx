@@ -26,15 +26,17 @@ const SettingsScreen = () => {
       <View style={{ alignItems: 'left' }}>
         <TouchableOpacity onPress={
           () => {
+            // @ts-ignore
             navigation.navigate('UserInfo')
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30, marginBottom: 10 }}>
-            <Ionicons style={{ marginRight: 12, marginLeft: 10,}} name="person-circle-outline" size={30} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white'}}>Account</Text>
+            <Ionicons style={{ marginRight: 12, marginLeft: 10, }} name="person-circle-outline" size={30} color="white" />
+            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white' }}>Account</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={
           () => {
+            // @ts-ignore
             navigation.navigate('Playlist')
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
@@ -43,7 +45,7 @@ const SettingsScreen = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
             <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="brush-outline" size={35} color="white" />
             <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Themes</Text>
           </View>
@@ -56,6 +58,7 @@ const SettingsScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={
           () => {
+            // @ts-ignore
             navigation.navigate('AppInfo')
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>

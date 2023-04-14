@@ -4,6 +4,7 @@ import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ref, child, get, set } from 'firebase/database';
+// @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let selectedPlaylist: string;
@@ -26,7 +27,7 @@ const DeckScreen = () => {
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
   const [fadeAnim] = React.useState(new Animated.Value(0))
-  const [decks, setDecks] = React.useState<string []>();
+  const [decks, setDecks] = React.useState<string[]>();
 
   React.useLayoutEffect(() => {
     if (selectedPlaylist == null) {
@@ -42,24 +43,24 @@ const DeckScreen = () => {
 
   function getDecks() {
     get(child(dbRef, "Decks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
-      
-      let temp:string[] = [];
+
+      let temp: string[] = [];
 
       if (snapshot.exists()) {
         snapshot.forEach((element: any) => {
           var value = element.val();
           temp.push(value?.playlistId); //change to ID
           setDecks(temp); //Push database spotify playlist ids item to decks array (string)
-        }); 
+        });
       } else {
         console.log("Failed to retrieve data from database")
       }
-      
+
     });
   }
 
   async function getPlaylists() {
-    
+
     const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
@@ -70,14 +71,14 @@ const DeckScreen = () => {
           {
             decks?.forEach((item) => {
               //console.log(item?.playlistId + " === " + playlists[i]?.id)
-              if(playlists[i]?.id == item) {
+              if (playlists[i]?.id == item) {
                 result.push({
                   "name": playlists[i].name,
                   "image": playlists[i].images[0],
                   "index": i
                 });
               }
-            }) 
+            })
           }
           //console.log("Playlists Names: " + playlists[i].name)
         }
@@ -118,14 +119,14 @@ const DeckScreen = () => {
         text: 'Yes', onPress:
           () => {
             selectedPlaylist = playlists[playlist.index].id;
-            console.log("selected GAAAH"+playlists[playlist.index]?.id);
-            set(ref(database, "Decks/" + user?.id +"/selectedDeck/"+playlists[playlist.index]?.id), {
+            console.log("selected GAAAH" + playlists[playlist.index]?.id);
+            set(ref(database, "Decks/" + user?.id + "/selectedDeck/" + playlists[playlist.index]?.id), {
               id: playlists[playlist.index]?.id,
               name: playlists[playlist.index]?.name,
               seedArtistIds: [],
               seedGenres: [],
             });
-
+            // @ts-ignore
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
             // {
@@ -151,7 +152,7 @@ const DeckScreen = () => {
 
   React.useEffect(() => {
     //console.log("DECKS CHANGED: "+decks);
-    if(decks && decks.length > 0 && user) { //This loads twice. No time to fix it. Whatever...
+    if (decks && decks.length > 0 && user) { //This loads twice. No time to fix it. Whatever...
       getPlaylists();
     }
   }, [decks]);
@@ -172,6 +173,7 @@ const DeckScreen = () => {
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
                 <TouchableOpacity onPress={() => {
+                  // @ts-ignore
                   navigation.navigate("CreatePlaylist");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
