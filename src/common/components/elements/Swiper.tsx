@@ -148,6 +148,13 @@ const Swiper = (props: Props) => {
         continue;
       }
 
+      //check for duplicates in db here
+
+      // if (recResponse.tracks.length === 0) {
+      //   isValid = false;
+      //   continue;
+      // }
+
       const newTrack = recResponse.tracks.map((track: any) => track);
       const newTracksArray = tracks.concat(newTrack);
       setTracks(newTracksArray);
@@ -252,7 +259,7 @@ const Swiper = (props: Props) => {
 
     //Removes tracks with no preview url
     tracks.forEach((element) => {
-      if (element.preview_url === null) {
+      if (element.preview_url === null || element.preview_url === undefined) {
         console.log(
           "Null preview detected, Removing from tracks: " + element.name
         );
@@ -291,7 +298,7 @@ const Swiper = (props: Props) => {
 
   async function loadCurrentDeck(){
     const dbRef = ref(database);
-    get(child(dbRef, "Decks/" + user?.id + "/lastDeckUsed")).then((snapshot) => {
+    get(child(dbRef, "Decks/" + user?.id + "/selectedDeck")).then((snapshot) => {
       if (snapshot.exists()) {
         if(snapshot.val().isDefaultDeck === true){
           console.log("Default deck found in db, loading default deck");
