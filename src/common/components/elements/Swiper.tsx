@@ -294,24 +294,22 @@ const Swiper = (props: Props) => {
     return tracks;
   }
 
-  async function loadDefaultDeck() {
-
-  }
-
   async function loadCurrentDeck() {
     const dbRef = ref(database);
     get(child(dbRef, "Decks/" + user?.id + "/selectedDeck")).then((snapshot) => {
       if (snapshot.exists()) {
-        if (snapshot.val().isDefaultDeck === true) {
-          console.log("Default deck found in db, loading default deck");
-          getTracks();
-        } else {
-          console.log("Deck found in db, loading deck");
-          getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
-        }
-      } else {
-        console.log("Deck not found in db, loading default deck");
+        // if(snapshot.val().seedArtists.exists() && snapshot.val().seedGenres.exists()){
+        //   console.log("Deck found in db, loading deck");
+        //   getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
+        // }else{
+        //   console.log("Deck found in db, loading default top artists deck");
+        //   getTracks();
+        // }
         getTracks();
+
+      } else {
+        console.log("Deck not found in db");
+        //getTracks();
       }
     }).catch((error) => {
       console.log("Query Failed, error; " + error)
@@ -456,8 +454,8 @@ const Swiper = (props: Props) => {
   /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
     //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
-    getTracks();
-    checkDeck();
+    loadCurrentDeck();
+    //checkDeck();
   }, []);
 
   React.useEffect(() => {
