@@ -126,8 +126,6 @@ const HomeScreen = () => {
       }
       else {
         console.log("MOVING TO DEMO")
-        set(ref(database, "Decks/" + user?.id +"/"), {
-        });
         console.log("Generating Decks directory for user...");
         navigation.navigate('Welcome'); //Navigate to the welcome demo screen if user has not selected a playlist, change later
       }
@@ -146,16 +144,18 @@ const HomeScreen = () => {
   }, [selectedDeck])
 
   function checkDeck() {
-    get(child(dbRef, "Decks/" + user?.id + "/selectedDeck/")).then((snapshot) => { //When User is obtained, establish database array
+    get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
-        snapshot.forEach((element: any) => {
-          var value = element.val();
-          console.log("ANDY: " + value.name);
-          setSelectedDeck(value?.id);
-        });
+        var value = snapshot.val();
+        console.log("ANDY: " + value.name);
+        setSelectedDeck(value?.id);
       } else {
+        set(ref(database, "Decks/" + user?.id +"/"), {
+          name: "hi"
+        });
         setSelectedDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen
         setSelectedDeck(undefined);
+        
         console.log("Database connection failed");
       }
     });

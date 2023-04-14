@@ -18,7 +18,7 @@ import database from "../../../../firebaseConfig.tsx"; //ignore this error the i
 import { push, ref, set, child, get } from "firebase/database";
 import Scrubber from "react-native-scrubber";
 import { AntDesign } from "@expo/vector-icons";
-import { selectedPlaylist } from "@screens/DeckScreen";
+//import { selectedPlaylist } from "@screens/DeckScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Foundation } from "@expo/vector-icons";
@@ -31,7 +31,7 @@ import { StretchInX } from "react-native-reanimated";
 import TextTicker from "react-native-text-ticker";
 
 let speed: number = 25;
-
+let selectedPlaylist: string;
 type Props = {
   tracks: SpotifyApi.TrackObjectFull[];
 };
@@ -68,6 +68,8 @@ const Swiper = (props: Props) => {
   });
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
+
+  const dbRef = ref(database); // load database
 
   /****************************** FUNCTION DECLARATIONS *********************************/
 
@@ -437,10 +439,23 @@ const Swiper = (props: Props) => {
     likedTrack.push(tracks[index].uri);
     addToPlaylist(likedTrack);
   }
+
+  function checkDeck() {
+    get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
+      if (snapshot.exists()) {
+          var value = snapshot.val();
+          selectedPlaylist = value?.id;
+      } else {
+        console.log("Database connection failed in SWIPER component");
+      }
+    });
+  }
+
   /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
     //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
     getTracks();
+    checkDeck();
   }, []);
 
   React.useEffect(() => {

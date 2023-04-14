@@ -119,8 +119,8 @@ const DeckScreen = () => {
         text: 'Yes', onPress:
           () => {
             selectedPlaylist = playlists[playlist.index].id;
-            console.log("selected GAAAH" + playlists[playlist.index]?.id);
-            set(ref(database, "Decks/" + user?.id + "/selectedDeck/" + playlists[playlist.index]?.id), {
+            //console.log("selected GAAAH" + playlists[playlist.index]?.id);
+            set(ref(database, "SelectedDecks/" + user?.id), {
               id: playlists[playlist.index]?.id,
               name: playlists[playlist.index]?.name,
               seedArtistIds: [],
