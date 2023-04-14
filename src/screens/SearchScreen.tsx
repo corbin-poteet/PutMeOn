@@ -1,5 +1,5 @@
 import { TextInput, View, Text } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Switch } from 'react-native-paper';
@@ -9,6 +9,12 @@ const SearchScreen = () => {
     const navigation = useNavigation();
     const [toggle, setToggle] = useState(false); //false for genre search, true for artist search
     const [search, setSearch] = useState(''); //keeps track of what is entered in search bar dynamically
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerShown: false
+        })
+    }, [navigation])
 
     useEffect(() => { //useEffect to 
         if (toggle === true) {
@@ -21,7 +27,7 @@ const SearchScreen = () => {
     return (
         <View className='flex-1 justify-center'>
             <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-                <View className='flex-row absolute top-5 right-5'>
+                <View className='flex-row absolute top-11 right-5'>
                     <Text className='text-white'>Artist</Text>
                     <Switch value={toggle} onValueChange={setToggle} className='mx-2'></Switch>
                     <Text className='text-white'>Genre</Text>
