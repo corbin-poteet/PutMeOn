@@ -126,6 +126,9 @@ const HomeScreen = () => {
       }
       else {
         console.log("MOVING TO DEMO")
+        set(ref(database, "Decks/" + user?.id +"/"), {
+        });
+        console.log("Generating Decks directory for user...");
         navigation.navigate('Welcome'); //Navigate to the welcome demo screen if user has not selected a playlist, change later
       }
     }
