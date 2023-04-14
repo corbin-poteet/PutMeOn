@@ -1,12 +1,9 @@
-import { View, Text, Button, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
 import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
-import { fromJSON } from 'postcss';
-import { push, ref, set, child, get } from 'firebase/database';
+import { ref, child, get } from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let selectedPlaylist: string;

@@ -30,7 +30,7 @@ const Tabs = createBottomTabNavigator();
 
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
-    <Tabs.Navigator screenOptions={{headerShown: false}}>
+    <Tabs.Navigator initialRouteName = "Home" screenOptions={{headerShown: false}}>
       <Tabs.Screen name="Start" component={StartScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
@@ -79,7 +79,8 @@ const StackNavigator = () => {
           {user != undefined ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
-              <Stack.Screen name="Playlist" component={DeckScreen} />
+              <Stack.Screen name="Decks" component={DeckScreen} />
+              <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />

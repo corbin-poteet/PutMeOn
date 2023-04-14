@@ -52,6 +52,8 @@ const Swiper = (props: Props) => {
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
   const [isDefaultDeck, setIsDefaultDeck] = React.useState<boolean>(true);
+  const [seedArtists, setSeedArtists] = React.useState<string[]>([]);
+  const [seedGenres, setSeedGenres] = React.useState<string[]>([]);
   //Current deck object will be set to either default deck, or last deck used, no matter what
   const [currentDeck, setCurrentDeck] = React.useState<{
     seedArtistIds?: string[];
@@ -69,20 +71,26 @@ const Swiper = (props: Props) => {
 
   /****************************** FUNCTION DECLARATIONS *********************************/
 
+
+  //function gets user's top 5 artists and returns them as an array of artist ids
+  async function getTopArtists() {
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 5 }).then(
+      function (data: { items: any[]; }) {
+        return data.items.map((artist: any) => artist.id);
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    }) as string[];
+
+    return topArtistsIds;
+  }
+
+
   async function addTrack() {
-    const topArtistsIds = (await spotify
-      .getMyTopArtists({ limit: 5 })
-      .then(
-        function (data: { items: any[] }) {
-          return data.items.map((artist: any) => artist.id);
-        },
-        function (err: any) {
-          console.error(err);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      })) as string[];
+    const topArtistsIds = await getTopArtists();
 
     let isValid: boolean = false;
 
@@ -151,126 +159,60 @@ const Swiper = (props: Props) => {
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
   async function getTracks() {
     //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = (await spotify
-      .getMyTopArtists({ limit: 5 })
-      .then(
-        function (data: { items: any[] }) {
-          return data.items.map((artist: any) => artist.id);
-        },
-        function (err: any) {
-          console.error(err);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      })) as string[];
+    const topArtistsIds = await getTopArtists();
 
-    const recResponse = await spotify
-      .getRecommendations({
-        seed_artists: topArtistsIds,
-        limit: 20,
-      })
-      .then(
-        function (data: any) {
-          return data;
-        },
-        function (err: any) {
-          console.error(err);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      });
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: topArtistsIds,
+      seed_genres: [],
+      limit: 20,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
 
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
     //Cleaning time
     cleanTracks(trackStack);
-
+    //Update tracks usestate
     setTracks(trackStack);
-    setDeckCounter(trackStack.length);
   }
 
   // Same as getTracks, but takes in seed parameters
   async function getTracksSeeded(seedArtists: string[], seedGenres: string[]) {
-    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = (await spotify
-      .getMyTopArtists({ limit: 5 })
-      .then(
-        function (data: { items: any[] }) {
-          return data.items.map((artist: any) => artist.id);
-        },
-        function (err: any) {
-          console.error(err);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      })) as string[];
 
-    const recResponse = await spotify
-      .getRecommendations({
-        seed_artists: seedArtists,
-        seed_genres: seedGenres,
-        limit: 20,
-      })
-      .then(
-        function (data: any) {
-          return data;
-        },
-        function (err: any) {
-          console.error(err);
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      });
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: seedArtists,
+      seed_genres: seedGenres,
+      limit: 25,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+    
 
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
 
-    await spotify
-      .containsMySavedTracks(trackIds)
-      .then(
-        // after promise returns of containsMySavedTracks
-        function (isSavedArr: any[]) {
-          console.log("PROMISE RETURNED" + isSavedArr);
-          isSavedArr.forEach((element) => {
-            console.log(element);
-            if (element === true) {
-              console.log(
-                "Removing from tracks: " +
-                recResponse.tracks[isSavedArr.indexOf(element)].name
-              );
-
-              recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-              console.log("Updated length: " + recResponse.tracks.length);
-            }
-          });
-        }
-      )
-      .catch((err) => {
-        console.log(err);
-      });
-
-    //remove tracks with no preview url
-    recResponse.tracks.forEach(
-      (element: { preview_url: null; name: string }) => {
-        if (element.preview_url === null) {
-          console.log(
-            "Null preview detected, Removing from tracks: " + element.name
-          );
-          recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-        }
-      }
-    );
 
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
-
+    //Cleaning time
+    cleanTracks(trackStack);
+    //Update tracks usestate
     setTracks(trackStack);
-    //setDeckCounter(trackStack.length);
   }
 
   // async function getRecentlyPlayedTracks() {
@@ -341,6 +283,30 @@ const Swiper = (props: Props) => {
 
     console.log("Tracks length: " + tracks.length);
     return tracks;
+  }
+
+  async function loadDefaultDeck(){
+    
+  }
+
+  async function loadCurrentDeck(){
+    const dbRef = ref(database);
+    get(child(dbRef, "Decks/" + user?.id + "/lastDeckUsed")).then((snapshot) => {
+      if (snapshot.exists()) {
+        if(snapshot.val().isDefaultDeck === true){
+          console.log("Default deck found in db, loading default deck");
+          getTracks();
+        } else {
+        console.log("Deck found in db, loading deck");
+        getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
+        }
+      } else {
+        console.log("Deck not found in db, loading default deck");
+        getTracks();
+      }
+    }).catch((error) => {
+      console.log("Query Failed, error; " + error)
+    });
   }
 
   async function addToPlaylist(trackURIs: string[]) {
@@ -466,7 +432,7 @@ const Swiper = (props: Props) => {
   }
   /******************** USE EFFECTS ***********************/
   React.useEffect(() => {
-    //previously known as getTracks
+    //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
     getTracks();
   }, []);
 

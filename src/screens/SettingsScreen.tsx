@@ -28,9 +28,9 @@ const SettingsScreen = () => {
           () => {
             navigation.navigate('UserInfo')
           }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 60, marginBottom: 10 }}>
-            <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="person-circle-outline" size={30} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', marginBottom: 5, marginTop: 5 }}>Account</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30, marginBottom: 10 }}>
+            <Ionicons style={{ marginRight: 12, marginLeft: 10,}} name="person-circle-outline" size={30} color="white" />
+            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white'}}>Account</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={
@@ -39,7 +39,7 @@ const SettingsScreen = () => {
           }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
             <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="game-controller" size={35} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Match-Up Settings</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Match-Up</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={
