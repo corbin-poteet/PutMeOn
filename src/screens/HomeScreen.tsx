@@ -116,53 +116,55 @@ const HomeScreen = () => {
   }, [loaded]); //check for cached credentials so we know if this is first time load 
 
   return (
-    <SafeAreaView className='flex-1' edges={['top']}>
-      {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+     <SafeAreaView className='flex-1' edges={['top']}>
+       {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
-      {/* Header */}
-      <View className='items-center relative'>
-        <TouchableOpacity className='absolute left-5 top-3' onPress={
-          () => {
-            navigation.navigate('UserInfo')
-          }
-        }>
-          {
-            userImage !== null
-              ?
-              <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" />
-              :
-              <View>
-                <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" />
-              </View>
-          }
-        </TouchableOpacity>
+       {/* Header */}
+       <View className='items-center relative'>
+  <TouchableOpacity className='absolute left-5 top-3' onPress={
+    () => {
+      navigation.navigate('UserInfo')
+    }
+  }>
+    {
+      userImage !== null
+        ?
+        <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'white' }} />
+        :
         <View>
-          <TouchableOpacity activeOpacity={1} onPress={ () => setKonami(konami + 1)}>
-            <Image source={require('@assets/Logo_512.png')} style={{
-              width: 128,
-              height: 65,
-              transform: [{ translateX: -6 }],
-              resizeMode: 'contain',
-            }} />
-          </TouchableOpacity>
+          <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
         </View>
-          <TouchableOpacity className='absolute right-5 top-3' onPress={
-            () => {
-              navigation.navigate('Decks')
-            }
-          }>
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="deepskyblue" />
-          </TouchableOpacity>
-      </View>
+    }
+  </TouchableOpacity>
+  <View>
+    <TouchableOpacity activeOpacity={1} onPress={ () => setKonami(konami + 1)}>
+      <Image source={require('@assets/Logo_512_White.png')} style={{
+        width: 128,
+        height: 65,
+        transform: [{ translateX: -6 }],
+        resizeMode: 'contain',
+      }} />
+    </TouchableOpacity>
+  </View>
+  <TouchableOpacity className='absolute right-5 top-3' onPress={
+    () => {
+      navigation.navigate('Decks')
+    }
+  }>
+    <MaterialCommunityIcons className='' name="cards-outline" size={40} color="white" />
+  </TouchableOpacity>
+</View>
 
-      {/* Body */}
-      <View className='flex-1 items-center justify-center'>
-        <View className='h-full px-12 pt-1 pb-2' style={{ aspectRatio: 11 / 16 }}>
-          <Swiper tracks={tracks} />
-        </View>
-      </View>
-    </SafeAreaView >
-  )
+{/* Body */}
+<View className='flex-1 items-center justify-center'>
+  <View className='h-full px-12 pt-1 pb-2' style={{ aspectRatio: 11 / 16 }}>
+    <Swiper tracks={tracks} />
+  </View>
+</View>
+</SafeAreaView>
+</LinearGradient>
+)
 }
 
 export default HomeScreen;

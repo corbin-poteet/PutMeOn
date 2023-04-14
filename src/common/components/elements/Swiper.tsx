@@ -468,7 +468,7 @@ const Swiper = (props: Props) => {
           <LinearGradient
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={["#3F3F3F", "rgba(1,1,1,1)"]}
+            colors={["#1e314d", "#051b29"]}
             className="relative w-full h-full rounded-2xl"
           >
             <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">
