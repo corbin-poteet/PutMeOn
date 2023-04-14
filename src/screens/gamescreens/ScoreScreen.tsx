@@ -13,6 +13,7 @@ const ScoreScreen = () => {
       navigation.setOptions({
         gestureEnabled: false, //will be set to false to disable swipe out of page
         gestureDirection: 'horizontal',
+        animation: 'none',
       });
     }, [navigation]);
 
