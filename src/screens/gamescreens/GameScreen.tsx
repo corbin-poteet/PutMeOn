@@ -34,6 +34,9 @@ const GameScreen = () => {
       gestureEnabled: false, //can be set to false to disable swipe out of page
       gestureDirection: 'horizontal',
     });
+
+    
+
   }, [navigation]);
 
   //sound states

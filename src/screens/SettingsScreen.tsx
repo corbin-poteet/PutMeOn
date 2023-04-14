@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 const SettingsScreen = () => {
@@ -40,15 +41,20 @@ const SettingsScreen = () => {
       <SafeAreaView className='flex-1 bg-white' edges={['top']}>
 
         {/* Header */}
-        <View className='items-start bg-white'>
-          <View>
+        <View className='items-start bg-white w-full px-4'>
+          <View className='flex-row items-center w-full'>
             <Image source={require('@assets/Logo_512_White.png')} style={{
               width: 128,
               height: 65,
-              transform: [{ translateX: 16 }],
               resizeMode: 'contain',
               tintColor: '#01b1f1'
             }} />
+
+            {/* Settings Button */}
+            <TouchableOpacity className='ml-auto' onPress={() => { }}>
+              <FontAwesome5 name="cog" size={36} color="#7d8490" />
+            </TouchableOpacity>
+
           </View>
         </View>
 

@@ -210,7 +210,7 @@ const Swiper = (props: Props) => {
     ).catch((err) => {
       console.log(err);
     });
-    
+
 
     //trackIds is an array of the track IDs of the recommendations
     const trackIds = recResponse.tracks.map((track: any) => track.id);
@@ -294,20 +294,20 @@ const Swiper = (props: Props) => {
     return tracks;
   }
 
-  async function loadDefaultDeck(){
-    
+  async function loadDefaultDeck() {
+
   }
 
-  async function loadCurrentDeck(){
+  async function loadCurrentDeck() {
     const dbRef = ref(database);
     get(child(dbRef, "Decks/" + user?.id + "/selectedDeck")).then((snapshot) => {
       if (snapshot.exists()) {
-        if(snapshot.val().isDefaultDeck === true){
+        if (snapshot.val().isDefaultDeck === true) {
           console.log("Default deck found in db, loading default deck");
           getTracks();
         } else {
-        console.log("Deck found in db, loading deck");
-        getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
+          console.log("Deck found in db, loading deck");
+          getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
         }
       } else {
         console.log("Deck not found in db, loading default deck");
@@ -347,12 +347,14 @@ const Swiper = (props: Props) => {
 
     const { sound } = await Audio.Sound.createAsync(
       { uri: track.preview_url },
-      { shouldPlay: true }
+      { shouldPlay: true },
     );
 
     sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     sound.setProgressUpdateIntervalAsync(25);
     setSound(sound);
+
+    sound.setIsLoopingAsync(true);
 
     await sound.playAsync();
     setIsPlaying(true);
@@ -443,8 +445,8 @@ const Swiper = (props: Props) => {
   function checkDeck() {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
-          var value = snapshot.val();
-          selectedPlaylist = value?.id;
+        var value = snapshot.val();
+        selectedPlaylist = value?.id;
       } else {
         console.log("Database connection failed in SWIPER component");
       }
@@ -459,10 +461,12 @@ const Swiper = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    sound ? sound.unloadAsync() : null;
+    console.log("SWIPED");
 
+    sound && sound.unloadAsync();
+    setPlaybackPosition(0);
     loadAudio(tracks[cardIndex]);
-  }, []);
+  }, [tracks]);
 
   // React.useEffect(() => {
   //   if (needsReload === true) {
@@ -479,6 +483,7 @@ const Swiper = (props: Props) => {
       </View>
     );
   }
+
 
   // ***************************************** CARD RENDERING ********************************
   return (
@@ -511,6 +516,7 @@ const Swiper = (props: Props) => {
                       animationType={"scroll"}
                       easing={Easing.linear}
                       repeatSpacer={25}
+                      scroll={false}
                       className="text-white text-5xl font-bold"
                     >
                       {track.name}
@@ -519,24 +525,20 @@ const Swiper = (props: Props) => {
                   {/* Artist Name */}
                   <View className="flex-row items-center opacity-80">
                     <FontAwesome5 name="user-alt" size={16} color="white" />
-                    <Animated.ScrollView
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
+                    <TextTicker
+                      scrollSpeed={speed}
+                      loop
+                      numberOfLines={1}
+                      animationType={"scroll"}
+                      easing={Easing.linear}
+                      repeatSpacer={25}
+                      scroll={false}
+                      className="px-2 text-white text-xl"
                     >
-                      <TextTicker
-                        scrollSpeed={speed}
-                        loop
-                        numberOfLines={1}
-                        animationType={"scroll"}
-                        easing={Easing.linear}
-                        repeatSpacer={25}
-                        className="px-2 text-white text-xl"
-                      >
-                        {track.artists
-                          .map((artist: any) => artist.name)
-                          .join(", ")}
-                      </TextTicker>
-                    </Animated.ScrollView>
+                      {track.artists
+                        .map((artist: any) => artist.name)
+                        .join(", ")}
+                    </TextTicker>
                   </View>
                   {/* Album Name */}
                   <View className="flex-row items-center opacity-80">
@@ -548,6 +550,7 @@ const Swiper = (props: Props) => {
                       animationType={"scroll"}
                       easing={Easing.linear}
                       repeatSpacer={25}
+                      scroll={false}
                       className="px-2 text-white text-xl"
                     >
                       {track.album.name}
