@@ -6,6 +6,7 @@ import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SettingsSwitch from '@/common/components/SettingsSwitch';
 
 
 const SettingsScreen = () => {
@@ -76,32 +77,10 @@ const SettingsScreen = () => {
         <View className='flex-1 items-start py-5 my-1 ' style={{ backgroundColor: '#f0f2f4' }}>
           <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
 
-          <View className='flex-row w-full items-center py-3 mb-0.5 bg-white px-5'>
-            <Text className='text-base'>Filter Explicit Content</Text>
-            <Switch
-              onValueChange={null}
-              value={true}
-              className='ml-auto'
-            />
-          </View>
+          <SettingsSwitch text='Filter Explicit' value={true} />
+          <SettingsSwitch text='Filter No Previews'/>
+          <SettingsSwitch text='Your Mom'/>
 
-          <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
-            <Text className='text-base'>Filter No Previews</Text>
-            <Switch
-              onValueChange={null}
-              value={true}
-              className='ml-auto'
-            />
-          </View>
-
-          <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
-            <Text className='text-base'>Your Mom</Text>
-            <Switch
-              onValueChange={null}
-              value={true}
-              className='ml-auto'
-            />
-          </View>
 
         </View>
 
