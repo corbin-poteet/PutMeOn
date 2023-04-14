@@ -10,7 +10,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import Swiper from '@/common/components/elements/Swiper';
-import { selectedPlaylist } from '@screens/PlaylistScreen';
+import { selectedPlaylist } from '@screens/DeckScreen';
 
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook

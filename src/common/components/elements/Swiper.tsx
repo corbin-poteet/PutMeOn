@@ -18,7 +18,7 @@ import database from "../../../../firebaseConfig.tsx"; //ignore this error the i
 import { push, ref, set, child, get } from "firebase/database";
 import Scrubber from "react-native-scrubber";
 import { AntDesign } from "@expo/vector-icons";
-import { selectedPlaylist } from "@screens/PlaylistScreen";
+import { selectedPlaylist } from "@screens/DeckScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Foundation } from "@expo/vector-icons";
