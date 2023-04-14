@@ -347,12 +347,14 @@ const Swiper = (props: Props) => {
 
     const { sound } = await Audio.Sound.createAsync(
       { uri: track.preview_url },
-      { shouldPlay: true }
+      { shouldPlay: true },
     );
 
     sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     sound.setProgressUpdateIntervalAsync(25);
     setSound(sound);
+
+    sound.setIsLoopingAsync(true);
 
     await sound.playAsync();
     setIsPlaying(true);
