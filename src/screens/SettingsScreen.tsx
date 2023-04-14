@@ -77,7 +77,7 @@ const SettingsScreen = () => {
           <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
 
           <View className='flex-row w-full items-center py-3 mb-0.5 bg-white px-5'>
-            <Text className='text-base' style={{ color: '#515864' }}>Filter Explicit Content</Text>
+            <Text className='text-base'>Filter Explicit Content</Text>
             <Switch
               onValueChange={null}
               value={true}
@@ -86,7 +86,7 @@ const SettingsScreen = () => {
           </View>
 
           <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
-            <Text className='text-base' style={{ color: '#515864' }}>Filter No Previews</Text>
+            <Text className='text-base'>Filter No Previews</Text>
             <Switch
               onValueChange={null}
               value={true}
@@ -95,7 +95,7 @@ const SettingsScreen = () => {
           </View>
 
           <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
-            <Text className='text-base' style={{ color: '#515864' }}>Your Mom</Text>
+            <Text className='text-base'>Your Mom</Text>
             <Switch
               onValueChange={null}
               value={true}
