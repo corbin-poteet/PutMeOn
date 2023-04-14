@@ -49,23 +49,6 @@ const SettingsScreen = () => {
               tintColor: '#01b1f1'
             }} />
           </View>
-<<<<<<< Updated upstream
-        </TouchableOpacity>
-        <TouchableOpacity onPress={
-          () => {
-            // @ts-ignore
-            navigation.navigate('Decks')
-          }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-            <MaterialIcons style={{ marginRight: 12, marginLeft: 10 }} name="playlist-add-check" size={35} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Decks & Playlists</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-            <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="brush-outline" size={35} color="white" />
-            <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Themes</Text>
-=======
         </View>
 
         {/* User Info */}
@@ -87,7 +70,6 @@ const SettingsScreen = () => {
             <View className='flex-1 items-center py-4'>
               <Text className='text-3xl'>{user?.display_name}</Text>
             </View>
->>>>>>> Stashed changes
           </View>
         </View>
 
