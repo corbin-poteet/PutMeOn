@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, Switch } from 'react-native'
+import { View, Text, Button, Image, TouchableOpacity, StyleSheet, Switch, ScrollView } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import useAuth from '@hooks/useAuth';
@@ -52,39 +52,48 @@ const SettingsScreen = () => {
           </View>
         </View>
 
-        {/* User Info */}
-        <View className='flex-1 bg-white items-center py-3'>
-          <View>
-            {
-              userImage !== null
-                ?
-                <View className='rounded-full' style={{ borderWidth: 6, borderColor: '#01b1f1' }}>
-                  <Image source={{ uri: userImage }} className="w-48 h-48 rounded-full" style={{ borderWidth: 4, borderColor: 'white' }} />
-                </View>
+        <ScrollView className='flex-1 bg-white' >
 
-                :
-                <View>
-                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
-                </View>
-            }
 
-            <View className='flex-1 items-center py-4'>
-              <Text className='text-3xl'>{user?.display_name}</Text>
+          {/* User Info */}
+          <View className='flex-1 bg-white items-center py-3'>
+            <View>
+              {
+                userImage !== null
+                  ?
+                  <View className='rounded-full' style={{ borderWidth: 6, borderColor: '#01b1f1' }}>
+                    <Image source={{ uri: userImage }} className="w-48 h-48 rounded-full" style={{ borderWidth: 4, borderColor: 'white' }} />
+                  </View>
+
+                  :
+                  <View>
+                    <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
+                  </View>
+              }
+
+              <View className='flex-1 items-center py-4'>
+                <Text className='text-3xl'>{user?.display_name}</Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <View className='flex-1 items-start py-5 my-1 ' style={{ backgroundColor: '#f0f2f4' }}>
-          <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
+          {/* Account Settings */}
+          <View className='flex-1 items-start py-5' style={{ backgroundColor: '#f0f2f4' }}>
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
+            <SettingsSwitch text='Filter Explicit' value={true} />
+            <SettingsSwitch text='Filter No Previews' />
+            <SettingsSwitch text='Your Mom' />
+          </View>
 
-          <SettingsSwitch text='Filter Explicit' value={true} />
-          <SettingsSwitch text='Filter No Previews'/>
-          <SettingsSwitch text='Your Mom'/>
+          {/* Account Settings */}
+          <View className='flex-1 items-start' style={{ backgroundColor: '#f0f2f4' }}>
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
+            <SettingsSwitch text='Filter Explicit' value={true} />
+            <SettingsSwitch text='Filter No Previews' />
+            <SettingsSwitch text='Your Mom' />
+          </View>
 
-
-        </View>
-
-
+        </ScrollView>
 
         {/* <View style={{ alignItems: 'left' }}>
           <TouchableOpacity onPress={
