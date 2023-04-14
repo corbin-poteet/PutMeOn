@@ -459,10 +459,12 @@ const Swiper = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    sound ? sound.unloadAsync() : null;
+    console.log("SWIPED");
 
+    sound && sound.unloadAsync();
+    setPlaybackPosition(0);
     loadAudio(tracks[cardIndex]);
-  }, []);
+  }, [tracks]);
 
   // React.useEffect(() => {
   //   if (needsReload === true) {
@@ -479,6 +481,7 @@ const Swiper = (props: Props) => {
       </View>
     );
   }
+
 
   // ***************************************** CARD RENDERING ********************************
   return (
