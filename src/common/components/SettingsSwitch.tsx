@@ -16,14 +16,19 @@ const SettingsSwitch = (propsIn: SettingsSwitchProps) => {
   const props = { ...defaultProps, ...propsIn }
 
   const [switchValue, setSwitchValue] = React.useState<boolean>(props.value)
+  const toggleSwitch = () => {
+    setSwitchValue(previousState => !previousState);
+    props.onValueChange && props.onValueChange(!switchValue);
+  }
 
   return (
     <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
       <Text className='text-base'>{props.text}</Text>
       <Switch
-        onValueChange={props.onValueChange}
+        onValueChange={toggleSwitch}
         value={switchValue}
         className='ml-auto'
+
       />
     </View>
   )
