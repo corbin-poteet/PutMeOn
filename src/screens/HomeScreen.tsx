@@ -152,8 +152,8 @@ const HomeScreen = () => {
         console.log("ANDY: " + value.name);
         setSelectedDeck(value?.id);
       } else {
-        set(ref(database, "Decks/" + user?.id +"/"), {
-          name: "hi"
+        set(ref(database, "Decks/" + user?.id +"/test"), {
+          name: "test"
         });
         setSelectedDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen
         setSelectedDeck(undefined);
