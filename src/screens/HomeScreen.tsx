@@ -70,6 +70,7 @@ const HomeScreen = () => {
 
   React.useEffect(() => {
     if (konami >= 20) {
+      // @ts-ignore
       navigation.navigate('Secret') //shhh....
     }
   }, [konami]);
@@ -166,6 +167,7 @@ const HomeScreen = () => {
         <View className='items-center relative'>
           <TouchableOpacity className='absolute left-5 top-3' onPress={
             () => {
+              // @ts-ignore
               navigation.navigate('UserInfo')
             }
           }>
@@ -191,6 +193,7 @@ const HomeScreen = () => {
           </View>
           <TouchableOpacity className='absolute right-5 top-3' onPress={
             () => {
+              // @ts-ignore
               navigation.navigate('Decks')
             }
           }>

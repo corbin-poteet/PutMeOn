@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import useAuth from '@hooks/useAuth';
 import { push, ref, set, child, get } from 'firebase/database';
+// @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let playlists: any[];

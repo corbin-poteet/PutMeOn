@@ -93,6 +93,7 @@ const PlaylistScreen = () => {
         text: 'Yes', onPress:
           () => {
             selectedPlaylist = playlists[playlist.index].id;
+            // @ts-ignore
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
             // {
@@ -131,7 +132,8 @@ const PlaylistScreen = () => {
             :
             <Animated.View style={{ opacity: fadeAnim }}>
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
-                <TouchableOpacity onPress ={ () => {
+                <TouchableOpacity onPress={() => {
+                  // @ts-ignore
                   navigation.navigate("CreatePlaylist");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
