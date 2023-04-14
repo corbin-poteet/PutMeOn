@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import * as Haptics from 'expo-haptics';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -23,6 +23,7 @@ import ScoreScreen from '@/screens/gamescreens/ScoreScreen';
 import RoundScreen from '@/screens/gamescreens/RoundScreen';
 import EndScreen from '@/screens/gamescreens/EndScreen';
 import StartScreen from '@/screens/gamescreens/StartScreen';
+import SearchScreen from '@/screens/SearchScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
@@ -85,6 +86,7 @@ const StackNavigator = () => {
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
               <Stack.Screen name="Secret" component={SecretScreen} />
+              <Stack.Screen name="Search" component={SearchScreen} />
 
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />
