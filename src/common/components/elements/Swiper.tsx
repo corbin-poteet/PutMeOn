@@ -259,9 +259,11 @@ const Swiper = (props: Props) => {
         console.log(err);
       });
 
+
     //Removes tracks with no preview url
     tracks.forEach((element) => {
-      if (element.preview_url === null || element.preview_url === undefined) {
+      console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
+      if (element.preview_url == null || element.preview_url == undefined) {
         console.log(
           "Null preview detected, Removing from tracks: " + element.name
         );
@@ -612,6 +614,8 @@ const Swiper = (props: Props) => {
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
         loadAudio(tracks[cardIndex + 1]);
+
+        console.log(tracks[cardIndex].name + " has preview url?: " + tracks[cardIndex].preview_url);
 
         addTrack();
         console.log("tracks length: " + tracks.length);
