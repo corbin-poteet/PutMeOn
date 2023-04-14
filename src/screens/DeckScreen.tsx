@@ -3,7 +3,7 @@ import React from 'react'
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ref, child, get } from 'firebase/database';
+import { ref, child, get, set } from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let selectedPlaylist: string;
@@ -118,6 +118,14 @@ const DeckScreen = () => {
         text: 'Yes', onPress:
           () => {
             selectedPlaylist = playlists[playlist.index].id;
+            console.log("selected GAAAH"+playlists[playlist.index]?.id);
+            set(ref(database, "Decks/" + user?.id +"/selectedDeck/"+playlists[playlist.index]?.id), {
+              id: playlists[playlist.index]?.id,
+              name: playlists[playlist.index]?.name,
+              seedArtistIds: [],
+              seedGenres: [],
+            });
+
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
             // {
