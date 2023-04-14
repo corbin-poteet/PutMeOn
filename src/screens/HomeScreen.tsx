@@ -13,6 +13,7 @@ import Swiper from '@/common/components/elements/Swiper';
 import DeckScreen, { selectedPlaylist } from '@screens/DeckScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, child, get, set } from 'firebase/database';
+// @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 const HomeScreen = () => {
@@ -127,6 +128,7 @@ const HomeScreen = () => {
       else {
         console.log("MOVING TO DEMO")
         console.log("Generating Decks directory for user...");
+        // @ts-ignore
         navigation.navigate('Welcome'); //Navigate to the welcome demo screen if user has not selected a playlist, change later
       }
     }
