@@ -114,7 +114,7 @@ const SettingsScreen = () => {
             <TouchableOpacity onPress={
               () => {
                 // @ts-ignore
-                navigation.navigate('Playlist')
+                navigation.navigate('Decks')
               }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
                 <MaterialIcons style={{ marginRight: 12, marginLeft: 10 }} name="playlist-add-check" size={35} color="white" />
