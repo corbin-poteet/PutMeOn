@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ref, child, get, set } from 'firebase/database';
 // @ts-ignore
-import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import database from "../../firebaseConfig.tsx";
 
 let selectedPlaylist: string;
 let playlists: any[];
@@ -174,7 +174,7 @@ const DeckScreen = () => {
               <ScrollView style={{ flex: 1, marginTop: 150 }}>
                 <TouchableOpacity onPress={() => {
                   // @ts-ignore
-                  navigation.navigate("CreatePlaylist");
+                  navigation.navigate("Search");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                     <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />

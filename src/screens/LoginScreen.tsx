@@ -35,6 +35,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity className="flex-row items-center justify-center px-5 rounded-3xl top-8" style={{ backgroundColor: '#014871' }} onPress={ () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          //@ts-ignore
           navigation.navigate("Advertiser");
           }}>
           <Text className="text-white text-xl py-2 text-1 font-semibold">Artist/Advertiser? Press here</Text>
