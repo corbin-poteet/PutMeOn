@@ -1,6 +1,6 @@
 # PutMeOn
 
-Pre-Alpha 0.9.0 - The take on me update
+Pre-Alpha 0.9.4 - The TMI update
 
 ### A music recommendation application
 
