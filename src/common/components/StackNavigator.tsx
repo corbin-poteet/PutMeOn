@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import * as Haptics from 'expo-haptics';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -23,6 +23,7 @@ import ScoreScreen from '@/screens/gamescreens/ScoreScreen';
 import RoundScreen from '@/screens/gamescreens/RoundScreen';
 import EndScreen from '@/screens/gamescreens/EndScreen';
 import StartScreen from '@/screens/gamescreens/StartScreen';
+import SearchScreen from '@/screens/SearchScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
@@ -30,7 +31,7 @@ const Tabs = createBottomTabNavigator();
 
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   return (
-    <Tabs.Navigator screenOptions={{headerShown: false}}>
+    <Tabs.Navigator initialRouteName = "Home" screenOptions={{headerShown: false}}>
       <Tabs.Screen name="Start" component={StartScreen} listeners={
         {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
       }
@@ -79,11 +80,13 @@ const StackNavigator = () => {
           {user != undefined ? (
             <>
               <Stack.Screen name="Navbar" component={Tab} />
-              <Stack.Screen name="Playlist" component={DeckScreen} />
+              <Stack.Screen name="Decks" component={DeckScreen} />
+              <Stack.Screen name="Playlist" component={PlaylistScreen} />
               <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
               <Stack.Screen name="UserInfo" component={UserDetails} />
               <Stack.Screen name="AppInfo" component={AppInfo} />
               <Stack.Screen name="Secret" component={SecretScreen} />
+              <Stack.Screen name="Search" component={SearchScreen} />
 
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />

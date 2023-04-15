@@ -34,10 +34,13 @@ const GameScreen = () => {
       gestureEnabled: false, //can be set to false to disable swipe out of page
       gestureDirection: 'horizontal',
     });
+
+    
+
   }, [navigation]);
 
   //sound states
-  const [sound, setSound] = React.useState<Audio.Sound>();
+  const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [loaded, setLoaded] = React.useState<boolean>(false);
 
@@ -86,9 +89,32 @@ const GameScreen = () => {
     }
   }, [isFocused]);
 
+  async function playSound(track: SpotifyApi.TrackObjectFull) {
+    console.log('Loading Sound');
+    if (track.preview_url == null) {
+      console.log("NO PREVIEW URL");
+      return;
+    }
+
+
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: track.preview_url },
+      { shouldPlay: true }
+    );
+    setSound(sound);
+    console.log('Playing Sound');
+    await sound.playAsync();
+  }
+
+  async function stopSound() {
+    console.log('Stopping Sound');
+    await sound?.stopAsync();
+  }
+
   React.useEffect(() => {
     if (tracks.length >= 4) {
       correctTrack = tracks[0];
+      playSound(correctTrack);
       for (let i = 0; i < tracks.length; i++) {
         console.log("TRACK " + i + ": " + tracks[i]?.name);
       }
@@ -110,6 +136,9 @@ const GameScreen = () => {
   //function to handle the press of buttons 1 - 4
   function handleChoice(index: number) {
     console.log(tracks[index]);
+    
+    stopSound();
+
     if (correctTrack == tracks[index]) {
       setScore(score + 10); //these work don't mind the errors
       setEarnings(10);
@@ -207,7 +236,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(0)}</TextTicker>
+                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(0)}</TextTicker>
               </TouchableOpacity>
 
               <TouchableOpacity className='flex-row items-center justify-center px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
@@ -219,7 +248,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(1)}</TextTicker>
+                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(1)}</TextTicker>
               </TouchableOpacity>
 
               <TouchableOpacity className='flex-row items-center justify-center px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
@@ -231,7 +260,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(2)}</TextTicker>
+                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(2)}</TextTicker>
               </TouchableOpacity>
 
               <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
@@ -243,7 +272,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className="text-white text-xl px-8 py-2 text-1 font-semibold">{buttonContent(3)}</TextTicker>
+                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(3)}</TextTicker>
               </TouchableOpacity>
             </View>
           </View>

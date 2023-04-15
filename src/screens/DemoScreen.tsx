@@ -67,6 +67,7 @@ const WelcomeScreen = () => {
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
                 <TouchableOpacity className='flex-row px-12 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
+                    // @ts-ignore
                     onPress={() => { navigation.navigate('Tutorial') }}>
                     <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={50} color="white" />
                 </TouchableOpacity>
@@ -134,6 +135,7 @@ const TutorialScreen = () => {
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
                 <TouchableOpacity className='flex-row px-12 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
+                    // @ts-ignore
                     onPress={() => { navigation.navigate('Finish') }}>
                     <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={50} color="white" />
                 </TouchableOpacity>
@@ -183,19 +185,20 @@ const FinishScreen = () => {
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
             <View className='flex-1 justify-top items-center'>
                 <Animated.View style={{ opacity: fadeAnimOne }} className = 'items-center'>
-                    <Text className='text-white text-4xl text-left px-2 my-16 font-bold'>When you like a song it gets added to a playlist in Spotify</Text>
+                    <Text className='text-white text-4xl text-left px-2 my-16 font-bold'>When you like a song it gets added to a playlist in Spotify.</Text>
                     <MaterialIcons style={{ marginRight: 10, marginLeft: 10 }} name="playlist-add" size={300} color="white" />
                 </Animated.View>
             </View>
             <View className='flex-1 justify-center items-center'>
                 <Animated.View style={{ opacity: fadeAnimTwo }}>
-                    <Text className='text-white text-4xl text-center px-2 my-2 font-bold' style={{ color: '#FFFFFF' }}>Let's go select a Playlist now!</Text>
+                    <Text className='text-white text-2xl text-center px-2 my-2 font-bold' style={{ color: '#FFFFFF' }}>Let's go create a Put Me On Playlist now!</Text>
                 </Animated.View>
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
                 <TouchableOpacity className='flex-row px-6 py-2 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
-                    onPress={() => { navigation.navigate('Playlist') }}>
-                    <Text className='px-12 text-white text-xl text-center font-bold'>Select Playlist</Text>
+                    // @ts-ignore
+                    onPress={() => { navigation.navigate('Decks') }}>
+                    <Text className='px-12 text-white text-xl text-center font-bold'>Create Playlist</Text>
                 </TouchableOpacity>
             </Animated.View>
         </LinearGradient>

@@ -16,6 +16,8 @@ const EndScreen = () => {
     navigation.setOptions({
       gestureEnabled: false, //can be set to false to disable swipe out of page
       gestureDirection: 'horizontal',
+      animation: 'none',
+
     });
   }, [navigation]);
 

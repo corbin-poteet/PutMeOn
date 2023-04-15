@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import useAuth from '@hooks/useAuth';
 import { push, ref, set, child, get } from 'firebase/database';
+// @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
 let playlists: any[];
@@ -65,10 +66,10 @@ const CreatePlaylistScreen = () => {
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
         <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Creating a new Deck creates a playlist in Spotify. Let's give it a name!</Text>
-        <TextInput placeholder='Playlist Name' onChangeText={setName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-5 px-8 py-3'></TextInput>
-        <TextInput placeholder='Playlist Description' onChangeText={setDescription} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
+        <TextInput placeholder='Playlist Name' onChangeText={setName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-3' style={{ backgroundColor: '#014871' }}></TextInput>
+        <TextInput placeholder='Playlist Description' onChangeText={setDescription} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-10 px-8 py-3' style={{ backgroundColor: '#014871' }}></TextInput>
       
-        <TouchableOpacity className='absolute bottom-10 flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' 
+        <TouchableOpacity className='absolute bottom-10 flex-row items-center justify-center rounded-3xl bottom-12 px-8 py-3' style={{ backgroundColor: '#014871' }}
           onPress={() => {
             {createPlaylist()};
           }}>
