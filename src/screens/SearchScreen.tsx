@@ -92,7 +92,37 @@ const SearchScreen = () => {
                   });
         }
         else{ //if toggle false: search for tracks
+            // const response = await spotify.searchTracks(search, { limit: 20 }).then(
+            //   function (data) {
+            //     searchResults = data.tracks.items;
 
+            //     for (let i = 0; i < searchResults.length; i++) {
+            //       result.push(
+            //         {
+            //           "name": searchResults[i].name,
+            //           "image": searchResults[i].images[0],
+            //           "index": i
+            //         }
+            //       );
+            //     }
+                
+            //     const listItems = result.map(
+            //       (element) => {
+            //         return (
+            //           <View>
+            //             <TouchableOpacity onPress={
+            //               () => {console.log("GET PRANKED DOESNT WORK YET")}
+            //             }>
+            //               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+            //                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{element.name}</Text>
+            //               </View>
+            //             </TouchableOpacity>
+            //           </View>
+            //         )
+            //       }
+            //     )
+            //     setComponentHandler(listItems);
+            //   });
         }
         setLoaded(true); //when searching is finished, set loaded true
       }
@@ -101,6 +131,7 @@ const SearchScreen = () => {
     return (
         <View className='flex-1 justify-center'>
             <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
+                {/* Search Bar / Header */}
                 <View className='absolute top-11'>
                     <SearchSwitch text = {toggle.toString()} value = {false} onValueChange={setToggle}/>
                 </View>
@@ -108,6 +139,8 @@ const SearchScreen = () => {
                     <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but it will allow you to search for 5 seed artists/genres for making a new deck</Text>
                     <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
                 </View>
+
+                {/* Search Results */}
                 <View className='absolute top-80'>
                   {/* <ChosenSeeds seeds={seeds} setSeeds={setSeeds}/> */}
                     {!loaded
