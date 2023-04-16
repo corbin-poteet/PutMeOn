@@ -1,4 +1,4 @@
-import { TextInput, View, Text, TouchableOpacity } from 'react-native'
+import { TextInput, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -46,14 +46,27 @@ const SearchScreen = () => {
       }
     }, [seeds]);
 
+    useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
+      if (user != undefined && user.id != undefined) {
+        getSearchResults();
+      }
+    }, [user, search]);
+
     async function getSearchResults() {
+        setLoaded(false); //when actively searching, set loaded false
         if(toggle){ //if toggle true: search for artists
             const response = await spotify.searchArtists(search, { limit: 20 }).then(
                   function (data) {
                     searchResults = data.artists.items;
 
                     for (let i = 0; i < searchResults.length; i++) {
-                      result.push(searchResults[i]);
+                      result.push(
+                        {
+                          "name": searchResults[i].name,
+                          "image": searchResults[i].images[0],
+                          "index": i
+                        }
+                      );
                     }
                     
                     const listItems = result.map(
@@ -74,12 +87,12 @@ const SearchScreen = () => {
                       }
                     )
                     setComponentHandler(listItems);
-                    setLoaded(true)
                   });
         }
-        else{ //if toggle false: search for genres
+        else{ //if toggle false: search for tracks
 
         }
+        setLoaded(true); //when searching is finished, set loaded true
       }
 
     return (
@@ -92,7 +105,16 @@ const SearchScreen = () => {
                     <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but it will allow you to search for 5 seed artists/genres for making a new deck</Text>
                     <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
                 </View>
-                <ScrollView>{componentHandler}</ScrollView>
+                {!loaded //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
+                ?
+                <View style={{ flex: 1, marginTop: 300 }}>
+                  <ActivityIndicator size="large" color="#014871" />
+                </View>
+                :
+                <ScrollView>
+                  {componentHandler}
+                </ScrollView>
+                }
             </LinearGradient>
         </View>
     )
