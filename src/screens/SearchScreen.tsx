@@ -5,12 +5,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ref, child, get, set } from 'firebase/database';
+import { ScrollView } from 'react-native-gesture-handler';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
-import { ScrollView } from 'react-native-gesture-handler';
 
 
-let searchResults: any[] = [];
+let searchResults: any[];
 
 const SearchScreen = () => {
 
@@ -39,13 +39,22 @@ const SearchScreen = () => {
         }
     }, [toggle]);
 
-    async function getSearchResults() {
+    useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
+      if(seeds.length == 5){
+        //@ts-ignore
+        navigation.navigate('DeckScreen')
+      }
+    }, [seeds]);
 
+    async function getSearchResults() {
         if(toggle){ //if toggle true: search for artists
-            const response = await spotify.searchArtists(search, { limit: 20 }
-                ).then(
+            const response = await spotify.searchArtists(search, { limit: 20 }).then(
                   function (data) {
-                    searchResults = data.artists; //needs some kind of change here cannot figure this out rn
+                    searchResults = data.artists.items;
+
+                    for (let i = 0; i < searchResults.length; i++) {
+                      result.push(searchResults[i]);
+                    }
                     
                     const listItems = result.map(
                       (element) => {
@@ -53,11 +62,11 @@ const SearchScreen = () => {
                           <View>
                             <TouchableOpacity onPress={
                               () => {
-                                //add
+                                setSeeds(seeds.push(element.id));
                               }
                             }>
                               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {element.name} </Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{element.name}</Text>
                               </View>
                             </TouchableOpacity>
                           </View>
