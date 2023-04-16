@@ -89,6 +89,10 @@ const SearchScreen = () => {
                       }
                     )
                     setComponentHandler(listItems);
+                  })
+                  .catch(error => {
+                    // Handle promise rejection
+                    console.error(error);
                   });
         }
         else{ //if toggle false: search for tracks
@@ -136,7 +140,7 @@ const SearchScreen = () => {
                     <SearchSwitch text = {toggle.toString()} value = {false} onValueChange={setToggle}/>
                 </View>
                 <View className='absolute top-20'>
-                    <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but it will allow you to search for 5 seed artists/genres for making a new deck</Text>
+                    <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but allows you to search for 5 seed artists/genres for your deck (true on the toggle makes search work rn)</Text>
                     <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
                 </View>
 
