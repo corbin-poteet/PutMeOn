@@ -63,7 +63,7 @@ const Swiper = (props: Props) => {
     const topArtistsIds = await getTopArtists();
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 50,
+      limit: 10,
     });
 
     const newTracks = recResponse.tracks.map((track: any) => track);
