@@ -8,8 +8,8 @@ import { output } from './SearchScreen.js';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
-let playlists: any[];
-let createdPlaylist: any;
+var playlists: any[];
+var createdPlaylist: any;
 
 const CreatePlaylistScreen = () => {
 
