@@ -10,7 +10,7 @@ import { output } from './SearchScreen.tsx';
 import database from "../../firebaseConfig.tsx";
 
 var playlists: any[];
-var  createdPlaylist: any;
+var createdPlaylist: any;
 
 const CreatePlaylistScreen = () => {
 

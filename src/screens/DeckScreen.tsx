@@ -7,8 +7,8 @@ import { ref, child, get, set } from 'firebase/database';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
-let selectedPlaylist: string;
-let playlists: any[];
+var selectedPlaylist: string;
+var playlists: any[];
 
 //let loaded: boolean = false;
 //Maybe add these values as props?
