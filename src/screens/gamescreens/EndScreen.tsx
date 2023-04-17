@@ -33,7 +33,7 @@ const EndScreen = () => {
         <Text className='font-semibold text-3xl text-white absolute top-16'>This is the End Screen. Your final score: {score}</Text>
         <TouchableOpacity className="flex-row items-center justify-center px-5 rounded-3xl" style={{ backgroundColor: '#014871' }}
           onPress={() => { clearGame(); navigation.navigate("Start"); }}>
-          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Restart Game</Text>
+          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">End Game</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
