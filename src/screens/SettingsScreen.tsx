@@ -33,6 +33,39 @@ const SettingsScreen = () => {
     }
   }, [user]);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      paddingVertical: 15,
+      paddingHorizontal: 15,
+      marginBottom: 8,
+      width: '100%',
+    },
+    button: {
+      backgroundColor: 'Green', 
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 5,
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+  });
+  
   return (
     //Logout button functionality, user details
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
@@ -68,7 +101,7 @@ const SettingsScreen = () => {
             }
 
             <View className='flex-1 items-center py-4'>
-              <Text className='text-3xl'>{user?.display_name}</Text>
+              <Text className='text-3xl' >{user?.display_name}</Text>
             </View>
           </View>
         </View>
@@ -100,7 +133,16 @@ const SettingsScreen = () => {
               onValueChange={null}
               value={true}
               className='ml-auto'
+              
             />
+          </View>
+          <View className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
+            <Button
+              title="Themes"
+              onPress={() => navigation.navigate('Themes')}
+              className= 'ml-auto'
+            />
+            {/* Add other settings options here */}
           </View>
 
         </View>

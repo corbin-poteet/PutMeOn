@@ -472,10 +472,10 @@ const Swiper = (props: Props) => {
       rotationAngle={15}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
-          <LinearGradient
+          <LinearGradient style={{ borderWidth: 4, borderColor: '#c9cfd1' }}
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={["#1e314d", "#051b29"]}
+            colors={["#1f1e1e", "#1f1e1e"]}
             className="relative w-full h-full rounded-2xl"
           >
             <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">

@@ -24,6 +24,8 @@ import RoundScreen from '@/screens/gamescreens/RoundScreen';
 import EndScreen from '@/screens/gamescreens/EndScreen';
 import StartScreen from '@/screens/gamescreens/StartScreen';
 import SearchScreen from '@/screens/SearchScreen';
+import ThemesScreen from '@screens/ThemesScreen';
+
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 
 const Stack = createNativeStackNavigator();
@@ -87,6 +89,8 @@ const StackNavigator = () => {
               <Stack.Screen name="AppInfo" component={AppInfo} />
               <Stack.Screen name="Secret" component={SecretScreen} />
               <Stack.Screen name="Search" component={SearchScreen} />
+              <Stack.Screen name="Themes" component={ThemesScreen} />
+
 
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
               <Stack.Screen name="Tutorial" component={TutorialScreen} />

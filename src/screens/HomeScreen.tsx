@@ -163,7 +163,7 @@ const HomeScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+    <LinearGradient start={{ x: 0, y: 0 }} colors={['#363636', '#424242']} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <SafeAreaView className='flex-1' edges={['top']}>
         {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
