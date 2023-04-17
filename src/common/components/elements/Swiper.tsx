@@ -40,7 +40,7 @@ const Swiper = (props: Props) => {
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
   var isPromo = false;
-
+  var promoCount = 0;
   const dbRef = ref(database); // load database
 
   /****************************** FUNCTION DECLARATIONS *********************************/
@@ -102,9 +102,10 @@ const Swiper = (props: Props) => {
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
     //Cleaning time
-    trackStack = await cleanTracks(trackStack);
+    //trackStack = await cleanTracks(trackStack);
+    cleanTracks(trackStack);
     //Update tracks usestate
-    setTracks(trackStack);
+    //setTracks(trackStack);
   }
 
   async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]) {
@@ -144,11 +145,13 @@ const Swiper = (props: Props) => {
       get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
         .then((snapshot) => {
           if (snapshot.exists()) {
+            console.log("REMOVED BASED ON DB: "+trackId)
             tracks.splice(trackIds2.indexOf(trackId), 1);
             console.log(
               "SWIPED SONG DETECTED IN DB, REMOVING: " +
-              snapshot.val().trackName
+              snapshot.val().trackID
             );
+            console.log("track removed?"+trackIds2.indexOf(trackId), 1);
           } else {
             console.log("Swiped song not found");
           }
@@ -170,7 +173,8 @@ const Swiper = (props: Props) => {
     });
 
     console.log("Tracks length: " + tracks.length);
-    return tracks;
+    setTracks(tracks);
+    //return tracks;
   }
 
   async function loadCurrentDeck() {
@@ -368,7 +372,7 @@ const Swiper = (props: Props) => {
           <LinearGradient 
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={!isPromo ? ["#1e314d", "#051b29"] : ['#B59410', '#FFD700']}
+            colors={cardIndex%5!==0? ["#1e314d", "#051b29"] : ['#B59410', '#FFD700']}
             className="relative w-full h-full rounded-2xl"
           >
             <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">
@@ -472,7 +476,7 @@ const Swiper = (props: Props) => {
                           </TouchableOpacity> 
                         </View>
                       </View>
-                        { isPromo? <Text className="text-2xl font-bold text-center" style={{ color: '#B59410' }}>Artist Promotion</Text> : <></>}
+                        { cardIndex%5===0? <Text className="text-2xl font-bold text-center" style={{ color: '#B59410' }}>Artist Promotion</Text> : <></>}
                     </View>
                   ) : null}
                 </View>
@@ -483,7 +487,7 @@ const Swiper = (props: Props) => {
       }}
       onSwiped={(index: number) => {
         console.log("SWIPED");
-        
+
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
