@@ -116,14 +116,14 @@ const ThemesScreen = () => {
       height: 80,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'pink',
+      backgroundColor: '#92ddf0',
     },
     title: {
       fontSize: 30,
       color: 'black',
       fontWeight: 'bold',
       marginBottom: 0,
-      marginTop: 30, // Adjust this value to lower or raise the title
+      marginTop: 30, 
     },
     themeList: {
       paddingHorizontal: 10,
