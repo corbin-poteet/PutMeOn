@@ -145,13 +145,13 @@ const Swiper = (props: Props) => {
       get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
         .then((snapshot) => {
           if (snapshot.exists()) {
-            console.log("REMOVED BASED ON DB: "+trackId)
+            console.log("REMOVED BASED ON DB: " + trackId)
             tracks.splice(trackIds2.indexOf(trackId), 1);
             console.log(
               "SWIPED SONG DETECTED IN DB, REMOVING: " +
               snapshot.val().trackID
             );
-            console.log("track removed?"+trackIds2.indexOf(trackId), 1);
+            console.log("track removed?" + trackIds2.indexOf(trackId), 1);
           } else {
             console.log("Swiped song not found");
           }
@@ -369,18 +369,26 @@ const Swiper = (props: Props) => {
       rotationAngle={15}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
-          <LinearGradient 
+          <LinearGradient
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={cardIndex%5!==0? ["#1e314d", "#051b29"] : ['#B59410', '#FFD700']}
-            className="relative w-full h-full rounded-2xl"
+            colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : ['#3F3F3F', '#000000']}
+            className="relative w-full h-full rounded-2xl items-center"
           >
+            {cardIndex % 5 === 0 ?
+              <View className="top-3 items-center -mt-1" style={{ backgroundColor: '#7C7C7C', shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000', borderRadius: 3, width: 70, height: 18, justifyContent: 'center', alignItems: 'center' }}>
+                <Text className="text-center font-semibold tracking-tighter" style={{ fontSize:10, color: '#FFFFFF', textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 5 }}>Sponsored</Text>
+              </View>
+              : <></>}
+
             <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">
+
               <View className="flex-1 justify-start items-start">
                 <View className="relative justify-center items-center w-full aspect-square justify-start">
                   <Image
                     source={{ uri: track.album.images[0].url }}
                     className="absolute w-full h-full"
+                    style={{ shadowColor: 'rgba(0, 0, 0, 0.5)', shadowOffset: { width: 0, height: 0 }, shadowRadius: 5 }}
                   />
                 </View>
                 <View className="pt-2 px-0 w-full justify-start items-start pt-4">
@@ -395,6 +403,7 @@ const Swiper = (props: Props) => {
                       repeatSpacer={25}
                       scroll={false}
                       className="text-white text-4xl font-bold"
+                      style={{ shadowColor: 'rgba(0, 0, 0, 0.5)', shadowOffset: { width: 0, height: 0 }, shadowRadius: 5 }}
                     >
                       {track.name}
                     </TextTicker>
@@ -411,6 +420,7 @@ const Swiper = (props: Props) => {
                       repeatSpacer={25}
                       scroll={false}
                       className="px-2 text-white text-xl"
+                      style={{ shadowColor: 'rgba(0, 0, 0, 0.5)', shadowOffset: { width: 0, height: 0 }, shadowRadius: 5 }}
                     >
                       {track.artists
                         .map((artist: any) => artist.name)
@@ -429,6 +439,7 @@ const Swiper = (props: Props) => {
                       repeatSpacer={25}
                       scroll={false}
                       className="px-2 text-white text-xl"
+                      style={{ shadowColor: 'rgba(0, 0, 0, 0.5)', shadowOffset: { width: 0, height: 0 }, shadowRadius: 5 }}
                     >
                       {track.album.name}
                     </TextTicker>
@@ -473,10 +484,9 @@ const Swiper = (props: Props) => {
                               size={84}
                               color="white"
                             />
-                          </TouchableOpacity> 
+                          </TouchableOpacity>
                         </View>
                       </View>
-                        { cardIndex%5===0? <Text className="text-2xl font-bold text-center" style={{ color: '#B59410' }}>Artist Promotion</Text> : <></>}
                     </View>
                   ) : null}
                 </View>

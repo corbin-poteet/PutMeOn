@@ -163,7 +163,7 @@ const HomeScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#f0f2f4', '#f0f2f4']} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <SafeAreaView className='flex-1' edges={['top']}>
         {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
@@ -178,10 +178,10 @@ const HomeScreen = () => {
             {
               userImage !== null
                 ?
-                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'white' }} />
+                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
                 :
                 <View>
-                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'blue' }} />
+                  <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
                 </View>
             }
           </TouchableOpacity>
@@ -192,6 +192,7 @@ const HomeScreen = () => {
                 height: 65,
                 transform: [{ translateX: -6 }],
                 resizeMode: 'contain',
+                tintColor: '#01b1f1'
               }} />
             </TouchableOpacity>
           </View>
@@ -201,7 +202,7 @@ const HomeScreen = () => {
               navigation.navigate('Decks')
             }
           }>
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="white" />
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="#7d8490" />
           </TouchableOpacity>
         </View>
 
