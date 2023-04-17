@@ -94,76 +94,89 @@ const Swiper = (props: Props) => {
   async function addTrack() {
     const topArtistsIds = await getTopArtists();
 
-    let isValid: boolean = false;
 
     //Keeps pulling a new track until the track is valid (new and has a preview url)
-    while (isValid === false) {
-      const recResponse = await spotify.getRecommendations({
-        seed_artists: topArtistsIds,
-        limit: 1,
-      });
+    //while (isValid === false) {
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: topArtistsIds,
+      limit: 50,
+    });
 
-      const trackId = recResponse.tracks.map((track: any) => track.id);
+    const newTracks = recResponse.tracks.map((track: any) => track);
 
-      await spotify
-        .containsMySavedTracks(trackId)
-        .then(
-          // after promise returns of containsMySavedTracks
-          function (isSavedArr: any[]) {
-            console.log("PROMISE RETURNED" + isSavedArr);
-            isSavedArr.forEach((element) => {
-              console.log(element);
-              if (element === true) {
-                console.log(
-                  "Removing from tracks: " +
-                  recResponse.tracks[isSavedArr.indexOf(element)].name
-                );
 
-                recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
-
-                console.log("Updated length: " + recResponse.tracks.length);
-              }
-            });
-          }
-        )
-        .catch((err) => {
-          console.log(err);
-        });
-
-      if (recResponse.tracks.length === 0) {
-        isValid = false;
-        continue;
+    for (let i = 0; i < newTracks.length; i++) {
+      if (newTracks[i].preview_url !== null) {
+        const newTracksArray = tracks.concat(newTracks[i]);
+        setTracks(newTracksArray);
+        console.log("Added track: " + newTracks[i].name);
+        break;
       }
-
-      //remove tracks with no preview url
-      recResponse.tracks.forEach((element) => {
-        if (element.preview_url === null) {
-          console.log(
-            "Null preview detected, Removing from tracks: " + element.name
-          );
-          recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
-        }
-      });
-
-      if (recResponse.tracks.length === 0) {
-        isValid = false;
-        continue;
-      }
-
-      //check for duplicates in db here
-
-      // if (recResponse.tracks.length === 0) {
-      //   isValid = false;
-      //   continue;
-      // }
-
-      const newTrack = recResponse.tracks.map((track: any) => track);
-      const newTracksArray = tracks.concat(newTrack);
-      setTracks(newTracksArray);
-      isValid = true;
-      break;
     }
+
+
+    // await spotify
+    //   .containsMySavedTracks(trackId)
+    //   .then(
+    //     // after promise returns of containsMySavedTracks
+    //     function (isSavedArr: any[]) {
+    //       console.log("PROMISE RETURNED" + isSavedArr);
+    //       isSavedArr.forEach((element) => {
+    //         console.log(element);
+    //         if (element === true) {
+    //           console.log(
+    //             "Removing from tracks: " +
+    //             recResponse.tracks[isSavedArr.indexOf(element)].name
+    //           );
+
+    //           recResponse.tracks.splice(isSavedArr.indexOf(element), 1);
+
+    //           console.log("Updated length: " + recResponse.tracks.length);
+    //         }
+    //       });
+    //     }
+    //   )
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+
+
+
+
+    // if (recResponse.tracks.length === 0) {
+    //   isValid = false;
+    //   continue;
+    // }
+
+    // //remove tracks with no preview url
+    // recResponse.tracks.forEach((element) => {
+    //   if (element.preview_url === null) {
+    //     console.log(
+    //       "Null preview detected, Removing from tracks: " + element.name
+    //     );
+    //     recResponse.tracks.splice(recResponse.tracks.indexOf(element), 1);
+    //   }
+    // });
+
+    // if (recResponse.tracks.length === 0) {
+    //   isValid = false;
+    //   continue;
+    // }
+
+    // //check for duplicates in db here
+
+    // // if (recResponse.tracks.length === 0) {
+    // //   isValid = false;
+    // //   continue;
+    // // }
+
+    // const newTrack = recResponse.tracks.map((track: any) => track);
+    // const newTracksArray = tracks.concat(newTrack);
+    // setTracks(newTracksArray);
+    // isValid = true;
+    // break;
   }
+
 
   //function that sets tracks usestate to an array of tracks based on the user's top 5 artists
   async function getTracks() {
@@ -457,15 +470,24 @@ const Swiper = (props: Props) => {
   React.useEffect(() => {
     //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
     loadCurrentDeck();
+
+    if (sound != null) {
+      return () => {
+        sound.unloadAsync();
+      };
+    }
+
     //checkDeck();
   }, []);
 
   React.useEffect(() => {
     console.log("SWIPED");
 
-    sound && sound.unloadAsync();
-    setPlaybackPosition(0);
-    loadAudio(tracks[cardIndex]);
+    if (cardIndex == 0) {
+      sound && sound.unloadAsync();
+      setPlaybackPosition(0);
+      loadAudio(tracks[cardIndex]);
+    }
   }, [tracks]);
 
   // React.useEffect(() => {

@@ -4,13 +4,11 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
-import { ref, child, get, set } from 'firebase/database';
 import { ScrollView } from 'react-native-gesture-handler';
-// @ts-ignore
-import database from "../../firebaseConfig.tsx";
 
 
 let searchResults: any[];
+let output: any[] = [];
 
 // const ChosenSeeds = (seeds: any, setSeeds: React.Dispatch<any>) => { //component to display a list of seeds the user has pressed, and remove them if user presses them
 //   return (
@@ -46,8 +44,10 @@ const SearchScreen = () => {
 
     useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
       if(seeds?.length == 5){
+        Alert.alert("5 seeds selected! Time to create a playlist");
+        output = seeds;
         //@ts-ignore
-        navigation.navigate('Home')
+        navigation.navigate('CreatePlaylist');
       }
     }, [seeds]);
 
@@ -85,7 +85,7 @@ const SearchScreen = () => {
                               Alert.alert("Added artist: " + element.name);
                               console.log("ADDING ARTIST: " + element.name);
                               console.log(seeds);
-                              setComponentHandler([]);
+                              setComponentHandler([]); //clear search results on screen
                               }
                             }>
                               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -128,7 +128,7 @@ const SearchScreen = () => {
                             Alert.alert("Added song: " + element.name);
                             console.log("ADDING SONG: " + element.name);
                             console.log(seeds);
-                            setComponentHandler([]);
+                            setComponentHandler([]); //clear search results on screen
                           }
                         }>
                           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -158,7 +158,7 @@ const SearchScreen = () => {
                     <SearchSwitch text = {toggle.toString()} value = {false} onValueChange={setToggle}/>
                 </View>
                 <View className='absolute top-20'>
-                    <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but allows you to search for 5 seed artists/genres for your deck (true on the toggle makes search work rn)</Text>
+                    <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">This is the search screen. It looks like shit right now but allows you to search for 5 seed artists/genres for your deck</Text>
                     <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
                 </View>
 
@@ -180,5 +180,5 @@ const SearchScreen = () => {
         </View>
     )
 }
-
+export { output };
 export default SearchScreen
