@@ -33,17 +33,19 @@ const SearchScreen = () => {
     const [toggle, setToggle] = useState<boolean>(false); //false for genre search, true for artist search
     const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
     const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
-    const [seeds, setSeeds] = useState<any>([]); //holds up to 5 seeds to pass to next screen
-    const [componentHandler, setComponentHandler] = useState<any>(); //keeps track of search results
+    const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
+    const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
 
     useLayoutEffect(() => { //hide header
         navigation.setOptions({
-            headerShown: false
+            headerShown: false,
+            gestureEnabled: true, //will be set to false later (you can't back out of this screen)
+            gestureDirection: 'horizontal'
         })
     }, [navigation])
 
     useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-      if(seeds.length == 5){
+      if(seeds?.length == 5){
         //@ts-ignore
         navigation.navigate('Home')
       }
@@ -68,7 +70,7 @@ const SearchScreen = () => {
                         {
                           "name": searchResults[i].name,
                           "image": searchResults[i].images[0],
-                          "index": i
+                          "id": searchResults[i].id
                         }
                       );
                     }
@@ -78,7 +80,12 @@ const SearchScreen = () => {
                         return (
                           <View>
                             <TouchableOpacity onPress={
-                              () => {console.log("DOESNT QUITE WORK YET INNIT")}
+                              () => {
+                              setSeeds([...seeds, element.id]);
+                              console.log("ADDING SEED: " + element.name);
+                              console.log(seeds);
+                              setSearch('');
+                              }
                             }>
                               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{element.name}</Text>
