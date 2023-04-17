@@ -1,5 +1,5 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState, useContext, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import DeckScreen, { selectedPlaylist } from '@screens/DeckScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, child, get, set } from 'firebase/database';
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import ThemeContext from '@hooks/ThemeContext';
 
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
@@ -26,10 +27,21 @@ const HomeScreen = () => {
   const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
   const [selectedDeck, setSelectedDeck] = React.useState<string>();
+  const { theme } = useContext(ThemeContext);
+  const [loading, setLoading] = useState(true);
+
+
 
   var tracks: any | any[] = [];
 
   const dbRef = ref(database); // load database
+
+  useEffect(() => {
+    if (theme) {
+      setLoading(false);
+    }
+  }, [theme]);
+
 
   // async function getRecentlyPlayedTracks() {
   //   const recentlyPlayed = await spotify.getMyRecentlyPlayedTracks({ limit: 15 }).then(
@@ -66,7 +78,6 @@ const HomeScreen = () => {
   //       style: 'cancel',
   //     }]);
   // }, []);
-
 
   React.useEffect(() => {
     if (konami >= 20) {
@@ -163,8 +174,12 @@ const HomeScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: 0, y: 0 }} colors={['#363636', '#424242']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-      <SafeAreaView className='flex-1' edges={['top']}>
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        colors={theme?.gradientColors || ['#4c669f', '#3b5998', '#192f6a']} // Provide a fallback value (default colors)
+        style={{ flex: 1, justifyContent: "flex-start" }}
+      >
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
         {/* Header */}
@@ -211,10 +226,10 @@ const HomeScreen = () => {
             <Swiper tracks={tracks} />
           </View>
         </View>
-      </SafeAreaView>
+        </SafeAreaView>
     </LinearGradient>
-  )
-}
+  );
+};
 
 export default HomeScreen;
 
