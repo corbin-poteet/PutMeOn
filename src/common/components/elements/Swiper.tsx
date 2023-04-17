@@ -298,7 +298,7 @@ const Swiper = (props: Props) => {
 
   async function loadCurrentDeck() {
     const dbRef = ref(database);
-    get(child(dbRef, "Decks/" + user?.id + "/selectedDeck")).then((snapshot) => {
+    get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => {
       if (snapshot.exists()) {
         // if(snapshot.val().seedArtists.exists() && snapshot.val().seedGenres.exists()){
         //   console.log("Deck found in db, loading deck");

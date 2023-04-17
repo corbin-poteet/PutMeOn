@@ -149,7 +149,6 @@ const HomeScreen = () => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
-        console.log("ANDY: " + value.name);
         setSelectedDeck(value?.id);
       } else {
         set(ref(database, "Decks/" + user?.id +"/test"), {
