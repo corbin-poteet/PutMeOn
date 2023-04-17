@@ -8,8 +8,8 @@ import { push, ref, set, child, get } from 'firebase/database';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 
-let playlists: any[];
-let createdPlaylist: any;
+var playlists: any[];
+var createdPlaylist: any;
 
 const CreatePlaylistScreen = () => {
 
