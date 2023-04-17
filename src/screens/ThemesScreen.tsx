@@ -62,7 +62,8 @@ const ThemesScreen = () => {
         setSelectedTheme(themeId);
       }
     };
-  
+    const currentTheme = themeData.find((theme) => theme.id === selectedTheme);
+
     const renderItem = ({ item }) => {
       const isSelected = item.id === selectedTheme;
   
@@ -89,9 +90,14 @@ const ThemesScreen = () => {
     };
   
     return (
-      <View style={styles.container}>
+      <LinearGradient
+        colors={currentTheme.gradientColors}
+        style={styles.container}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
         <View style={styles.header}>
-          <Text style={styles.title}>Themes</Text>
+          <Text style={[styles.title, { color: currentTheme.textColor }]}>Themes</Text>
         </View>
         <FlatList
           data={themeData}
@@ -101,7 +107,7 @@ const ThemesScreen = () => {
           columnWrapperStyle={styles.themeRow}
           contentContainerStyle={styles.themeList}
         />
-      </View>
+      </LinearGradient>
     );
   };
   
