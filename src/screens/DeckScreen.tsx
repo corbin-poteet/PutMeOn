@@ -171,7 +171,7 @@ const DeckScreen = () => {
             </View>
             :
             <Animated.View style={{ opacity: fadeAnim }}>
-              <ScrollView style={{ flex: 1, marginTop: 150 }}>
+              <ScrollView style={{ flex: 1, marginTop: 150, marginBottom: 10, }}>
                 <TouchableOpacity onPress={() => {
                   // @ts-ignore
                   navigation.navigate("Search");
