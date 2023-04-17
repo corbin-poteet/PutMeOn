@@ -367,13 +367,15 @@ const Swiper = (props: Props) => {
     <CardsSwipe
       cards={tracks}
       rotationAngle={15}
+      cardContainerStyle= {{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
           <LinearGradient
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
             colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : ['#3F3F3F', '#000000']}
-            className="relative w-full h-full rounded-2xl items-center"
+            className="relative w-full h-full rounded-2xl items-center shadow-lg" 
+            style={{  }}
           >
             {cardIndex % 5 === 0 ?
               <View className="top-3 items-center -mt-1" style={{ backgroundColor: '#7C7C7C', shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000', borderRadius: 3, width: 70, height: 18, justifyContent: 'center', alignItems: 'center' }}>
