@@ -92,7 +92,7 @@ const SearchScreen = () => {
                   })
                   .catch(error => {
                     // Handle promise rejection
-                    console.error(error);
+                    console.log("SEARCH ERROR: " + error.message);
                   });
         }
         else{ //if toggle false: search for tracks
