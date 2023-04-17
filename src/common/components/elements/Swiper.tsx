@@ -39,6 +39,8 @@ const Swiper = (props: Props) => {
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
+  var isPromo = false;
+
   const dbRef = ref(database); // load database
 
   /****************************** FUNCTION DECLARATIONS *********************************/
@@ -338,7 +340,6 @@ const Swiper = (props: Props) => {
   }, []);
 
   React.useEffect(() => {
-    console.log("SWIPED");
 
     if (cardIndex == 0) {
       sound && sound.unloadAsync();
@@ -364,10 +365,10 @@ const Swiper = (props: Props) => {
       rotationAngle={15}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
-          <LinearGradient
+          <LinearGradient 
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={["#1e314d", "#051b29"]}
+            colors={!isPromo ? ["#1e314d", "#051b29"] : ['#B59410', '#FFD700']}
             className="relative w-full h-full rounded-2xl"
           >
             <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">
@@ -468,9 +469,10 @@ const Swiper = (props: Props) => {
                               size={84}
                               color="white"
                             />
-                          </TouchableOpacity>
+                          </TouchableOpacity> 
                         </View>
                       </View>
+                        { isPromo? <Text className="text-2xl font-bold text-center" style={{ color: '#B59410' }}>Artist Promotion</Text> : <></>}
                     </View>
                   ) : null}
                 </View>
@@ -481,7 +483,7 @@ const Swiper = (props: Props) => {
       }}
       onSwiped={(index: number) => {
         console.log("SWIPED");
-
+        
         setCardIndex(cardIndex + 1);
         sound && sound.unloadAsync();
         setPlaybackPosition(0);
