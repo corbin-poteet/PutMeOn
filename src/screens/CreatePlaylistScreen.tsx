@@ -1,12 +1,12 @@
-import { TextInput, View, Text, TouchableOpacity, Image, Alert } from 'react-native'
-import React from 'react'
+import { TextInput, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
 import useAuth from '@hooks/useAuth';
 import { push, ref, set, child, get } from 'firebase/database';
+import { output } from './SearchScreen.js';
 // @ts-ignore
-import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import database from "../../firebaseConfig.tsx";
 
 let playlists: any[];
 let createdPlaylist: any;
