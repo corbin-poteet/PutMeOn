@@ -1,4 +1,4 @@
-import { TextInput, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { TextInput, View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -82,9 +82,10 @@ const SearchScreen = () => {
                             <TouchableOpacity onPress={
                               () => {
                               setSeeds([...seeds, element.id]);
-                              console.log("ADDING SEED: " + element.name);
+                              Alert.alert("Added artist: " + element.name);
+                              console.log("ADDING ARTIST: " + element.name);
                               console.log(seeds);
-                              setSearch('');
+                              setComponentHandler([]);
                               }
                             }>
                               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -103,37 +104,47 @@ const SearchScreen = () => {
                   });
         }
         else{ //if toggle false: search for tracks
-            // const response = await spotify.searchTracks(search, { limit: 20 }).then(
-            //   function (data) {
-            //     searchResults = data.tracks.items;
+            const response = await spotify.searchTracks(search, { limit: 20 }).then(
+              function (data) {
+                searchResults = data.tracks.items;
 
-            //     for (let i = 0; i < searchResults.length; i++) {
-            //       result.push(
-            //         {
-            //           "name": searchResults[i].name,
-            //           "image": searchResults[i].images[0],
-            //           "index": i
-            //         }
-            //       );
-            //     }
+                for (let i = 0; i < searchResults.length; i++) {
+                  result.push(
+                    {
+                      "name": searchResults[i].name,
+                      "image": searchResults[i].album.images[0],
+                      "id": searchResults[i].id
+                    }
+                  );
+                }
                 
-            //     const listItems = result.map(
-            //       (element) => {
-            //         return (
-            //           <View>
-            //             <TouchableOpacity onPress={
-            //               () => {console.log("GET PRANKED DOESNT WORK YET")}
-            //             }>
-            //               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-            //                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{element.name}</Text>
-            //               </View>
-            //             </TouchableOpacity>
-            //           </View>
-            //         )
-            //       }
-            //     )
-            //     setComponentHandler(listItems);
-            //   });
+                const listItems = result.map(
+                  (element) => {
+                    return (
+                      <View>
+                        <TouchableOpacity onPress={
+                          () => {
+                            setSeeds([...seeds, element.id]);
+                            Alert.alert("Added song: " + element.name);
+                            console.log("ADDING SONG: " + element.name);
+                            console.log(seeds);
+                            setComponentHandler([]);
+                          }
+                        }>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>{element.name}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )
+                  }
+                )
+                setComponentHandler(listItems);
+              })
+              .catch(error => {
+                // Handle promise rejection
+                console.log("SEARCH ERROR: " + error.message);
+              });
         }
         setLoaded(true); //when searching is finished, set loaded true
       }
