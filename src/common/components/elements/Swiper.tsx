@@ -512,12 +512,12 @@ const Swiper = (props: Props) => {
                     <TextTicker
                       scrollSpeed={speed}
                       loop
-                      numberOfLines={1}
+                      numberOfLines={2}
                       animationType={"scroll"}
                       easing={Easing.linear}
                       repeatSpacer={25}
                       scroll={false}
-                      className="text-white text-5xl font-bold"
+                      className="text-white text-4xl font-bold"
                     >
                       {track.name}
                     </TextTicker>
