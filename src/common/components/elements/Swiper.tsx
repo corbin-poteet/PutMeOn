@@ -100,7 +100,7 @@ const Swiper = (props: Props) => {
     //Update trackStack
     trackStack = recResponse.tracks.map((track: any) => track);
     //Cleaning time
-    cleanTracks(trackStack);
+    trackStack = await cleanTracks(trackStack);
     //Update tracks usestate
     setTracks(trackStack);
   }
@@ -135,17 +135,6 @@ const Swiper = (props: Props) => {
       });
 
 
-    //Removes tracks with no preview url
-    tracks.forEach((element) => {
-      console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
-      if (element.preview_url == null || element.preview_url == undefined) {
-        console.log(
-          "Null preview detected, Removing from tracks: " + element.name
-        );
-        tracks.splice(tracks.indexOf(element), 1);
-      }
-    });
-
     //remove song if detected as swiped from database, currently splice is not working
     const dbRef = ref(database);
     const trackIds2 = tracks.map((track: any) => track.id);
@@ -165,6 +154,17 @@ const Swiper = (props: Props) => {
         .catch((error) => {
           console.log("Query Failed, error; " + error);
         });
+    });
+
+    //Removes tracks with no preview url
+    tracks.forEach((element) => {
+      console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
+      if (element.preview_url == null || element.preview_url == undefined) {
+        console.log(
+          "Null preview detected, Removing from tracks: " + element.name
+        );
+        tracks.splice(tracks.indexOf(element), 1);
+      }
     });
 
     console.log("Tracks length: " + tracks.length);

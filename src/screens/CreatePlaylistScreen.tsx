@@ -4,7 +4,8 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import useAuth from '@hooks/useAuth';
 import { push, ref, set, child, get } from 'firebase/database';
-import { output } from './SearchScreen.js';
+//@ts-ignore
+import { output } from './SearchScreen.tsx';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
@@ -35,6 +36,9 @@ const CreatePlaylistScreen = () => {
           playlistId: createdPlaylist?.id,
           playlistName: createdPlaylist?.name
         });
+        set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id +"/Seeds"), {
+          seeds: output,
+        });
       }
     }, [loaded]);
 
@@ -52,7 +56,8 @@ const CreatePlaylistScreen = () => {
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
       Alert.alert("Playlist Created!");
       getPlaylists();
-      //navigation.navigate('Home');
+      //@ts-ignore
+      navigation.navigate('Home');
     });
   }
 
