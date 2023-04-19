@@ -7,8 +7,8 @@ import { ref, child, get, set } from 'firebase/database';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
-let selectedPlaylist: string;
-let playlists: any[];
+var selectedPlaylist: string;
+var playlists: any[];
 
 //let loaded: boolean = false;
 //Maybe add these values as props?
@@ -161,7 +161,7 @@ const DeckScreen = () => {
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
         <View className='absolute top-1' style={{ marginTop: 50, flex: 1 }}>
-          <Text className='text-white text-2xl px-3'>Songs that you like in Put Me On will be added to a Spotify playlist of your choice: </Text>
+          <Text className='text-white text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
         </View>
         <View style={{ padding: 10, flex: 1 }}>
           {!loaded //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
@@ -171,14 +171,14 @@ const DeckScreen = () => {
             </View>
             :
             <Animated.View style={{ opacity: fadeAnim }}>
-              <ScrollView style={{ flex: 1, marginTop: 150 }}>
+              <ScrollView style={{ flex: 1, marginTop: 150, marginBottom: 10, }}>
                 <TouchableOpacity onPress={() => {
                   // @ts-ignore
                   navigation.navigate("Search");
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                     <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>New Playlist</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>Build Deck</Text>
                   </View>
                 </TouchableOpacity>
 

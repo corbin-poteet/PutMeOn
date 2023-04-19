@@ -176,7 +176,7 @@ const GameScreen = () => {
         :
         <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center items-center absolute top-32 mx-2' >
           <View className='flex-1 justify-center items-center'>
-            <View className='flex-1 justify-center items-center mx-2'>
+            <View className='flex-1 justify-left items-left mx-2'>
               {/*track Image*/}
               <View className='flex-1 items-center p-2'>
                 <Image source={/*require('@assets/blank_playlist.png')*/{ uri: correctTrack?.album?.images[0]?.url }} className='w-60 h-60' />
@@ -227,52 +227,32 @@ const GameScreen = () => {
               <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} for this track?</Text>
 
               {/*Button choices*/}
-              <TouchableOpacity className="flex-row items-center justify-center px-24 m-2 rounded-3xl" style={{ backgroundColor: '#014871' }}
+              <TouchableOpacity className="flex-row items-center justify-center my-2 px-8 rounded-3xl" style={{ backgroundColor: '#014871' }}
                 onPress={() => { handleChoice(0); }}>
-                <TextTicker
-                  scrollSpeed={speed}
-                  loop
-                  numberOfLines={1}
-                  animationType={'scroll'}
-                  easing={Easing.linear}
-                  repeatSpacer={25}
-                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(0)}</TextTicker>
+                <Text numberOfLines={1}
+                className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(0)}
+                </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
                 onPress={() => { handleChoice(1); }}>
-                <TextTicker
-                  scrollSpeed={speed}
-                  loop
-                  numberOfLines={1}
-                  animationType={'scroll'}
-                  easing={Easing.linear}
-                  repeatSpacer={25}
-                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(1)}</TextTicker>
+                <Text numberOfLines={1}
+                className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(1)}
+                </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
                 onPress={() => { handleChoice(2); }}>
-                <TextTicker
-                  scrollSpeed={speed}
-                  loop
-                  numberOfLines={1}
-                  animationType={'scroll'}
-                  easing={Easing.linear}
-                  repeatSpacer={25}
-                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(2)}</TextTicker>
+                <Text numberOfLines={1}
+                className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(2)}
+                </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center bg-green-500 px-24 m-2 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
                 onPress={() => { handleChoice(3); }}>
-                <TextTicker
-                  scrollSpeed={speed}
-                  loop
-                  numberOfLines={1}
-                  animationType={'scroll'}
-                  easing={Easing.linear}
-                  repeatSpacer={25}
-                  className="text-white text-xl px-20 py-2 text-1 font-semibold">{buttonContent(3)}</TextTicker>
+                <Text numberOfLines={1}
+                className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(3)}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

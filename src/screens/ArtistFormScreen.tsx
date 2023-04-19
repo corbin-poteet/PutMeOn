@@ -11,7 +11,7 @@ const appendPromotion = (artist:string, track:string) => { //function to append 
   const updates = { //New JSON object to send to DB
     newArtistSample:{
       artistName : artist,
-      trackName : track
+      trackURL : track
     }
   };
   const newArtistKey = push(child(ref(database), 'ArtistPromos/SampleArtist/')).key; //Generate new key for posting location in DB
@@ -38,7 +38,7 @@ const ArtistFormScreen = () => {
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
             <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Enter your song details and submit a payment to promote your song.</Text>
             <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Artist Name' onChangeText={setArtistName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-5 px-8 py-3'></TextInput>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Track Name' onChangeText={setTrackName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
+            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Track URL' onChangeText={setTrackName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
             <TouchableOpacity onPress={ () => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               Alert.alert('You have successfully submitted a dummy payment');}}>
