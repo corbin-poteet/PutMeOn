@@ -24,7 +24,6 @@ const SearchScreen = () => {
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
   const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
-  const [done, setDone] = useState<boolean>(false); //keeps track of if user is done selecting seeds
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -34,24 +33,23 @@ const SearchScreen = () => {
     })
   }, [navigation])
 
-  useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-    if (seeds.length > 0 && done) {
-      Alert.alert("Seeds selected! Time to create a playlist");
-      output = seeds;
-      //@ts-ignore
-      navigation.navigate('CreatePlaylist');
-    }
-    else {
-      Alert.alert("Please select at least one seed");
-    }
-  }, [done]);
-
   useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
     if (user != undefined && user.id != undefined) {
       getSearchResults();
     }
   }, [user, search]);
 
+  function handleSubmit(){
+    if(seeds.length > 0){ //if seeds are selected, navigate to next screen
+      Alert.alert("Seeds selected! Time to create a playlist for the deck");
+      output = seeds;
+      //@ts-ignore
+      navigation.navigate('CreatePlaylist');
+    }
+    else{
+      Alert.alert("Please select at least one seed.");
+    }
+  }
 
   async function getSearchResults() {
     setLoaded(false); //when actively searching, set loaded false
@@ -173,10 +171,10 @@ const SearchScreen = () => {
               </ScrollView>
             }
             <View className='mt-12 flex-row justify-center items-center'>
-              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setDone(true); }}>
+              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { handleSubmit(); }}>
                 <Text className='font-semibold text-white'>Done</Text>
               </TouchableOpacity>
-              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setDone(true); }}>
+              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {}}>
                 <Text className='font-semibold text-1xl text-white'>Seeds</Text>
               </TouchableOpacity>
             </View>
