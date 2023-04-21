@@ -12,6 +12,8 @@ import database from "../../firebaseConfig.tsx";
 var playlists: any[];
 var createdPlaylist: any;
 
+//Create new playlist based on deck created from deck screen
+
 const CreatePlaylistScreen = () => {
 
   const navigation = useNavigation();
@@ -28,7 +30,7 @@ const CreatePlaylistScreen = () => {
       "public": false
       }
   
-    React.useEffect(() => {
+    React.useEffect(() => { //apply known deck-backed playlist to the pmo database
       if(loaded == true) {
         console.log("PLAYLIST: "+createdPlaylist?.id);
 
@@ -41,7 +43,7 @@ const CreatePlaylistScreen = () => {
       }
     }, [loaded]);
 
-  async function getPlaylists() {
+  async function getPlaylists() { //Obtain newly created playlist to push to database
     const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
@@ -51,7 +53,7 @@ const CreatePlaylistScreen = () => {
       setLoaded(true);
   }
 
-  async function createPlaylist() {
+  async function createPlaylist() { //Build playlist within spotify app
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
       Alert.alert("Playlist Created!");
       getPlaylists();
@@ -60,7 +62,7 @@ const CreatePlaylistScreen = () => {
     });
   }
 
-  React.useLayoutEffect(() => {
+  React.useLayoutEffect(() => { //Removes header on this screen
     navigation.setOptions({
       headerShown: false,
     });

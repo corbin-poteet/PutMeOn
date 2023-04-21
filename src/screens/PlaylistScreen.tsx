@@ -7,6 +7,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import { fromJSON } from 'postcss';
 
+//OLD PLAYLIST SCREEN (DECK SCREEN REPLACED IT)
+
 let selectedPlaylist: string;
 let playlists: any[];
 //let loaded: boolean = false;

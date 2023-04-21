@@ -50,7 +50,7 @@ const GameScreen = () => {
 
   async function getTracks() { //get tracks -- pulled from swiper.tsx - pulls 4 tracks from API and puts them into the useState array
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( // This is a good start but will need to exclude seen songs before
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( 
       function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
       },
@@ -113,7 +113,7 @@ const GameScreen = () => {
 
   React.useEffect(() => {
     if (tracks.length >= 4) {
-      correctTrack = tracks[0];
+      correctTrack = tracks[0]; //correct track selection starts as the first index of the tracks array
       playSound(correctTrack);
       for (let i = 0; i < tracks.length; i++) {
         console.log("TRACK " + i + ": " + tracks[i]?.name);
@@ -126,15 +126,13 @@ const GameScreen = () => {
       trackStack[correctIndex] = trackStack[0]; //Correct track starts at the beginning of the array
       trackStack[0] = temp;
 
-      setTracks(trackStack);
-
-      console.log("correct index: " + correctIndex);
+      setTracks(trackStack); //set Use States to confirm generation of tracks is successful
       setLoaded(true);
     }
   }, [tracks]);
 
   //function to handle the press of buttons 1 - 4
-  function handleChoice(index: number) {
+  function handleChoice(index: number) { 
     console.log(tracks[index]);
     
     stopSound();

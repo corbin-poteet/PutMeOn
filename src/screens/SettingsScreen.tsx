@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
 import { FontAwesome5 } from '@expo/vector-icons';
 
+//Settings tab
 
 const SettingsScreen = () => {
 
@@ -25,7 +26,7 @@ const SettingsScreen = () => {
     });
   }, [navigation]);
 
-  React.useEffect(() => {
+  React.useEffect(() => { //Load user image
     if (user) {
       if (user.images) {
         if (user.images.length > 0) {

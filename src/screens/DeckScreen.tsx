@@ -12,6 +12,9 @@ var playlists: any[];
 
 //let loaded: boolean = false;
 //Maybe add these values as props?
+
+//Landing page for creating decks and selecting current working decks
+
 const DeckScreen = () => {
 
   const navigation = useNavigation();
@@ -41,12 +44,12 @@ const DeckScreen = () => {
 
   const result: any[] = [];
 
-  function getDecks() {
+  function getDecks() { //Obtain all spotify playlists that are hooked to a deck
     get(child(dbRef, "Decks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
 
       let temp: string[] = [];
 
-      if (snapshot.exists()) {
+      if (snapshot.exists()) { //If playlist ID is within the decks database, render that playlist as a valid deck
         snapshot.forEach((element: any) => {
           var value = element.val();
           temp.push(value?.playlistId); //chafnge to ID
@@ -59,7 +62,7 @@ const DeckScreen = () => {
     });
   }
 
-  async function getPlaylists() {
+  async function getPlaylists() { //Obtain all spotify playlists owned by current user
 
     const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
@@ -103,8 +106,8 @@ const DeckScreen = () => {
             )
           }
         )
-        setComponentHandler(listItems);
-        setLoaded(true)
+        setComponentHandler(listItems); //Ensures that the playlists are all loaded and ready to be rendered
+        setLoaded(true);
         //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
       });
   }
@@ -152,7 +155,7 @@ const DeckScreen = () => {
 
   React.useEffect(() => {
     //console.log("DECKS CHANGED: "+decks);
-    if (decks && decks.length > 0 && user) { //This loads twice. No time to fix it. Whatever...
+    if (decks && decks.length > 0 && user) { //Grab playlists upon decks being loaded from the database
       getPlaylists();
     }
   }, [decks]);
@@ -194,4 +197,4 @@ const DeckScreen = () => {
 }
 
 export default DeckScreen;
-export { selectedPlaylist };
+export { selectedPlaylist }; //Share the current working playlist id with other components

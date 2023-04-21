@@ -154,7 +154,7 @@ const HomeScreen = () => {
         set(ref(database, "Decks/" + user?.id +"/test"), {
           name: "test"
         });
-        setSelectedDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen
+        setSelectedDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
         setSelectedDeck(undefined);
         
         console.log("Database connection failed");
@@ -176,7 +176,7 @@ const HomeScreen = () => {
             }
           }>
             {
-              userImage !== null
+              userImage !== null //Sets user image, if one exists, otherwise uses default blank image
                 ?
                 <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
                 :

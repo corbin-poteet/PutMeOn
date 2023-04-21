@@ -7,7 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const EndScreen = () => {
 
-  //DUETO: move stupid red button down, idk why thats not working
+  //End game screen, prompts user to return to menu screen after final score is displayed
 
   const navigation = useNavigation();
   const { score, setScore, setEarnings, setRound } = useContext(gameContext);

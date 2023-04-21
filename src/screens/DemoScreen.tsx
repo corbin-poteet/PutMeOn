@@ -10,9 +10,11 @@ import { fromJSON } from 'postcss';
 let pageCounter: number = 0;
 let temp: string;
 
+//Welcome to Put Me On! This screen is actually 3 screens. Each screen is a part of the PMO demo
+
 const WelcomeScreen = () => {
 
-    const [fadeAnimOne] = React.useState(new Animated.Value(0))
+    const [fadeAnimOne] = React.useState(new Animated.Value(0)) //Each screen has these three animations
     const [fadeAnimTwo] = React.useState(new Animated.Value(0))
     const [fadeAnimThree] = React.useState(new Animated.Value(0))
     const navigation = useNavigation();
@@ -205,4 +207,4 @@ const FinishScreen = () => {
     );
 }
 
-export { WelcomeScreen, TutorialScreen, FinishScreen }
+export { WelcomeScreen, TutorialScreen, FinishScreen } //Export each component to other components

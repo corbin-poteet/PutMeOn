@@ -10,6 +10,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 var searchResults: any[];
 var output: any[] = [];
 
+//Search bar screen for selecting seeds
+
 const SearchScreen = () => {
 
   const { spotify, user } = useAuth();
