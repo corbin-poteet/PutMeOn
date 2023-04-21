@@ -63,26 +63,77 @@ const Swiper = (props: Props) => {
   }
 
   async function addTrack() {
+    var addable: boolean = false;
     const topArtistsIds = await getTopArtists();
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      limit: 10,
+      limit: 15,
     });
 
     const newTracks = recResponse.tracks.map((track: any) => track);
+    const trackIds2 = newTracks.map((track: any) => track.id);
 
     for (let i = 0; i < newTracks.length; i++) {
       if (newTracks[i].preview_url !== null) {
-        const newTracksArray = tracks.concat(newTracks[i]);
-        setTracks(newTracksArray);
-        console.log("Added track: " + newTracks[i].name);
-        break;
+
+        trackIds2.forEach((trackId: string) => {
+          get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                addable = false;
+              } else {
+                console.log("addTrack: Swiped song not found");
+                addable = true;
+              }
+            })
+            .catch((error) => {
+              console.log("Query Failed, error; " + error);
+            });
+        });
+        if(addable){
+          const newTracksArray = tracks.concat(newTracks[i]);
+          setTracks(newTracksArray);
+          console.log("Added track: " + newTracks[i].name);
+          break;
+        }
       }
     }
   }
 
   async function getCleanedRecs(numRecs: number = 25) {
+    //get seeds
+    var seedArtists: string[] = [];
+    var seedTracks: string[] = [];
 
+    if(usingSeeds){
+      // Get seeds from selectedDeck
+    } else {
+      seedArtists = await getTopArtists();
+      //set seedTracks as track ids of 5 recently played tracks
+      //seedTracks = await spotify.getMyRecentlyPlayedTracks({ limit: 5 })
+    }
+
+    //get recommendations
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: seedArtists,
+      seed_genres: seedTracks,
+      limit: numRecs,
+    }).then(
+      function (data: any) {
+        return data;
+      },
+      function (err: any) {
+        console.error(err);
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    //Update trackStack
+    trackStack = recResponse.tracks.map((track: any) => track);
+
+    //Cleaning time
+    cleanTracks(trackStack);
   }
 
   async function getTracks() {
@@ -156,7 +207,7 @@ const Swiper = (props: Props) => {
               "SWIPED SONG DETECTED IN DB, REMOVING: " +
               snapshot.val().trackID
             );
-            console.log("track removed?" + trackIds2.indexOf(trackId), 1);
+            console.log("track removed?" + trackIds2.indexOf(trackId));
           } else {
             console.log("Swiped song not found");
           }
