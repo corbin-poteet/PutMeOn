@@ -34,7 +34,8 @@ const CreatePlaylistScreen = () => {
 
         set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id), {
           playlistId: createdPlaylist?.id,
-          playlistName: createdPlaylist?.name
+          playlistName: createdPlaylist?.name,
+          //seeds: output
         });
         
       }
