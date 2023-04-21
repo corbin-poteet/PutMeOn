@@ -33,6 +33,7 @@ const Swiper = (props: Props) => {
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+  const [usingSeeds, setUsingSeeds] = React.useState<boolean>(false);
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
@@ -78,6 +79,10 @@ const Swiper = (props: Props) => {
         break;
       }
     }
+  }
+
+  async function getCleanedRecs(numRecs: number = 25) {
+
   }
 
   async function getTracks() {
