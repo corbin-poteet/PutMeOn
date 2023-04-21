@@ -24,7 +24,8 @@ const SearchScreen = () => {
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
   const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
-  const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
+  const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
+  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -33,6 +34,21 @@ const SearchScreen = () => {
       gestureDirection: 'horizontal'
     })
   }, [navigation])
+
+  useEffect(() => { //useEffect to show seeds and allow deletion of selected seeds
+    const seedsList = readableSeeds.map(
+      (seed) => {
+        return (
+          <View>
+            <TouchableOpacity>
+              <Text>{seed}</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      }
+    )
+    setComponentHandler2(seedsList);
+  }, [seeds]);
 
   useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
     if (user != undefined && user.id != undefined) {
