@@ -58,7 +58,7 @@ const CreatePlaylistScreen = () => {
       Alert.alert("Playlist Created!");
       getPlaylists();
       //@ts-ignore
-      navigation.navigate('Deck');
+      navigation.navigate('Decks');
     });
   }
 

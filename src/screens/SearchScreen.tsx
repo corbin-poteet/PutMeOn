@@ -23,6 +23,7 @@ const SearchScreen = () => {
   const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
+  const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
   const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
 
   useLayoutEffect(() => { //hide header
@@ -51,6 +52,10 @@ const SearchScreen = () => {
     }
   }
 
+  function showSeeds(){
+    Alert.alert(readableSeeds.toString());
+  }
+
   async function getSearchResults() {
     setLoaded(false); //when actively searching, set loaded false
     if (toggle) { //if toggle true: search for artists
@@ -75,6 +80,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setReadableSeeds([...readableSeeds, element.name]);
                       Alert.alert("Added artist: " + element.name);
                       console.log("ADDING ARTIST: " + element.name);
                       console.log(seeds);
@@ -119,6 +125,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setReadableSeeds([...readableSeeds, element.name]);
                       Alert.alert("Added song: " + element.name);
                       console.log("ADDING SONG: " + element.name);
                       console.log(seeds);
@@ -174,8 +181,8 @@ const SearchScreen = () => {
               <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { handleSubmit(); }}>
                 <Text className='font-semibold text-white'>Done</Text>
               </TouchableOpacity>
-              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {}}>
-                <Text className='font-semibold text-1xl text-white'>Seeds</Text>
+              <TouchableOpacity className='mx-3 rounded-3xl px-5 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { showSeeds(); }}>
+                <Text className='font-semibold text-1xl text-white'>Seeds ({seeds.length}/5)</Text>
               </TouchableOpacity>
             </View>
           </View>
