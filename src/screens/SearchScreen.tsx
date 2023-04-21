@@ -10,17 +10,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 var searchResults: any[];
 var output: any[] = [];
 
-// const ChosenSeeds = (seeds: any, setSeeds: React.Dispatch<any>) => { //component to display a list of seeds the user has pressed, and remove them if user presses them
-//   return (
-//     <View className='flex-row'>
-//       <Text>Chosen Seeds: </Text>
-//       <TouchableOpacity onPress={() => {console.log("Will remove chosen seed")}}>
-//         <Text>{/*Will display seeds later*/}</Text>
-//       </TouchableOpacity>
-//     </View>
-//   )
-// }
-
 const SearchScreen = () => {
 
   const { spotify, user } = useAuth();
@@ -167,7 +156,6 @@ const SearchScreen = () => {
         
         {/* Search Results */}
         <View className='py-2' style={{ marginTop: 120, marginBottom: 100, flex: 1 }}>
-          {/* <ChosenSeeds seeds={seeds} setSeeds={setSeeds}/> */}
           {!loaded
             ?
             <View style={{ flex: 1, marginTop: 300 }}>
