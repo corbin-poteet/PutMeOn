@@ -33,13 +33,13 @@ const SearchScreen = () => {
   }, [navigation])
 
   useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-    if(seeds.length > 0 && done){
+    if (seeds.length > 0 && done) {
       Alert.alert("Seeds selected! Time to create a playlist");
       output = seeds;
       //@ts-ignore
       navigation.navigate('CreatePlaylist');
     }
-    else{
+    else {
       Alert.alert("Please select at least one seed");
     }
   }, [done]);
@@ -157,28 +157,28 @@ const SearchScreen = () => {
             <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 artists and songs. Put Me On will fill your deck with recommendations:</Text>
             <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
           </View>
-        
-        {/* Search Results */}
-        <View className='py-2' style={{ marginTop: 120, marginBottom: 100, flex: 1 }}>
-          {!loaded
-            ?
-            <View style={{ flex: 1, marginTop: 300 }}>
-              <ActivityIndicator size="large" color="#014871" />
+
+          {/* Search Results */}
+          <View className='py-2' style={{ marginTop: 280, marginBottom: 100, flex: 1 }}>
+            {!loaded
+              ?
+              <View style={{ flex: 1, marginTop: 300 }}>
+                <ActivityIndicator size="large" color="#014871" />
+              </View>
+              :
+              <ScrollView style={{ flex: 1 }}>
+                {componentHandler}
+              </ScrollView>
+            }
+            <View className='mt-8 flex-row justify-center items-center'>
+              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setDone(true); }}>
+                <Text className='font-semibold text-white'>Done</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setDone(true); }}>
+                <Text className='font-semibold text-1xl text-white'>Seeds</Text>
+              </TouchableOpacity>
             </View>
-            :
-            <ScrollView style={{ flex: 1, marginTop: 150 }}>
-              {componentHandler}
-            </ScrollView>
-          }
-          <View className='mt-8 flex-row justify-center items-center'>
-            <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {setDone(true);}}>
-              <Text className='font-semibold text-white'>Done</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {setDone(true);}}>
-              <Text className='font-semibold text-white'>Seeds</Text>
-            </TouchableOpacity>
           </View>
-        </View>
         </View>
       </LinearGradient>
     </View>
