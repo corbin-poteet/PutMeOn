@@ -49,7 +49,7 @@ const DeckScreen = () => {
       if (snapshot.exists()) {
         snapshot.forEach((element: any) => {
           var value = element.val();
-          temp.push(value?.playlistId); //change to ID
+          temp.push(value?.playlistId); //chafnge to ID
           setDecks(temp); //Push database spotify playlist ids item to decks array (string)
         });
       } else {
@@ -171,7 +171,7 @@ const DeckScreen = () => {
             </View>
             :
             <Animated.View style={{ opacity: fadeAnim }}>
-              <ScrollView style={{ flex: 1, marginTop: 150, marginBottom: 10, }}>
+              <ScrollView style={{ flex: 1, marginTop: 150, marginBottom: 50, }}>
                 <TouchableOpacity onPress={() => {
                   // @ts-ignore
                   navigation.navigate("Search");
