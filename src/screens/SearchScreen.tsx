@@ -170,7 +170,7 @@ const SearchScreen = () => {
                 {componentHandler}
               </ScrollView>
             }
-            <View className='mt-8 flex-row justify-center items-center'>
+            <View className='mt-12 flex-row justify-center items-center'>
               <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setDone(true); }}>
                 <Text className='font-semibold text-white'>Done</Text>
               </TouchableOpacity>
