@@ -32,8 +32,8 @@ const SearchScreen = () => {
   }, [navigation])
 
   useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-    if (seeds?.length == 5) {
-      Alert.alert("5 seeds selected! Time to create a playlist");
+    if(seeds.length > 0){
+      Alert.alert("Seeds selected! Time to create a playlist");
       output = seeds;
       //@ts-ignore
       navigation.navigate('CreatePlaylist');
