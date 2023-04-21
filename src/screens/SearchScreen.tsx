@@ -22,6 +22,7 @@ const SearchScreen = () => {
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
   const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
+  const [done, setDone] = useState<boolean>(false); //keeps track of if user is done selecting seeds
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -32,13 +33,16 @@ const SearchScreen = () => {
   }, [navigation])
 
   useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-    if(seeds.length > 0){
+    if(seeds.length > 0 && done){
       Alert.alert("Seeds selected! Time to create a playlist");
       output = seeds;
       //@ts-ignore
       navigation.navigate('CreatePlaylist');
     }
-  }, [seeds]);
+    else{
+      Alert.alert("Please select at least one seed");
+    }
+  }, [done]);
 
   useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
     if (user != undefined && user.id != undefined) {
@@ -166,7 +170,15 @@ const SearchScreen = () => {
               {componentHandler}
             </ScrollView>
           }
+          <View className='mt-8 flex-row justify-center items-center'>
+            <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {setDone(true);}}>
+              <Text className='font-semibold text-white'>Done</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => {setDone(true);}}>
+              <Text className='font-semibold text-white'>Seeds</Text>
+            </TouchableOpacity>
           </View>
+        </View>
         </View>
       </LinearGradient>
     </View>
