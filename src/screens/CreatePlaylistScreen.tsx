@@ -54,6 +54,7 @@ const CreatePlaylistScreen = () => {
   }
 
   async function createPlaylist() { //Build playlist within spotify app
+    // @ts-ignore
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
       Alert.alert("Playlist Created!");
       getPlaylists();
