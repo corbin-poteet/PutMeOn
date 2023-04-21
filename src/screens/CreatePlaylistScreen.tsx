@@ -36,9 +36,7 @@ const CreatePlaylistScreen = () => {
           playlistId: createdPlaylist?.id,
           playlistName: createdPlaylist?.name
         });
-        set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id +"/Seeds"), {
-          seeds: output,
-        });
+        
       }
     }, [loaded]);
 
@@ -57,7 +55,7 @@ const CreatePlaylistScreen = () => {
       Alert.alert("Playlist Created!");
       getPlaylists();
       //@ts-ignore
-      navigation.navigate('Home');
+      navigation.navigate('Deck');
     });
   }
 
