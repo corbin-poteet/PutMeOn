@@ -31,6 +31,7 @@ const Swiper = (props: Props) => {
   /* VARIABLE/USESTATE DECLARATION */
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [tracksReserve, setTracksReserve] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
   const [sound, setSound] = React.useState<Audio.Sound>();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [usingSeeds, setUsingSeeds] = React.useState<boolean>(false);
@@ -168,10 +169,7 @@ const Swiper = (props: Props) => {
     }
   }
 
-  async function getCleanedRecs(numRecs: number = 25) {
-    //get seeds
-    var seedArtists: string[] = [];
-    var seedTracks: string[] = [];
+  async function getCleanedRecs(numRecs: number = 25, seedArtists: string[] = [], seedTracks: string[] = []) {
 
     if(usingSeeds){
       // Get seeds from selectedDeck
@@ -184,7 +182,7 @@ const Swiper = (props: Props) => {
     //get recommendations
     const recResponse = await spotify.getRecommendations({
       seed_artists: seedArtists,
-      seed_genres: seedTracks,
+      seed_tracks: seedTracks,
       limit: numRecs,
     }).then(
       function (data: any) {
