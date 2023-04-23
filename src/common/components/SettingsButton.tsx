@@ -1,8 +1,11 @@
-import { View, Text, Switch, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 
+
 type SettingsButtonProps = {
-  text: string;
+  text: string,
+  navigateString: string;
 }
 
 const defaultProps = { // navigation.navigate
@@ -12,9 +15,14 @@ const defaultProps = { // navigation.navigate
 
 const SettingsButton = (propsIn: SettingsButtonProps) => {
   const props = { ...defaultProps, ...propsIn }
-
+  const navigation = useNavigation();
+  
   return (
-    <TouchableOpacity className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'>
+    <TouchableOpacity className='flex-row w-full items-center py-3 bg-white px-5 mb-0.5'onPress={
+      () => {
+        // @ts-ignore
+        navigation.navigate(props.navigateString) //Navigates to set page in props
+      }}>
       <Text className='text-base'>{props.text}</Text>
     </TouchableOpacity>
   )

@@ -90,58 +90,17 @@ const SettingsScreen = () => {
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
             <SettingsSwitch text='Filter Explicit' value={true} />
             <SettingsSwitch text='Opt in to PME Telemetry' />
-            <SettingsButton text='BUTTON HI' />
+            
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Preferences</Text>
+            <SettingsButton text='Decks' navigateString='Decks'/>
+            <SettingsButton text='Themes' navigateString='Home'/>
+            
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Information</Text>
+            <SettingsButton text='User Information' navigateString='UserInfo'/>
+            <SettingsButton text='Put Me On Information' navigateString='AppInfo'/>
+            
           </View>
-
-          <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-            <View style={{ alignItems: 'left', backgroundColor: '#f0f2f4' }}>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('UserInfo')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10, }} name="person-circle-outline" size={30} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white' }}>Account</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('Decks')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <MaterialIcons style={{ marginRight: 12, marginLeft: 10 }} name="playlist-add-check" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playlists</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="brush-outline" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Themes</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="play-circle" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playback</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('AppInfo')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="information-circle-outline" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Information</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
-
         </ScrollView>
-
 
       </SafeAreaView>
     </LinearGradient >
