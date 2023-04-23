@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
+import SettingsButton from '@/common/components/SettingsButton';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 //Settings tab
@@ -51,8 +52,8 @@ const SettingsScreen = () => {
               tintColor: '#01b1f1'
             }} />
 
-            {/* Settings Button */}
-            <TouchableOpacity className='ml-auto' onPress={() => { }}>
+            {/* Settings Button (but it's just an icon, button functionality removed)*/}
+            <TouchableOpacity className='ml-auto' activeOpacity={1} onPress={() => { }}> 
               <FontAwesome5 name="cog" size={36} color="#7d8490" />
             </TouchableOpacity>
 
@@ -88,8 +89,8 @@ const SettingsScreen = () => {
           <View className='flex-1 items-start py-5' style={{ backgroundColor: '#f0f2f4' }}>
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
             <SettingsSwitch text='Filter Explicit' value={true} />
-            <SettingsSwitch text='Filter No Previews' />
             <SettingsSwitch text='Opt in to PME Telemetry' />
+            <SettingsButton text='BUTTON HI' />
           </View>
 
           <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>

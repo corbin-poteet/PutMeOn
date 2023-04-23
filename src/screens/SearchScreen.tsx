@@ -96,7 +96,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
-                      setReadableSeeds([...readableSeeds, element.name]);
+                      setReadableSeeds([...readableSeeds, element.name+" "]);
                       Alert.alert("Added artist: " + element.name);
                       console.log("ADDING ARTIST: " + element.name);
                       console.log(seeds);
@@ -173,8 +173,8 @@ const SearchScreen = () => {
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
         {/* Search Bar / Header */}
         <View className='items-center justify-center' style={{ marginTop: 50, flex: 1 }}>
-          <View className='absolute top-4'>
-            <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle} />
+          <View className='absolute top-4 font-bold'>
+            <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle}/>
           </View>
           <View className='absolute top-20'>
             <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 artists and songs. Put Me On will fill your deck with recommendations:</Text>
