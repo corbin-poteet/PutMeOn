@@ -42,9 +42,10 @@ const Swiper = (props: Props) => {
   const [loaded1, setLoaded1] = React.useState<boolean>(false);
   const [needsReload, setReload] = React.useState<boolean>(false);
 
+  
 
   let trackStack: SpotifyApi.TrackObjectFull[] = [];
-
+  //var topArtistIds: string[] = [];
   var isPromo = false;
   var promoCount = 0;
   const dbRef = ref(database); // load database
@@ -74,20 +75,20 @@ const Swiper = (props: Props) => {
 
   }
 
-  async function loadTopArtists(numArtists: number = 5) {
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: numArtists }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    }) as string[];
+  // async function loadTopArtists(numArtists: number = 5) {
+  //   const topArtistsIds = await spotify.getMyTopArtists({ limit: numArtists }).then(
+  //     function (data: { items: any[]; }) {
+  //       return data.items.map((artist: any) => artist.id);
+  //     },
+  //     function (err: any) {
+  //       console.error(err);
+  //     }
+  //   ).catch((err) => {
+  //     console.log(err);
+  //   }) as string[];
 
-    setTopArtistIds(topArtistsIds);
-  }
+  //   setTopArtistIds(topArtistsIds);
+  // }
 
   //function gets user's top 5 artists and returns them as an array of artist ids
   async function getTopArtists(numArtists: number = 5) {
@@ -471,9 +472,30 @@ const Swiper = (props: Props) => {
 
   React.useEffect(() => {
     loadSwipedArray();
-    loadTopArtists();
-    var temp: boolean = true;
-    setLoaded1(temp);
+
+    const loadTopArtists = async (numArtists: number = 5) => {
+      const topArtistsIds = await spotify.getMyTopArtists({ limit: numArtists }).then(
+        function (data: { items: any[]; }) {
+          return data.items.map((artist: any) => artist.id);
+        },
+        function (err: any) {
+          console.error(err);
+        }
+      ).catch((err) => {
+        console.log(err);
+      }) as string[];
+  
+      return topArtistsIds;
+    }
+
+    loadTopArtists().then((data) => {
+      setTopArtistIds(data);
+      console.log(topArtistsIds);
+      var temp: boolean = true;
+      setLoaded1(temp);
+    });
+
+    
   }, []);
 
   React.useEffect(() => {
