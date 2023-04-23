@@ -33,13 +33,21 @@ const CreatePlaylistScreen = () => {
     React.useEffect(() => { //apply known deck-backed playlist to the pmo database
       console.log("ERROR CHECK PASSED")
       if(loaded == true) {
-        console.log("PLAYLIST: "+createdPlaylist?.id);
-
+        
         set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id), {
-          playlistId: createdPlaylist?.id,
-          playlistName: createdPlaylist?.name,
+          id: createdPlaylist?.id,
+          name: createdPlaylist?.name,
           seeds: output
         });
+
+        set(ref(database, "SelectedDecks/" + user?.id), {
+          id: createdPlaylist?.id,
+          name: createdPlaylist?.name,
+          seeds: output
+        });
+
+        console.log("GOING HOME!!! (CREATED PLAYLIST)")
+
         navigation.navigate('Home'); //Navigate after database has loaded new deck
       }
     }, [loaded]);

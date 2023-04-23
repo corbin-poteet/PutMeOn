@@ -52,7 +52,7 @@ const DeckScreen = () => {
       if (snapshot.exists()) { //If playlist ID is within the decks database, render that playlist as a valid deck
         snapshot.forEach((element: any) => {
           var value = element.val();
-          temp.push(value?.playlistId); //change to ID
+          temp.push(value?.id); //change to ID
           setDecks(temp); //Push database spotify playlist ids item to decks array (string)
         });
       } else {
@@ -122,13 +122,25 @@ const DeckScreen = () => {
         text: 'Yes', onPress:
           () => {
             selectedPlaylist = playlists[playlist.index].id;
-            //console.log("selected GAAAH" + playlists[playlist.index]?.id);
-            set(ref(database, "SelectedDecks/" + user?.id), {
-              id: playlists[playlist.index]?.id,
-              name: playlists[playlist.index]?.name,
-              seedArtistIds: [],
-              seedGenres: [],
+            
+            var temp; //Set seeds to this value to push to selectedDeck
+
+            get(child(dbRef, "Decks/" + user?.id + "/"+playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
+              if (snapshot.exists()) {
+                var value = snapshot.val();
+                temp = value?.seeds;
+
+                set(ref(database, "SelectedDecks/" + user?.id), {
+                  id: playlists[playlist.index]?.id,
+                  name: playlists[playlist.index]?.name, 
+                  seeds: temp
+                });
+
+              } else {
+                console.log("NO SNAPSHOT (DECK SCREEN)")
+              }
             });
+            
             // @ts-ignore
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [

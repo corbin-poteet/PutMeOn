@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, child, get, set } from 'firebase/database';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
+import { useIsFocused } from '@react-navigation/native'
 
 const HomeScreen = () => {
   const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
@@ -27,7 +28,8 @@ const HomeScreen = () => {
   const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
   const [recentlyPlayedTracks, setRecentlyPlayedTracks] = React.useState<{}>({});
   const [selectedDeck, setSelectedDeck] = React.useState<string>();
-
+  const isFocused = useIsFocused() //Checks if screen is being looked at
+  
   var tracks: any | any[] = [];
 
   const dbRef = ref(database); // load database
@@ -106,15 +108,27 @@ const HomeScreen = () => {
   }, [sound]);
 
   React.useEffect(() => {
-    if (user) {
+    if (user && isFocused) {
       if (user.images) {
         if (user.images.length > 0) {
           setUserImage(user.images[0].url)
         }
       }
+      console.log(">HomeScreen is focused")
       setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
     }
-  }, [user]);
+  }, [user, isFocused]);
+  
+  React.useEffect(() => { //Load the selectedDeck
+    if(loaded && user)
+      checkDeck();
+  }, [loaded]);
+
+  React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
+    if (loaded === true) {
+      setDeckLoaded(true);
+    }
+  }, [selectedDeck])
 
   // TODO: Change this to check the database to see if the user has swiped on any songs
   React.useEffect(() => {
@@ -133,17 +147,6 @@ const HomeScreen = () => {
       }
     }
   }, [deckLoaded]); //check for cached credentials so we know if this is first time load 
-
-  React.useEffect(() => { //Load the selectedDeck
-    if(loaded && user)
-      checkDeck();
-  }, [loaded]);
-
-  React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
-    if (loaded === true) {
-      setDeckLoaded(true);
-    }
-  }, [selectedDeck])
 
   function checkDeck() {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
