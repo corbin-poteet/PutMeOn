@@ -25,9 +25,9 @@ const SearchSwitch = (propsIn: SettingsSwitchProps) => {
     <View className='flex-row items-center py-2 px-5'>
       {
         switchValue ? 
-        <Text className='text-white text-xl font-semibold mx-2'>Artists</Text>
+        <Text className='text-white text-3xl font-bold mx-2'>Artists</Text>
         :
-        <Text className='text-white text-xl font-semibold mx-2'>Songs</Text>
+        <Text className='text-white text-3xl font-bold mx-2'>Songs</Text>
       }
       
       <Switch style={{backgroundColor: '#FF0000', borderRadius: 17}}

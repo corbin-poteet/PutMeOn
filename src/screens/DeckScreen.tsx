@@ -52,7 +52,7 @@ const DeckScreen = () => {
       if (snapshot.exists()) { //If playlist ID is within the decks database, render that playlist as a valid deck
         snapshot.forEach((element: any) => {
           var value = element.val();
-          temp.push(value?.playlistId); //chafnge to ID
+          temp.push(value?.playlistId); //change to ID
           setDecks(temp); //Push database spotify playlist ids item to decks array (string)
         });
       } else {

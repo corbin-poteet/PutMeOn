@@ -94,7 +94,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
-                      setReadableSeeds([...readableSeeds, element.name]);
+                      setReadableSeeds([...readableSeeds, element.name+" "]);
                       Alert.alert("Added artist: " + element.name);
                       console.log("ADDING ARTIST: " + element.name);
                       console.log(seeds);
