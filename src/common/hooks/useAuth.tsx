@@ -15,6 +15,8 @@ const config = {
   // the client id is the id of the app we created on spotify's developer dashboard
   clientId: "0876b3cbdd284d49ac26ded9817b6d6d",
 
+  clientSecret: "f0864fc876ca403ea5fa2ddd15d791a9",
+
   // the scopes are the permissions we want to request from the user
   scopes: [
     "user-read-currently-playing",
@@ -47,8 +49,6 @@ const config = {
 
     // the token endpoint is the url that we will send the user to in order to get an access token
     tokenEndpoint: "https://accounts.spotify.com/api/token",
-
-    show_dialog: true,
   },
 };
 
@@ -91,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     {
       responseType: ResponseType.Token,
       clientId: config.clientId,
+      clientSecret: config.clientSecret,
       scopes: config.scopes,
       usePKCE: false,
       redirectUri: config.redirectUri,
@@ -98,10 +99,8 @@ export const AuthProvider = ({ children }) => {
       extraParams: {
         show_dialog: promptUser ? "true" : "false",
       }
-
     },
     config.discovery,
-    
   );
 
   // only re-render if token changes
