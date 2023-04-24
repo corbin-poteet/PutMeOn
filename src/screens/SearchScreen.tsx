@@ -26,7 +26,7 @@ const SearchScreen = () => {
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
   const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
-  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds
+  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
   const [showSeedScreen, setShowSeedScreen] = useState<boolean>(false); //keeps track of whether or not to show the seed screen
 
   useLayoutEffect(() => { //hide header
