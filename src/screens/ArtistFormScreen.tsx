@@ -1,5 +1,5 @@
 import { TextInput, View, Text, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ const ArtistFormScreen = () => {
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
 
-  let searchResults: any[];
+  let searchResults: any[] = [];
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,7 +30,14 @@ const ArtistFormScreen = () => {
     });
   }, [navigation]);
 
+  useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
+    if (user != undefined && user.id != undefined) {
+      getSearchResults();
+    }
+  }, [user, searchTerm]);
+
   async function getSearchResults() {
+    console.log("SEARCHING");
     setLoaded(false); //when actively searching, set loaded false
     const result: any[] = []; //holds search results in getSearchResults function
 
@@ -54,7 +61,7 @@ const ArtistFormScreen = () => {
               <View>
                 <TouchableOpacity onPress={
                   () => {
-                    
+                    //DUETO: push track ID to DB here
                     setComponentHandler([]); //clear search results on screen
                   }
                 }>
@@ -86,7 +93,7 @@ const ArtistFormScreen = () => {
             ?
             <ActivityIndicator className='mt-60' size='large' color='#0B0B45' />
             :
-            <ScrollView className='mt-5'>
+            <ScrollView className='mt-5 items-center flex-1'>
               {componentHandler}
             </ScrollView>
             }
