@@ -1,19 +1,20 @@
 import { TextInput, View, Text, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Image } from 'react-native'
 import React, { useEffect } from 'react'
+import useAuth from '@/common/hooks/useAuth'; 
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { push, ref, child, update } from 'firebase/database';
-import * as Haptics from 'expo-haptics';
 //@ts-ignore
 import database from "../../firebaseConfig.tsx";
-import useAuth from '@/common/hooks/useAuth';
 
-const appendPromotion = (trackID:string) => { //function to append data to DB
 
-}
+var searchResults: any[];
 
 const ArtistFormScreen = () => {
+
+  var instanceVariableLmao:string = "";
+  const result: any[] = []; //holds search results in getSearchResults function
     
   const navigation = useNavigation();
   const { spotify } = useAuth();
@@ -21,8 +22,6 @@ const ArtistFormScreen = () => {
   const [searchTerm, setSearchTerm] = useState<string>(""); //keeps track of text entered in search bar dynamically
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
-
-  let searchResults: any[] = [];
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,12 +34,12 @@ const ArtistFormScreen = () => {
   }, [searchTerm]);
 
   async function getSearchResults() {
-    console.log("STARTING SEARCH");
+    console.log("CALLED GET SEARCH RESULTS");
     setLoaded(false); //when actively searching, set loaded false
 
     const result: any[] = []; //holds search results in getSearchResults function
 
-    const response = await spotify.searchTracks(searchTerm, { limit: 20 }).then(
+    const response = await spotify.searchTracks("S", { limit: 20 }).then(
       function (data) {
         console.log("SEARCH SUCCESSFUL, SETTING RESULTS");
         searchResults = data.tracks.items;
@@ -89,8 +88,11 @@ const ArtistFormScreen = () => {
     <View className='flex-1 justify-center'>
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
           <View className='flex-col items-center absolute top-10'>
+            {/*Header / Search bar*/}
             <Text className=" text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Search for the song you want promoted and press to enter.</Text>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearchTerm; console.log("Current search entry: " + searchTerm);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl px-8 py-3'></TextInput>
+            <TextInput style={{ width: "90%", backgroundColor: '#014871' }} placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearchTerm; console.log("Current search entry: " + searchTerm);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-2xl px-8 py-3'></TextInput>
+            
+            {/*Search Results*/}
             {!loaded
             ?
             <ActivityIndicator className='mt-60' size='large' color='#0B0B45' />
