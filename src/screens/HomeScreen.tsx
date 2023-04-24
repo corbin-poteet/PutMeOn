@@ -118,7 +118,6 @@ const HomeScreen = () => {
       }
 
       setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
-      console.log(">HomeScreen is focused")
     }
   }, [user, isFocused]);
   
@@ -136,13 +135,11 @@ const HomeScreen = () => {
   // TODO: Change this to check the database to see if the user has swiped on any songs
   React.useEffect(() => {
     if (deckLoaded === true) {
-      console.log("selectedDeck: "+selectedDeck)
       if (selectedDeck !== undefined) {
         console.log('Found Deck and Loaded!');
       }
       else {
         console.log("MOVING TO DEMO")
-        console.log("Generating Decks directory for user...");
         // @ts-ignore
         navigation.navigate('Welcome'); //Navigate to the welcome demo screen if user has not selected a playlist, change later
       }
@@ -154,7 +151,7 @@ const HomeScreen = () => {
       if (snapshot.exists()) {
         var value = snapshot.val();
         setSelectedDeck(value?.id); 
-
+        // @ts-ignore
         setSelectedPlaylist(value?.id); //Set selected spotify playlist in context 
         
       } else {

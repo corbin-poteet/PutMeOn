@@ -136,7 +136,7 @@ const DeckScreen = () => {
                   name: playlists[playlist.index]?.name, 
                   seeds: temp
                 });
-                
+                // @ts-ignore
                 setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
 
               } else {

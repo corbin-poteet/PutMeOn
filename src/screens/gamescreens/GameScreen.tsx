@@ -98,6 +98,7 @@ const GameScreen = () => {
       for (let i = 0; i < tracks.length; i++) {
         console.log("TRACK " + i + ": " + tracks[i]?.name);
       }
+      // @ts-ignore
       correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index
 
       let trackStack = tracks;
@@ -118,15 +119,19 @@ const GameScreen = () => {
     audioPlayer.stop();
 
     if (correctTrack == tracks[index]) {
+      // @ts-ignore
       setScore(score + 10); //these work don't mind the errors
+      // @ts-ignore
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
     else {
       console.log("WRONGCHOICE");
+      // @ts-ignore
       setEarnings(0);
     }
     setLoaded(false);
+    // @ts-ignore
     navigation.navigate('Score');
   };
 

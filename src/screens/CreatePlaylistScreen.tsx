@@ -52,7 +52,7 @@ const CreatePlaylistScreen = () => {
           seeds: output
         });
       });
-
+      // @ts-ignore
       setSelectedPlaylist(createdPlaylist?.id); //set spotify playlist context
 
   }
