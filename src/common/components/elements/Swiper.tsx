@@ -243,9 +243,8 @@ const Swiper = (props: Props) => {
       .then(
         // after promise returns of containsMySavedTracks
         function (isSavedArr: any[]) {
-          console.log("containsMySavedTracks Promise Returned: " + isSavedArr);
+          //console.log("containsMySavedTracks Promise Returned: " + isSavedArr);
           isSavedArr.forEach((element) => {
-            console.log(element);
             if (element === true) {
               console.log(
                 "Removing from tracks: " +
@@ -265,31 +264,35 @@ const Swiper = (props: Props) => {
 
 
     //remove song if detected as swiped from database, currently splice is not working
-    const dbRef = ref(database);
-    const trackIds2 = tracks.map((track: any) => track.id);
-    trackIds2.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log("REMOVED BASED ON DB: " + trackId)
-            tracks.splice(trackIds2.indexOf(trackId), 1);
-            console.log(
-              "SWIPED SONG DETECTED IN DB, REMOVING: " +
-              snapshot.val().trackID
-            );
-            console.log("track removed?" + trackIds2.indexOf(trackId));
-          } else {
-            console.log("Swiped song not found");
-          }
-        })
-        .catch((error) => {
-          console.log("Query Failed, error; " + error);
-        });
-    });
+    // const dbRef = ref(database);
+    // const trackIds2 = tracks.map((track: any) => track.id);
+    // trackIds2.forEach((trackId: string) => {
+    //   get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
+    //     .then((snapshot) => {
+    //       if (snapshot.exists()) {
+    //         console.log("REMOVED BASED ON DB: " + trackId)
+    //         tracks.splice(trackIds2.indexOf(trackId), 1);
+    //         console.log(
+    //           "SWIPED SONG DETECTED IN DB, REMOVING: " +
+    //           snapshot.val().trackID
+    //         );
+    //         console.log("track removed?" + trackIds2.indexOf(trackId));
+    //       } else {
+    //         console.log("Swiped song not found");
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log("Query Failed, error; " + error);
+    //     });
+    // });
+
 
     //Removes tracks with no preview url
     tracks.forEach((element) => {
-      console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
+      if(swipedTrackIds.includes(element.id)){
+        tracks.splice(tracks.indexOf(element), 1);
+      }
+      //console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
       if (element.preview_url == null || element.preview_url == undefined) {
         console.log(
           "Null preview detected, Removing from tracks: " + element.name
@@ -298,7 +301,22 @@ const Swiper = (props: Props) => {
       }
     });
 
-    console.log("Tracks length: " + tracks.length);
+    for (let i = 0; i < tracks.length; i++) {
+      if(tracks[i].preview_url === null){
+        console.log("preview_url is null part twoooo removing " + tracks[i].name);
+        tracks.splice(i, 1);
+      }
+    }
+
+    for (let i = 0; i < tracks.length; i++) {
+      if(tracks[i].preview_url === null){
+        console.log("preview_url is null part THREEEE removing " + tracks[i].name);
+        tracks.splice(i, 1);
+      }
+    }
+
+    console.log("Tracks length after cleaning: " + tracks.length);
+    console.log("setting tracks");
     setTracks(tracks);
     //return tracks;
   }
@@ -314,7 +332,8 @@ const Swiper = (props: Props) => {
         //   console.log("Deck found in db, loading default top artists deck");
         //   getTracks();
         // }
-        getCleanedRecs();
+        //getCleanedRecs();
+        getTracks();
 
       } else {
         console.log("Deck not found in db");
@@ -597,7 +616,7 @@ const Swiper = (props: Props) => {
         //play();
 
 
-        //console.log(tracks[cardIndex].name + " has preview url?: " + tracks[cardIndex].preview_url);
+        console.log(tracks[cardIndex].name + " has preview url?: " + tracks[cardIndex].preview_url);
 
         // if(cardIndex === tracks.length){
         //   reloadTracks();
