@@ -28,27 +28,25 @@ const SwiperComponent = () => {
   const [deckManager, setDeckManager] = React.useState<DeckManager>(new DeckManager({}));
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [speed, setSpeed] = React.useState<number>(25);
+  const [isBuffering, setIsBuffering] = React.useState<boolean>(true);
 
   const { audioPlayer } = useAudioPlayer();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
-  React.useEffect(() => {
-    console.log("SwiperComponent mounted");
+  React.useMemo(async () => {
+
 
     const seed_tracks = ["6SpLc7EXZIPpy0sVko0aoU", "1yjY7rpaAQvKwpdUliHx0d"];
     const seed_genres = [] as string[];
     const seed_artists = ["74XFHRwlV6OrjEM0A2NCMF",];
-    deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then(() => {
-      console.log(deckManager.getTracks().map((track) => track.name));
+    await deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then(() => {
+      setIsBuffering(false);
     });
-  }, []);
 
-  React.useEffect(() => {
-    console.log("DeckManager updated");
-    console.log(deckManager);
-    console.log(deckManager.getTracks().map((track) => track.name));
+
+
 
   }, [deckManager]);
 
@@ -262,7 +260,7 @@ const SwiperComponent = () => {
     </View>
   );
 
-  
+
 
 }
 

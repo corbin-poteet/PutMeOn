@@ -13,11 +13,6 @@ import useAuth from '../hooks/useAuth';
 
 //var spotify = useAuth().spotify;
 
-
-interface DeckState {
-  tracks: SpotifyApi.TrackObjectFull[];
-}
-
 class DeckManager {
   spotify = useAuth().spotify;
   tracks: SpotifyApi.TrackObjectFull[] = [];
@@ -34,7 +29,7 @@ class DeckManager {
    * @param responseSize the size of the response from the spotify api
    */
   public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 20, responseSize: number = 50) {
-    this.spotify.getRecommendations({
+    await this.spotify.getRecommendations({
       seed_tracks: seed_tracks,
       seed_genres: seed_genres,
       seed_artists: seed_artists,
@@ -44,6 +39,7 @@ class DeckManager {
       tracks = tracks.filter((track) => track.preview_url != null);
       tracks = tracks.slice(0, finalSize);
       this.tracks = tracks;
+      console.log(tracks.length);
       return tracks;
     });
   }
