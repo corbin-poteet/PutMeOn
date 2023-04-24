@@ -12,11 +12,12 @@ export default function App({ children }) {
   const [round, setRound] = useState(1);
   const [score, setScore] = useState(0);
   const [earnings, setEarnings] = useState(0);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<string>("");
 
   return (
     <AuthProvider>
       <AudioPlayerProvider>
-        <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings }}>
+        <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings, selectedPlaylist, setSelectedPlaylist }}>
           <StackNavigator />
           <StatusBar style="auto" />
         </gameContext.Provider>
