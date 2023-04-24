@@ -1,14 +1,13 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, Switch, ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import useAuth from '@hooks/useAuth';
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
 import SettingsButton from '@/common/components/SettingsButton';
 import { FontAwesome5 } from '@expo/vector-icons';
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 
 //Settings tab
 
@@ -89,7 +88,7 @@ const SettingsScreen = () => {
           <View className='flex-1 items-start py-5' style={{ backgroundColor: '#f0f2f4' }}>
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
             <SettingsSwitch text='Filter Explicit' value={true} />
-            <SettingsSwitch text='Opt in to PME Telemetry' />
+            <SettingsSwitch text='Opt in to PME Telemetry' onValueChange={() => {Alert.alert("HAHA You just opted into our spyware program. All of your data is ours now.")}}/>
             
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Preferences</Text>
             <SettingsButton text='Decks' navigateString='Decks'/>

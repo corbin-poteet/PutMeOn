@@ -37,6 +37,12 @@ const SearchScreen = () => {
     })
   }, [navigation])
 
+  useEffect(() => { //useEffect to clear search results when input goes back to empty
+    if (search == '') {
+      setComponentHandler([]);
+    }
+  }, [search]);
+
   useEffect(() => { //useEffect to show seeds and allow deletion of selected seeds
     const seedsList = readableSeeds.map(
       (seed) => {

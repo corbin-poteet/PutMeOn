@@ -8,6 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useIsFocused } from '@react-navigation/native'
 import TextTicker from 'react-native-text-ticker'
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 //import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 //import { push, ref, set, child, get } from 'firebase/database';
 
@@ -40,8 +41,9 @@ const GameScreen = () => {
   }, [navigation]);
 
   //sound states
-  const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
-  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+
+  const { audioPlayer } = useAudioPlayer();
+
   const [loaded, setLoaded] = React.useState<boolean>(false);
 
   //track states
@@ -89,32 +91,10 @@ const GameScreen = () => {
     }
   }, [isFocused]);
 
-  async function playSound(track: SpotifyApi.TrackObjectFull) {
-    console.log('Loading Sound');
-    if (track.preview_url == null) {
-      console.log("NO PREVIEW URL");
-      return;
-    }
-
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: track.preview_url },
-      { shouldPlay: true }
-    );
-    setSound(sound);
-    console.log('Playing Sound');
-    await sound.playAsync();
-  }
-
-  async function stopSound() {
-    console.log('Stopping Sound');
-    await sound?.stopAsync();
-  }
-
   React.useEffect(() => {
     if (tracks.length >= 4) {
       correctTrack = tracks[0]; //correct track selection starts as the first index of the tracks array
-      playSound(correctTrack);
+      audioPlayer.setTrack(correctTrack);
       for (let i = 0; i < tracks.length; i++) {
         console.log("TRACK " + i + ": " + tracks[i]?.name);
       }
@@ -135,7 +115,7 @@ const GameScreen = () => {
   function handleChoice(index: number) { 
     console.log(tracks[index]);
     
-    stopSound();
+    audioPlayer.stop();
 
     if (correctTrack == tracks[index]) {
       setScore(score + 10); //these work don't mind the errors
