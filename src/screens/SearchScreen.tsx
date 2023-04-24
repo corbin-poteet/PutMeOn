@@ -26,7 +26,7 @@ const SearchScreen = () => {
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
   const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
-  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds
+  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
   const [showSeedScreen, setShowSeedScreen] = useState<boolean>(false); //keeps track of whether or not to show the seed screen
 
   useLayoutEffect(() => { //hide header
@@ -170,14 +170,14 @@ const SearchScreen = () => {
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
         { showSeedScreen
-          ? 
+          ?
           <View className = "px-10 py-10 rounded-3xl" style={{borderWidth : 5, borderColor: "white"}}>
               <View>{componentHandler2}</View>
               <TouchableOpacity onPress={() => {setShowSeedScreen(false);}}>
                 <Text className='font-semibold text-1xl text-white bg-red-500'>Close</Text>
               </TouchableOpacity>
           </View>
-          : 
+          :
           <View className='items-center justify-center' style={{ marginTop: 50, flex: 1 }}>
           <View className='absolute top-4'>
             <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle} />

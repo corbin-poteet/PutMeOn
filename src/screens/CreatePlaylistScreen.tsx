@@ -1,9 +1,9 @@
-import { TextInput, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { TextInput, View, Text, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import useAuth from '@hooks/useAuth';
-import { push, ref, set, child, get } from 'firebase/database';
+import { ref, set } from 'firebase/database';
 //@ts-ignore
 import { output } from './SearchScreen.tsx';
 // @ts-ignore
@@ -62,7 +62,6 @@ const CreatePlaylistScreen = () => {
     // @ts-ignore
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
       getPlaylists();
-      //@ts-ignore
     });
     console.log("ERROR CHECK PASSED")
 
