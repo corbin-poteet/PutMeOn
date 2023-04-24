@@ -297,18 +297,19 @@ const Swiper = (props: Props) => {
         tracks.splice(tracks.indexOf(element), 1);
       }
       //console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
-      if (element.preview_url == null || element.preview_url == undefined) {
-        console.log(
-          "Null preview detected, Removing from tracks: " + element.name
-        );
-        tracks.splice(tracks.indexOf(element), 1);
-      }
+      // if (element.preview_url == null || element.preview_url == undefined) {
+      //   console.log(
+      //     "Null preview detected, Removing from tracks: " + element.name
+      //   );
+      //   tracks.splice(tracks.indexOf(element), 1);
+      // }
     });
 
     for (let i = 0; i < tracks.length; i++) {
       if(tracks[i].preview_url === null){
-        console.log("preview_url is null part twoooo removing " + tracks[i].name);
+        console.log("preview_url is null part ONE removing " + tracks[i].name);
         tracks.splice(i, 1);
+        i--;
       }
     }
 
@@ -402,7 +403,7 @@ const Swiper = (props: Props) => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
-        setSelectedPlaylist(value?.id);
+        //setSelectedPlaylist(value?.id);
       } else {
         console.log("Database connection failed in SWIPER component");
       }
