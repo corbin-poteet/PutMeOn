@@ -1,5 +1,5 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState, useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,9 +10,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import Swiper from '@/common/components/elements/Swiper';
-import DeckScreen, { selectedPlaylist } from '@screens/DeckScreen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, child, get, set } from 'firebase/database';
+import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { useIsFocused } from '@react-navigation/native'
@@ -30,8 +30,10 @@ const HomeScreen = () => {
   const [selectedDeck, setSelectedDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
   
-  var tracks: any | any[] = [];
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
 
+  var tracks: any | any[] = [];
+  
   const dbRef = ref(database); // load database
 
   // async function getRecentlyPlayedTracks() {
@@ -107,15 +109,16 @@ const HomeScreen = () => {
       : undefined;
   }, [sound]);
 
-  React.useEffect(() => {
+  React.useEffect(() => { //If user is looking at Home screen
     if (user && isFocused) {
       if (user.images) {
         if (user.images.length > 0) {
           setUserImage(user.images[0].url)
         }
       }
-      console.log(">HomeScreen is focused")
+
       setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
+      console.log(">HomeScreen is focused")
     }
   }, [user, isFocused]);
   
@@ -132,8 +135,6 @@ const HomeScreen = () => {
 
   // TODO: Change this to check the database to see if the user has swiped on any songs
   React.useEffect(() => {
-    //if(!selectedPlaylist && loaded) {
-    //navigation.navigate('Playlist') //Navigate to playlists screen if user doesn't have a playlist selected 
     if (deckLoaded === true) {
       console.log("selectedDeck: "+selectedDeck)
       if (selectedDeck !== undefined) {
@@ -152,7 +153,10 @@ const HomeScreen = () => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
-        setSelectedDeck(value?.id);
+        setSelectedDeck(value?.id); 
+
+        setSelectedPlaylist(value?.id); //Set selected spotify playlist in context 
+        
       } else {
         set(ref(database, "Decks/" + user?.id +"/test"), {
           name: "test"

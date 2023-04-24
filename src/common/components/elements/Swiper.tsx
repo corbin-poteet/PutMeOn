@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   Easing,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import useAuth from "@/common/hooks/useAuth";
 import { LinearGradient } from "expo-linear-gradient";
 import CardsSwipe from "react-native-cards-swipe";
@@ -20,14 +20,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Audio } from "expo-av";
 import TextTicker from "react-native-text-ticker";
+import gameContext from '@/common/hooks/gameContext';
 
 let speed: number = 25;
-let selectedPlaylist: string;
+
 type Props = {
   tracks: SpotifyApi.TrackObjectFull[];
 };
 
 const Swiper = (props: Props) => {
+
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
+
   /* VARIABLE/USESTATE DECLARATION */
   const { spotify, user } = useAuth();
   const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
@@ -444,7 +448,7 @@ const Swiper = (props: Props) => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
-        selectedPlaylist = value?.id;
+        setSelectedPlaylist(value?.id);
       } else {
         console.log("Database connection failed in SWIPER component");
       }

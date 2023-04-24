@@ -1,13 +1,13 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react';
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ref, child, get, set } from 'firebase/database';
+import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
-var selectedPlaylist: string;
 var playlists: any[];
 
 //let loaded: boolean = false;
@@ -19,6 +19,7 @@ const DeckScreen = () => {
 
   const navigation = useNavigation();
   const dbRef = ref(database);
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -63,7 +64,6 @@ const DeckScreen = () => {
   }
 
   async function getPlaylists() { //Obtain all spotify playlists owned by current user
-
     const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
@@ -121,7 +121,8 @@ const DeckScreen = () => {
       {
         text: 'Yes', onPress:
           () => {
-            selectedPlaylist = playlists[playlist.index].id;
+            //console.log("PLAYLIST SELECTED: "+playlists[playlist.index].name)
+            //selectedPlaylist = playlists[playlist.index].id;
             
             var temp; //Set seeds to this value to push to selectedDeck
 
@@ -135,6 +136,8 @@ const DeckScreen = () => {
                   name: playlists[playlist.index]?.name, 
                   seeds: temp
                 });
+                
+                setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
 
               } else {
                 console.log("NO SNAPSHOT (DECK SCREEN)")
@@ -209,4 +212,3 @@ const DeckScreen = () => {
 }
 
 export default DeckScreen;
-export { selectedPlaylist }; //Share the current working playlist id with other components

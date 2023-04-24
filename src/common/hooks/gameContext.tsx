@@ -6,7 +6,9 @@ const gameContext = createContext({
     earnings: 0,
     setRound: {},
     setScore: {},
-    setEarnings: {}
-})
+    setEarnings: {},
+    selectedPlaylist: "",
+    setSelectedPlaylist: {},
+});
 
 export default gameContext;

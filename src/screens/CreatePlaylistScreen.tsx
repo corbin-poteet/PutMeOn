@@ -1,5 +1,5 @@
 import { TextInput, View, Text, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import useAuth from '@hooks/useAuth';
@@ -8,6 +8,7 @@ import { ref, set } from 'firebase/database';
 import { output } from './SearchScreen.tsx';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
+import gameContext from '@/common/hooks/gameContext';
 
 var playlists: any[];
 var createdPlaylist: any;
@@ -19,10 +20,10 @@ const CreatePlaylistScreen = () => {
   const navigation = useNavigation();
 
   const { spotify, user } = useAuth();
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [loaded, setLoaded] = useState<boolean>(false);
 
   const inputObject = {
     "name": name,
@@ -50,14 +51,15 @@ const CreatePlaylistScreen = () => {
           name: createdPlaylist?.name,
           seeds: output
         });
-
-        console.log("GOING HOME!!! (CREATED PLAYLIST)")
-
       });
+
+      setSelectedPlaylist(createdPlaylist?.id); //set spotify playlist context
+
   }
 
   async function createPlaylist() { //Build playlist within spotify app
     Alert.alert("Playlist Created!");
+    // @ts-ignore
     navigation.navigate('Home');
     // @ts-ignore
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
