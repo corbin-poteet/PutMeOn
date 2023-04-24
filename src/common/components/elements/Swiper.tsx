@@ -402,6 +402,7 @@ const Swiper = (props: Props) => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
+        // @ts-ignore
         setSelectedPlaylist(value?.id);
       } else {
         console.log("Database connection failed in SWIPER component");

@@ -154,7 +154,7 @@ const HomeScreen = () => {
       if (snapshot.exists()) {
         var value = snapshot.val();
         setSelectedDeck(value?.id); 
-
+        // @ts-ignore
         setSelectedPlaylist(value?.id); //Set selected spotify playlist in context 
         
       } else {
