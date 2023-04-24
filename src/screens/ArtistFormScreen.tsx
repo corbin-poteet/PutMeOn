@@ -35,11 +35,14 @@ const ArtistFormScreen = () => {
   }, [searchTerm]);
 
   async function getSearchResults() {
+    console.log("STARTING SEARCH");
     setLoaded(false); //when actively searching, set loaded false
+
     const result: any[] = []; //holds search results in getSearchResults function
 
     const response = await spotify.searchTracks(searchTerm, { limit: 20 }).then(
       function (data) {
+        console.log("SEARCH SUCCESSFUL, SETTING RESULTS");
         searchResults = data.tracks.items;
 
         for (let i = 0; i < searchResults.length; i++) {
@@ -71,12 +74,14 @@ const ArtistFormScreen = () => {
             )
           }
         )
+        console.log("SETTING COMPONENT HANDLER");
         setComponentHandler(listItems);
       })
       .catch(error => {
         // Handle promise rejection
         console.log("SEARCH ERROR: " + error.message);
       });
+  console.log("LOADED");
   setLoaded(true); //when searching is finished, set loaded true
   }
   
@@ -85,7 +90,7 @@ const ArtistFormScreen = () => {
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
           <View className='flex-col items-center absolute top-10'>
             <Text className=" text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Search for the song you want promoted and press to enter.</Text>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearchTerm} className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl px-8 py-3'></TextInput>
+            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearchTerm("THA"); console.log(searchTerm);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl px-8 py-3'></TextInput>
             {!loaded
             ?
             <ActivityIndicator className='mt-60' size='large' color='#0B0B45' />
