@@ -17,7 +17,7 @@ class AudioPlayer {
     this._isPlaying = false;
     this.isBuffering = false;
     this.playbackStatus = {} as AVPlaybackStatus;
-    this.currentTrack = {} as SpotifyApi.TrackObjectFull;
+    this.currentTrack = {} as SpotifyApi.TrackObjectFull || null;
     this.previousTrack = {} as SpotifyApi.TrackObjectFull || null;
     this.playbackPosition = 0;
   }
@@ -27,9 +27,10 @@ class AudioPlayer {
     this.currentTrack = track;
 
     // unload the previous track
-    await this.sound.unloadAsync().catch((error) => {
-      console.log(error);
-    });
+    await this.sound.unloadAsync()
+      .catch((error) => {
+        console.log(error);
+      });
 
     // if the track has a preview
     if (this.hasPreview()) {
@@ -49,7 +50,8 @@ class AudioPlayer {
   }
 
   async play() {
-    await this.sound.playAsync().catch((error) => {
+    await this.sound.playAsync()
+      .catch((error) => {
       console.log(error);
     });
 
@@ -57,7 +59,8 @@ class AudioPlayer {
   }
 
   async pause() {
-    await this.sound.pauseAsync().catch((error) => {
+    await this.sound.pauseAsync()
+      .catch((error) => {
       console.log(error);
     });
 
@@ -65,13 +68,15 @@ class AudioPlayer {
   }
 
   async stop() {
-    await this.sound.stopAsync().catch((error) => {
+    await this.sound.stopAsync()
+      .catch((error) => {
       console.log(error);
     });
 
     this._isPlaying = false;
 
-    await this.sound.unloadAsync().catch((error) => {
+    await this.sound.unloadAsync()
+      .catch((error) => {
       console.log(error);
     });
   }
@@ -85,11 +90,13 @@ class AudioPlayer {
   }
 
   async seek(position: number) {
-    await this.sound.setPositionAsync(position);
+    await this.sound.setPositionAsync(position).catch((error) => {
+      console.log(error);
+    });
   }
 
   hasPreview(): boolean {
-    return this.currentTrack.preview_url != null;
+    return this.currentTrack && this.currentTrack.preview_url != undefined;
   }
 
   getPlaybackStatus() {
@@ -107,7 +114,7 @@ const audioPlayerContext = createContext({
 
 export const AudioPlayerProvider = ({ children }) => {
 
-  const [audioPlayer, setAudioPlayer] = React.useState(new AudioPlayer());
+  const [audioPlayer] = React.useState(new AudioPlayer());
 
   return (
     <audioPlayerContext.Provider
