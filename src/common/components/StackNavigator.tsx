@@ -120,13 +120,14 @@ const StackNavigator = () => {
             <Stack.Screen name="Round" component={RoundScreen} />
             <Stack.Screen name="End" component={EndScreen} />
             <Stack.Screen name="Game" component={GameScreen} />
+
+            <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
+            <Stack.Screen name="ArtistForm" component={ArtistFormScreen} />
+            <Stack.Screen name="BusinessForm" component={BusinessFormScreen} />
           </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />
         )}
-        <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
-        <Stack.Screen name="ArtistForm" component={ArtistFormScreen} />
-        <Stack.Screen name="BusinessForm" component={BusinessFormScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
