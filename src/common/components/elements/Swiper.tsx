@@ -434,6 +434,7 @@ const Swiper = () => {
         setCardIndex(cardIndex + 1);
         setPlaybackPosition(0);
         audioPlayer.setTrack(tracks[cardIndex + 1]);
+        swipedTrackIds.push(tracks[cardIndex].id);
         addNewTrack();
       }}
       onSwipedLeft={
