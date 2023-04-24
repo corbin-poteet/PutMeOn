@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
 import SettingsButton from '@/common/components/SettingsButton';
 import { FontAwesome5 } from '@expo/vector-icons';
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 
 //Settings tab
 

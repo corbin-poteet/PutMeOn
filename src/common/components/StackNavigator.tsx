@@ -25,39 +25,63 @@ import EndScreen from '@/screens/gamescreens/EndScreen';
 import StartScreen from '@/screens/gamescreens/StartScreen';
 import SearchScreen from '@/screens/SearchScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
+import useAudioPlayer from '../hooks/useAudioPlayer';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
+  const { audioPlayer } = useAudioPlayer();
+
+  async function pauseAudio() {
+    if (audioPlayer) {
+      audioPlayer.pause();
+    }
+  }
+
   return (
-    <Tabs.Navigator initialRouteName = "Home" screenOptions={{headerShown: false}}>
+    <Tabs.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="Start" component={StartScreen} listeners={
-        {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
+        {
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            pauseAudio();
+          }
+        }
       }
-      options={{
-        tabBarLabel: 'Game',
-        tabBarIcon: () => 
-          <FontAwesome name="gamepad" size={24} color="deepskyblue" />
-      }}
+        options={{
+          tabBarLabel: 'Game',
+          tabBarIcon: () =>
+            <FontAwesome name="gamepad" size={24} color="deepskyblue" />
+        }}
       />
       <Tabs.Screen name="Home" component={HomeScreen} listeners={
-        {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
+        {
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            pauseAudio();
+          }
+        }
       }
-      options={{
-        tabBarLabel: 'Swipe',
-        tabBarIcon: () =>
-          <MaterialCommunityIcons name="cards" size={24} color="deepskyblue" />
-      }}
+        options={{
+          tabBarLabel: 'Swipe',
+          tabBarIcon: () =>
+            <MaterialCommunityIcons name="cards" size={24} color="deepskyblue" />
+        }}
       />
       <Tabs.Screen name="Settings" component={SettingsScreen} listeners={
-        {tabPress: () => {Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}}
+        {
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            pauseAudio();
+          }
+        }
       }
-      options={{
-        tabBarLabel: 'Settings',
-        tabBarIcon: () =>
-          <FontAwesome name="cog" size={24} color="deepskyblue" />
-      }}
+        options={{
+          tabBarLabel: 'Settings',
+          tabBarIcon: () =>
+            <FontAwesome name="cog" size={24} color="deepskyblue" />
+        }}
       />
     </Tabs.Navigator>
   )
@@ -72,38 +96,38 @@ const StackNavigator = () => {
   //DUETO
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={
-          {
-            headerShown: false,
-          }
-        }>
-          {user != undefined ? (
-            <>
-              <Stack.Screen name="Navbar" component={Tab} />
-              <Stack.Screen name="Decks" component={DeckScreen} />
-              <Stack.Screen name="Playlist" component={PlaylistScreen} />
-              <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
-              <Stack.Screen name="UserInfo" component={UserDetails} />
-              <Stack.Screen name="AppInfo" component={AppInfo} />
-              <Stack.Screen name="Secret" component={SecretScreen} />
-              <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Navigator screenOptions={
+        {
+          headerShown: false,
+        }
+      }>
+        {user != undefined ? (
+          <>
+            <Stack.Screen name="Navbar" component={Tab} />
+            <Stack.Screen name="Decks" component={DeckScreen} />
+            <Stack.Screen name="Playlist" component={PlaylistScreen} />
+            <Stack.Screen name="CreatePlaylist" component={CreatePlaylistScreen} />
+            <Stack.Screen name="UserInfo" component={UserDetails} />
+            <Stack.Screen name="AppInfo" component={AppInfo} />
+            <Stack.Screen name="Secret" component={SecretScreen} />
+            <Stack.Screen name="Search" component={SearchScreen} />
 
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="Tutorial" component={TutorialScreen} />
-              <Stack.Screen name="Finish" component={FinishScreen} />
+            <Stack.Screen name="Welcome" component={WelcomeScreen} />
+            <Stack.Screen name="Tutorial" component={TutorialScreen} />
+            <Stack.Screen name="Finish" component={FinishScreen} />
 
-              <Stack.Screen name="Score" component={ScoreScreen} />
-              <Stack.Screen name="Round" component={RoundScreen} />
-              <Stack.Screen name="End" component={EndScreen} />
-              <Stack.Screen name="Game" component={GameScreen} />
-            </>
-          ) : (
-            <Stack.Screen name="Login" component={LoginScreen} />
-          )}
-            <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
-            <Stack.Screen name="ArtistForm" component={ArtistFormScreen} />
-            <Stack.Screen name="BusinessForm" component={BusinessFormScreen} />          
-        </Stack.Navigator>
+            <Stack.Screen name="Score" component={ScoreScreen} />
+            <Stack.Screen name="Round" component={RoundScreen} />
+            <Stack.Screen name="End" component={EndScreen} />
+            <Stack.Screen name="Game" component={GameScreen} />
+          </>
+        ) : (
+          <Stack.Screen name="Login" component={LoginScreen} />
+        )}
+        <Stack.Screen name="Advertiser" component={AdvertiserScreen} />
+        <Stack.Screen name="ArtistForm" component={ArtistFormScreen} />
+        <Stack.Screen name="BusinessForm" component={BusinessFormScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   )
 }
