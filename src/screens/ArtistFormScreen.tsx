@@ -16,7 +16,7 @@ const appendPromotion = (trackID:string) => { //function to append data to DB
 const ArtistFormScreen = () => {
     
   const navigation = useNavigation();
-  const { spotify, user} = useAuth();
+  const { spotify } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState<string>(''); //keeps track of text entered in search bar dynamically
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
@@ -30,14 +30,11 @@ const ArtistFormScreen = () => {
     });
   }, [navigation]);
 
-  useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
-    if (user != undefined && user.id != undefined) {
-      getSearchResults();
-    }
-  }, [user, searchTerm]);
+  useEffect(() => { //useEffect to search every time the user types in the search bar
+    getSearchResults();
+  }, [searchTerm]);
 
   async function getSearchResults() {
-    console.log("SEARCHING");
     setLoaded(false); //when actively searching, set loaded false
     const result: any[] = []; //holds search results in getSearchResults function
 
@@ -62,7 +59,7 @@ const ArtistFormScreen = () => {
                 <TouchableOpacity onPress={
                   () => {
                     //DUETO: push track ID to DB here
-                    setComponentHandler([]); //clear search results on screen
+                    //setComponentHandler([]); //clear search results on screen
                   }
                 }>
                   <View className='px-4' style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
@@ -93,7 +90,7 @@ const ArtistFormScreen = () => {
             ?
             <ActivityIndicator className='mt-60' size='large' color='#0B0B45' />
             :
-            <ScrollView className='mt-5 items-center flex-1'>
+            <ScrollView className='mt-5 flex-1'>
               {componentHandler}
             </ScrollView>
             }
