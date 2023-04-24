@@ -16,6 +16,7 @@ import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { useIsFocused } from '@react-navigation/native'
+import SwiperComponent from '@/common/components/SwiperComponent';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
@@ -144,7 +145,7 @@ const HomeScreen = () => {
         {/* Body */}
         <View className='flex-1 items-center justify-center'>
           <View className='h-full w-full px-2 pt-1 pb-2'>
-            <Swiper tracks={tracks} />
+            <SwiperComponent />
           </View>
         </View>
       </SafeAreaView>

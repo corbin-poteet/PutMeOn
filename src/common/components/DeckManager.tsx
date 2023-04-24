@@ -1,6 +1,7 @@
+import React from 'react';
 import useAuth from '../hooks/useAuth';
 
-const { spotify } = useAuth();
+//const { spotify } = useAuth();
 
 // db reference
 // const deck = {
@@ -10,12 +11,22 @@ const { spotify } = useAuth();
 //   dislikedTrackIDs: [] as string[],
 // }
 
-class DeckManager {
-  tracks: SpotifyApi.TrackObjectFull[];
+//var spotify = useAuth().spotify;
 
-  constructor(tracks: SpotifyApi.TrackObjectFull[] = []) {
-    this.tracks = tracks;
+
+interface DeckState {
+  tracks: SpotifyApi.TrackObjectFull[];
+}
+
+class DeckManager {
+  spotify = useAuth().spotify;
+  tracks: SpotifyApi.TrackObjectFull[] = [];
+
+  constructor(props: any) {
+    
   }
+
+
 
   /**
    * Initializes the deck with a given size
@@ -23,7 +34,7 @@ class DeckManager {
    * @param responseSize the size of the response from the spotify api
    */
   public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 20, responseSize: number = 50) {
-    spotify.getRecommendations({
+    this.spotify.getRecommendations({
       seed_tracks: seed_tracks,
       seed_genres: seed_genres,
       seed_artists: seed_artists,
