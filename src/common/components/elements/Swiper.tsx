@@ -266,46 +266,13 @@ const Swiper = (props: Props) => {
         console.log(err);
       });
 
-
-    //remove song if detected as swiped from database, currently splice is not working
-    // const dbRef = ref(database);
-    // const trackIds2 = tracks.map((track: any) => track.id);
-    // trackIds2.forEach((trackId: string) => {
-    //   get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
-    //     .then((snapshot) => {
-    //       if (snapshot.exists()) {
-    //         console.log("REMOVED BASED ON DB: " + trackId)
-    //         tracks.splice(trackIds2.indexOf(trackId), 1);
-    //         console.log(
-    //           "SWIPED SONG DETECTED IN DB, REMOVING: " +
-    //           snapshot.val().trackID
-    //         );
-    //         console.log("track removed?" + trackIds2.indexOf(trackId));
-    //       } else {
-    //         console.log("Swiped song not found");
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log("Query Failed, error; " + error);
-    //     });
-    // });
-
-
-    //Removes tracks with no preview url
-    tracks.forEach((element) => {
-      if(swipedTrackIds.includes(element.id)){
-        tracks.splice(tracks.indexOf(element), 1);
-      }
-      //console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
-      // if (element.preview_url == null || element.preview_url == undefined) {
-      //   console.log(
-      //     "Null preview detected, Removing from tracks: " + element.name
-      //   );
-      //   tracks.splice(tracks.indexOf(element), 1);
-      // }
-    });
-
+    //removes null previews as well as duplicates
     for (let i = 0; i < tracks.length; i++) {
+      if(swipedTrackIds.includes(tracks[i].id)){
+        tracks.splice(i, 1);
+        i--;
+      }
+
       if(tracks[i].preview_url === null){
         console.log("preview_url is null part ONE removing " + tracks[i].name);
         tracks.splice(i, 1);
@@ -313,12 +280,13 @@ const Swiper = (props: Props) => {
       }
     }
 
-    for (let i = 0; i < tracks.length; i++) {
-      if(tracks[i].preview_url === null){
-        console.log("preview_url is null part THREEEE removing " + tracks[i].name);
-        tracks.splice(i, 1);
-      }
-    }
+    // LMAO
+    // for (let i = 0; i < tracks.length; i++) {
+    //   if(tracks[i].preview_url === null){
+    //     console.log("preview_url is null part THREEEE removing " + tracks[i].name);
+    //     tracks.splice(i, 1);
+    //   }
+    // }
 
     console.log("Tracks length after cleaning: " + tracks.length);
     console.log("setting tracks");
