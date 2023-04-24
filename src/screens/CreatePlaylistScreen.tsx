@@ -23,18 +23,23 @@ const CreatePlaylistScreen = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [loaded, setLoaded] = useState<boolean>(false);
-  
-    const inputObject = {
-      "name": name,
-      "description": description,
-      "public": false
-      }
-  
-    React.useEffect(() => { //apply known deck-backed playlist to the pmo database
-      console.log("ERROR CHECK PASSED")
-      if(loaded == true) {
-        
-        set(ref(database, "Decks/" + user?.id +"/"+ createdPlaylist?.id), {
+
+  const inputObject = {
+    "name": name,
+    "description": description,
+    "public": false
+  }
+
+  async function getPlaylists() { //Obtain newly created playlist to push to database
+    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
+    ).then(
+      function (data) {
+        playlists = data.items;
+        createdPlaylist = playlists[0]; //Because our newest playlist will, without a doubt, be our first one in the array.
+
+        console.log("Setting DB in CreatePlaylistScreen")
+
+        set(ref(database, "Decks/" + user?.id + "/" + createdPlaylist?.id), {
           id: createdPlaylist?.id,
           name: createdPlaylist?.name,
           seeds: output
@@ -48,27 +53,19 @@ const CreatePlaylistScreen = () => {
 
         console.log("GOING HOME!!! (CREATED PLAYLIST)")
 
-        navigation.navigate('Home'); //Navigate after database has loaded new deck
-      }
-    }, [loaded]);
-
-  async function getPlaylists() { //Obtain newly created playlist to push to database
-    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
-    ).then(
-      function (data) {
-        playlists = data.items;
-        createdPlaylist = playlists[0]; //Because our newest playlist will, without a doubt, be our first one in the array.
       });
-      setLoaded(true);
   }
 
   async function createPlaylist() { //Build playlist within spotify app
+    Alert.alert("Playlist Created!");
+    navigation.navigate('Home');
     // @ts-ignore
     await spotify.createPlaylist(user?.id, inputObject).then((response) => {
-      Alert.alert("Playlist Created!");
       getPlaylists();
       //@ts-ignore
     });
+    console.log("ERROR CHECK PASSED")
+
   }
 
   React.useLayoutEffect(() => { //Removes header on this screen
@@ -83,10 +80,10 @@ const CreatePlaylistScreen = () => {
         <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Creating a new Deck creates a playlist in Spotify. Let's give it a name!</Text>
         <TextInput placeholderTextColor={"#0B0B45"} placeholder='Playlist Name' onChangeText={setName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-3' style={{ backgroundColor: '#014871' }}></TextInput>
         <TextInput placeholderTextColor={"#0B0B45"} placeholder='Playlist Description' onChangeText={setDescription} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-10 px-8 py-3' style={{ backgroundColor: '#014871' }}></TextInput>
-      
+
         <TouchableOpacity className='absolute bottom-10 flex-row items-center justify-center rounded-3xl bottom-12 px-8 py-3' style={{ backgroundColor: '#014871' }}
           onPress={() => {
-            {createPlaylist()};
+            { createPlaylist() };
           }}>
           <Text className='font-semibold text-1 text-white text-xl'>Create Playlist</Text>
         </TouchableOpacity>
