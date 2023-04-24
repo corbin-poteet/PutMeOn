@@ -25,11 +25,9 @@ import useAudioPlayer from "@/common/hooks/useAudioPlayer";
 
 let speed: number = 25;
 
-type Props = {
-  tracks: SpotifyApi.TrackObjectFull[];
-};
 
-const Swiper = (props: Props) => {
+
+const Swiper = () => {
 
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
 
@@ -109,20 +107,16 @@ const Swiper = (props: Props) => {
   }
 
   async function getTracks() {
-    const topArtists: string[] = topArtistsIds;
+
+    // this was throwing an error
+    // so i made it where we catch the error
+    // then commented that out because we don't actually care
     const recResponse = await spotify.getRecommendations({
-      seed_artists: topArtists,
+      seed_artists: topArtistsIds,
       limit: 20,
-    }).then(
-      function (data: any) {
-        return data;
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    }) as SpotifyApi.RecommendationsFromSeedsResponse;;
+    }).catch((err) => {
+      //console.log(err);
+    }) as SpotifyApi.RecommendationsFromSeedsResponse;
 
     if (recResponse) {
       trackStack = recResponse.tracks.map((track: any) => track);

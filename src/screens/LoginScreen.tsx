@@ -18,7 +18,7 @@ const LoginScreen = () => {
     });
   }, [navigation]);
 
-  const { token, signInWithSpotify } = useAuth();
+  const { signInWithSpotify } = useAuth();
 
   return (
     <View className='flex-1 justify-center'>
