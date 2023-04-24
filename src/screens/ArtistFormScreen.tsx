@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { push, ref, child, update } from 'firebase/database';
-import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import * as Haptics from 'expo-haptics';
+//@ts-ignore
+import database from "../../firebaseConfig.tsx";
 
 const appendPromotion = (artist:string, track:string) => { //function to append data to DB
   const updates = { //New JSON object to send to DB
@@ -24,8 +25,7 @@ const appendPromotion = (artist:string, track:string) => { //function to append 
 const ArtistFormScreen = () => {
     
   const navigation = useNavigation();
-  const [artistName, setArtistName] = useState('');
-  const [trackName, setTrackName] = useState('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,26 +36,10 @@ const ArtistFormScreen = () => {
   return (
     <View className='flex-1 justify-center'>
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-            <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Enter your song details and submit a payment to promote your song.</Text>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Artist Name' onChangeText={setArtistName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-5 px-8 py-3'></TextInput>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Track URL' onChangeText={setTrackName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
-            <TouchableOpacity onPress={ () => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              Alert.alert('You have successfully submitted a dummy payment');}}>
-            <Image source={require('@assets/dummybutton.png')} style={{
-                width: 200,
-                height: 200,
-                resizeMode: 'contain',
-                }}
-                className="mb-12"
-            />
-            </TouchableOpacity>
-            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => 
-              {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                appendPromotion(artistName, trackName);
-              }}>
-              <Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
+          <View className='flex-col items-center absolute top-10'>
+            <Text className=" text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Search for the song you want promoted and press to enter.</Text>
+            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearchTerm} className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl px-8 py-3'></TextInput>
+          </View>
         </LinearGradient>
     </View>
   )
