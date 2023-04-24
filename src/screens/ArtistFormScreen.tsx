@@ -12,14 +12,13 @@ import database from "../../firebaseConfig.tsx";
 var searchResults: any[];
 
 const ArtistFormScreen = () => {
-
-  var instanceVariableLmao:string = "";
-  const result: any[] = []; //holds search results in getSearchResults function
     
   const navigation = useNavigation();
   const { spotify } = useAuth();
 
-  const [searchTerm, setSearchTerm] = useState<string>(""); //keeps track of text entered in search bar dynamically
+  const result: any[] = []; //holds search results in getSearchResults function
+
+  const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
 
@@ -29,9 +28,15 @@ const ArtistFormScreen = () => {
     });
   }, [navigation]);
 
+  useEffect(() => { //useEffect to clear search results when input goes back to empty
+    if (search == '') {
+      setComponentHandler([]);
+    }
+  }, [search]);
+
   useEffect(() => { //useEffect to search every time the user types in the search bar
     getSearchResults();
-  }, [searchTerm]);
+  }, [search]);
 
   async function getSearchResults() {
     console.log("CALLED GET SEARCH RESULTS");
@@ -39,12 +44,13 @@ const ArtistFormScreen = () => {
 
     const result: any[] = []; //holds search results in getSearchResults function
 
-    const response = await spotify.searchTracks("S", { limit: 20 }).then(
+    const response = await spotify.searchTracks(search, { limit: 20 }).then(
       function (data) {
         console.log("SEARCH SUCCESSFUL, SETTING RESULTS");
         searchResults = data.tracks.items;
 
         for (let i = 0; i < searchResults.length; i++) {
+          console.log("SONG "+ i + ": " +searchResults[i].name);
           result.push(
             {
               "name": searchResults[i].name,
@@ -65,11 +71,11 @@ const ArtistFormScreen = () => {
                   }
                 }>
                   <View className='px-4' style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                    <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                    <Text numberOfLines={1} style={{ fontSize: 24, color: 'white' }}>{element.name}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+                      <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                      <Text numberOfLines={1} style={{ fontSize: 24, color: 'white' }}>{element.name}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
             )
           }
         )
@@ -90,7 +96,7 @@ const ArtistFormScreen = () => {
           <View className='flex-col items-center absolute top-10'>
             {/*Header / Search bar*/}
             <Text className=" text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Search for the song you want promoted and press to enter.</Text>
-            <TextInput style={{ width: "90%", backgroundColor: '#014871' }} placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearchTerm; console.log("Current search entry: " + searchTerm);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-2xl px-8 py-3'></TextInput>
+            <TextInput style={{ width: "90%", backgroundColor: '#014871' }} placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearch; console.log("Current search entry: " + search);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-2xl px-8 py-3'></TextInput>
             
             {/*Search Results*/}
             {!loaded
