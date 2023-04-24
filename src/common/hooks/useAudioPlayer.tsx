@@ -10,7 +10,6 @@ class AudioPlayer {
   currentTrack: SpotifyApi.TrackObjectFull;
   previousTrack: SpotifyApi.TrackObjectFull;
   playbackPosition: number;
-  onPlaybackStatusUpdate: ((status: AVPlaybackStatus) => void) | null = null;
 
   constructor() {
     this.sound = new Audio.Sound();
