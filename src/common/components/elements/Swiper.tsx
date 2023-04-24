@@ -22,6 +22,8 @@ import { Audio } from "expo-av";
 import TextTicker from "react-native-text-ticker";
 import gameContext from '@/common/hooks/gameContext';
 import useAudioPlayer from "@/common/hooks/useAudioPlayer";
+import DeckManager from "../DeckManager";
+
 
 let speed: number = 25;
 
@@ -168,6 +170,23 @@ const Swiper = () => {
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => {
       if (snapshot.exists()) {
         getTracks();
+        
+
+        // const existingDeckTracks: SpotifyApi.TrackObjectFull[] = [];   // pretend we got this from the database
+        // const deckManager = new DeckManager(existingDeckTracks);
+        
+
+        // // pretend we got these from the user
+        // const seed_tracks: string[] = [];
+        // const seed_genres: string[] = [];
+        // const seed_artists: string[] = [];
+
+        // const deckManager2 = new DeckManager();
+        // deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists);
+
+
+
+
       } else {
         console.log("Deck not found in db");
       }

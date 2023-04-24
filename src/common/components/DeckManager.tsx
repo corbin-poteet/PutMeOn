@@ -2,21 +2,19 @@ import useAuth from '../hooks/useAuth';
 
 const { spotify } = useAuth();
 
+// db reference
+// const deck = {
+//   id: "",
+//   name: "",
+//   likedTrackIDs: [] as string[],
+//   dislikedTrackIDs: [] as string[],
+// }
+
 class DeckManager {
-  seed_tracks: string[];
-  seed_genres: string[];
-  seed_artists: string[];
-  deck: SpotifyApi.TrackObjectFull[];
-  onDeckInitialized: () => void;
+  tracks: SpotifyApi.TrackObjectFull[];
 
-  constructor(seed_tracks: string[], seed_genres: string[], seed_artists: string[], initialSize: number = 20, onDeckInitialized: () => void = () => { }) {
-    this.seed_tracks = seed_tracks;
-    this.seed_genres = seed_genres;
-    this.seed_artists = seed_artists;
-    this.onDeckInitialized = onDeckInitialized;
-
-    this.deck = [];
-    this.initializeDeck(initialSize);
+  constructor(tracks: SpotifyApi.TrackObjectFull[] = []) {
+    this.tracks = tracks;
   }
 
   /**
@@ -24,22 +22,28 @@ class DeckManager {
    * @param finalSize the size of the deck after filtering
    * @param responseSize the size of the response from the spotify api
    */
-  private async initializeDeck(finalSize: number, responseSize: number = 50) {
+  public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 20, responseSize: number = 50) {
     spotify.getRecommendations({
-      seed_tracks: this.seed_tracks,
-      seed_genres: this.seed_genres,
-      seed_artists: this.seed_artists,
+      seed_tracks: seed_tracks,
+      seed_genres: seed_genres,
+      seed_artists: seed_artists,
       limit: responseSize,
     }).then((response) => {
-      var deck = response.tracks as SpotifyApi.TrackObjectFull[];
-      deck = deck.filter((track) => track.preview_url != null);
-      deck = deck.slice(0, finalSize);
-      this.deck = deck;
-      this.onDeckInitialized();
+      var tracks = response.tracks as SpotifyApi.TrackObjectFull[];
+      tracks = tracks.filter((track) => track.preview_url != null);
+      tracks = tracks.slice(0, finalSize);
+      this.tracks = tracks;
+      return tracks;
     });
   }
 
-  public getDeck() {
-    return this.deck;
+  public setTracks(tracks: SpotifyApi.TrackObjectFull[]) {
+    this.tracks = tracks;
+  }
+
+  public getTracks() {
+    return this.tracks;
   }
 }
+
+export default DeckManager;
