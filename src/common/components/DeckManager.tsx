@@ -18,7 +18,7 @@ class DeckManager {
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
   constructor(props: any) {
-    
+
   }
 
   /**
@@ -36,6 +36,18 @@ class DeckManager {
       var tracks = response.tracks as SpotifyApi.TrackObjectFull[];
       tracks = tracks.filter((track) => track.preview_url != null);
       tracks = tracks.slice(0, finalSize);
+      this.tracks = tracks;
+      return tracks;
+    });
+  }
+
+  /**
+   * Initializes tracks from the given track id array
+   * @param trackIds the array of track ids
+   */
+  public async initializeDeckFromTrackIds(trackIds: string[]) {
+    await this.spotify.getTracks(trackIds).then((response) => {
+      var tracks = response.tracks as SpotifyApi.TrackObjectFull[];
       this.tracks = tracks;
       return tracks;
     });
