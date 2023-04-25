@@ -21,8 +21,6 @@ class DeckManager {
     
   }
 
-
-
   /**
    * Initializes the deck with a given size
    * @param finalSize the size of the deck after filtering
@@ -39,7 +37,6 @@ class DeckManager {
       tracks = tracks.filter((track) => track.preview_url != null);
       tracks = tracks.slice(0, finalSize);
       this.tracks = tracks;
-      console.log(tracks.length);
       return tracks;
     });
   }
@@ -50,6 +47,14 @@ class DeckManager {
 
   public getTracks() {
     return this.tracks;
+  }
+
+  public handleLike(index: number) {
+
+  }
+
+  public handleDislike(index: number) {
+
   }
 }
 
