@@ -1,3 +1,6 @@
+// @ts-ignore
+import database from "../../../firebaseConfig.tsx";
+import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 import React from 'react';
 import useAuth from '../hooks/useAuth';
 
@@ -15,6 +18,7 @@ import useAuth from '../hooks/useAuth';
 
 class DeckManager {
   spotify = useAuth().spotify;
+  user = useAuth().user;
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
   constructor(props: any) {
@@ -26,7 +30,7 @@ class DeckManager {
    * @param finalSize the size of the deck after filtering
    * @param responseSize the size of the response from the spotify api
    */
-  public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 20, responseSize: number = 50): Promise<SpotifyApi.TrackObjectFull[]> {
+  public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 5, responseSize: number = 50): Promise<SpotifyApi.TrackObjectFull[]> {
     await this.getTrackRecommendationsFromSpotify(seed_tracks, seed_genres, seed_artists, finalSize, responseSize).then((tracks) => {
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
       return this.tracks;
@@ -46,6 +50,14 @@ class DeckManager {
     });
   }
 
+  private selectSeedTracks(): string[] {
+    return this.getTrackIds().slice((this.tracks.length - 5), this.tracks.length);
+  }
+
+  private selectSeedArtists(): string[] {
+    return [];
+  }
+
   /**
    * Adds new tracks to the deck from the spotify api
    * Passes track ids as seed tracks
@@ -53,7 +65,11 @@ class DeckManager {
    * @param responseSize 
    */
   public async addNewTracksFromSpotify(finalSize: number = 1, responseSize: number = 50) {
-    await this.getTrackRecommendationsFromSpotify(this.getTrackIds(), [], [], finalSize, responseSize).then((tracks) => {
+
+    const seed_tracks = this.selectSeedTracks();
+    const seed_artists = this.selectSeedArtists();
+
+    await this.getTrackRecommendationsFromSpotify(seed_tracks, [], seed_artists, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
       return tracks;
     });
@@ -69,7 +85,7 @@ class DeckManager {
    * @returns the array of filtered tracks
    */
   private async getTrackRecommendationsFromSpotify(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 1, responseSize: number = 50) {
-    const tracks = await 
+    const tracks = await
       this.spotify.getRecommendations({
         seed_tracks: seed_tracks,
         seed_genres: seed_genres,
@@ -85,7 +101,7 @@ class DeckManager {
           // DUETO: should probably make this recursive to ensure we get finalSize number of tracks
           // but like
         }
-        return tracks;
+        return tracks as SpotifyApi.TrackObjectFull[];
       }).catch((error) => {
         console.log(error);
       });
@@ -101,6 +117,9 @@ class DeckManager {
     return tracks.filter((track) => track.preview_url != null);
   }
 
+  /***
+   * Returns an array of track ids from the tracks in the deck
+   */
   public getTrackIds(): string[] {
     return this.tracks.map((track) => track.id);
   }
@@ -114,7 +133,10 @@ class DeckManager {
   }
 
   public addTracks(tracks: SpotifyApi.TrackObjectFull[]) {
-    this.tracks.concat(tracks);
+    if (tracks == null) return;
+
+    console.log("adding tracks: " + tracks.map((track) => track.name));
+    this.tracks = this.tracks.concat(tracks);
   }
 
   public setTracks(tracks: SpotifyApi.TrackObjectFull[]) {
@@ -125,14 +147,35 @@ class DeckManager {
     return this.tracks;
   }
 
-  public handleLike(index: number) {
-    const track = this.tracks[index];
-    console.log("liked " + track.name);
+  public async handleSwipe(index: number, liked: boolean) {
+    if (liked) {
+      this.handleLike(index);
+    } else {
+      this.handleDislike(index);
+    }
+    await this.addNewTracksFromSpotify(1, 15);
   }
 
-  public handleDislike(index: number) {
+  private handleLike(index: number) {
     const track = this.tracks[index];
-    console.log("disliked " + track.name);
+    set(
+      ref(database, "SwipedTracks/" + this.user?.id + "/" + track.id),
+      {
+        trackID: track.id,
+        liked: true,
+      }
+    );
+  }
+
+  private handleDislike(index: number) {
+    const track = this.tracks[index];
+    set(
+      ref(database, "SwipedTracks/" + this.user?.id + "/" + track.id),
+      {
+        trackID: track.id,
+        liked: false,
+      }
+    );
   }
 }
 

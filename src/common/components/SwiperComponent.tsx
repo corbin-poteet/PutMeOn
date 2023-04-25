@@ -69,8 +69,8 @@ const SwiperComponent = () => {
           rotationAngle={15}
           cardContainerStyle={{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
           onSwiped={async (index: number) => { setCardIndex(cardIndex + 1); }}
-          onSwipedLeft={async (index: number) => { deckManager.handleDislike(index); }}
-          onSwipedRight={async (index: number) => { deckManager.handleLike(index); }}
+          onSwipedLeft={async (index: number) => { deckManager.handleSwipe(index, false); }}
+          onSwipedRight={async (index: number) => { deckManager.handleSwipe(index, true); }}
           renderYep={() => renderYep()}
           renderNope={() => renderNope()}
           renderNoMoreCard={() => renderNoMoreCard()}
