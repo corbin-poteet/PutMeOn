@@ -20,6 +20,8 @@ class DeckManager {
   spotify = useAuth().spotify;
   user = useAuth().user;
   tracks: SpotifyApi.TrackObjectFull[] = [];
+  likedTracks: SpotifyApi.TrackObjectFull[] = [];
+  dislikedTracks: SpotifyApi.TrackObjectFull[] = [];
 
   constructor(props: any) {
 
@@ -51,7 +53,14 @@ class DeckManager {
   }
 
   private selectSeedTracks(): string[] {
-    return this.getTrackIds().slice((this.tracks.length - 5), this.tracks.length);
+    // if there are no liked tracks, use the last 5 tracks in the deck
+    if (this.likedTracks.length == 0) {
+      return this.getTrackIds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
+    }
+
+    const likedTrackIds = this.likedTracks.map((track) => track.id);
+    const lastLikedTrackIds = likedTrackIds.slice(Math.max(this.likedTracks.length - 5, 0), this.likedTracks.length);
+    return lastLikedTrackIds;
   }
 
   private selectSeedArtists(): string[] {
@@ -66,8 +75,8 @@ class DeckManager {
    */
   public async addNewTracksFromSpotify(finalSize: number = 1, responseSize: number = 50) {
 
-    const seed_tracks = this.selectSeedTracks();
-    const seed_artists = this.selectSeedArtists();
+    var seed_tracks = this.selectSeedTracks();
+    var seed_artists = this.selectSeedArtists();
 
     await this.getTrackRecommendationsFromSpotify(seed_tracks, [], seed_artists, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
@@ -165,6 +174,8 @@ class DeckManager {
         liked: true,
       }
     );
+
+    this.likedTracks.push(track);
   }
 
   private handleDislike(index: number) {
@@ -176,6 +187,8 @@ class DeckManager {
         liked: false,
       }
     );
+
+    this.dislikedTracks.push(track);
   }
 }
 
