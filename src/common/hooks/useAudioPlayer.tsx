@@ -44,7 +44,7 @@ class AudioPlayer {
       this.sound.setProgressUpdateIntervalAsync(1000);
 
       // play the preview
-      this.play();
+      //this.play();
     }
   }
 

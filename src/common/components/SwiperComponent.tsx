@@ -17,7 +17,6 @@ import Scrubber from "react-native-scrubber";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Audio } from "expo-av";
 import TextTicker from "react-native-text-ticker";
 import gameContext from '@/common/hooks/gameContext';
 import useAudioPlayer from "@/common/hooks/useAudioPlayer";
@@ -26,16 +25,30 @@ import DeckManager from './DeckManager';
 const SwiperComponent = () => {
 
   const [deckManager, setDeckManager] = React.useState<DeckManager>(new DeckManager({}));
-  const [cardIndex, setCardIndex] = React.useState<number>(0);
+  const [cardIndex, setCardIndex] = React.useState<number>(-1);
   const [speed, setSpeed] = React.useState<number>(25);
-  const [, updateState] = React.useState<any>();
 
   const { audioPlayer } = useAudioPlayer();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
+  const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
+
+  React.useMemo(async () => {
+    if (audioPlayer) {
+      audioPlayer.sound.setOnPlaybackStatusUpdate(
+        async (playbackStatus: any) => {
+          if (playbackStatus.isLoaded) {
+            setPlaybackPosition(playbackStatus.positionMillis);
+            setPlaybackDuration(playbackStatus.durationMillis);
+            setIsPlaying(!playbackStatus.isPlaying);
+          }
+        }
+      );
+    }
+  }, [audioPlayer]);
 
   React.useMemo(async () => {
     const seed_tracks = ["6SpLc7EXZIPpy0sVko0aoU", "1yjY7rpaAQvKwpdUliHx0d"];
@@ -43,8 +56,16 @@ const SwiperComponent = () => {
     const seed_artists = ["74XFHRwlV6OrjEM0A2NCMF",];
     await deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then(() => {
       forceUpdate();
+      setCardIndex(0);
     });
   }, [deckManager]);
+
+  React.useMemo(async () => {
+    if (cardIndex >= 0 && deckManager.getTracks().length > 0) {
+      await audioPlayer.setTrack(deckManager.getTracks()[cardIndex]);
+      await audioPlayer.play();
+    }
+  }, [cardIndex]);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -53,6 +74,28 @@ const SwiperComponent = () => {
           cards={deckManager.getTracks()}
           rotationAngle={15}
           cardContainerStyle={{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
+          onSwiped={(index: number) => {
+            setCardIndex(cardIndex + 1);
+            setPlaybackPosition(0);
+            //audioPlayer.setTrack(tracks[cardIndex + 1]);
+            //swipedTrackIds.push(tracks[cardIndex].id);
+            //addNewTrack();
+          }}
+          onSwipedLeft={
+            //Add disliked song to the disliked database
+            (index: number) => {
+              //onSwipeLeft(index).catch((err) => console.log(err));
+            }
+          }
+          onSwipedRight={
+            //Add liked songs to the liked database
+            (index: number) => {
+              //onSwipeRight(index).catch((err) => console.log(err));
+            }
+          }
+          renderYep={() => renderYep()}
+          renderNope={() => renderNope()}
+          renderNoMoreCard={() => renderNoMoreCard()}
           renderCard={(track: SpotifyApi.TrackObjectFull) => {
             return (
               <LinearGradient
@@ -131,7 +174,7 @@ const SwiperComponent = () => {
                           {track.album.name}
                         </TextTicker>
                       </View>
-                      {track?.preview_url ? (
+                      {track?.preview_url && audioPlayer ? (
                         <View>
                           <View className="flex-row">
                             <Scrubber
@@ -179,76 +222,6 @@ const SwiperComponent = () => {
               </LinearGradient>
             );
           }}
-          onSwiped={(index: number) => {
-            setCardIndex(cardIndex + 1);
-            setPlaybackPosition(0);
-            //audioPlayer.setTrack(tracks[cardIndex + 1]);
-            //swipedTrackIds.push(tracks[cardIndex].id);
-            //addNewTrack();
-          }}
-          onSwipedLeft={
-            //Add disliked song to the disliked database
-            (index: number) => {
-              //onSwipeLeft(index).catch((err) => console.log(err));
-            }
-          }
-          onSwipedRight={
-            //Add liked songs to the liked database
-            (index: number) => {
-              //onSwipeRight(index).catch((err) => console.log(err));
-            }
-          }
-          renderYep={() => (
-            <View
-              style={{
-                borderWidth: 5,
-                borderRadius: 6,
-                padding: 8,
-                marginLeft: 30,
-                marginTop: 20,
-                borderColor: "lightgreen",
-                transform: [{ rotateZ: "-22deg" }],
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 32,
-                  color: "lightgreen",
-                  fontWeight: "bold",
-                }}
-              >
-                YEP
-              </Text>
-            </View>
-          )}
-          renderNope={() => (
-            <View
-              style={{
-                borderWidth: 5,
-                borderRadius: 6,
-                padding: 8,
-                marginRight: 30,
-                marginTop: 25,
-                borderColor: "red",
-                transform: [{ rotateZ: "22deg" }],
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 32,
-                  color: "red",
-                  fontWeight: "bold",
-                }}
-              >
-                NOPE
-              </Text>
-            </View>
-          )}
-          renderNoMoreCard={() => (
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-white text-5xl font-bold">Fuck.</Text>
-            </View>
-          )}
         />
       ) : (
         <ActivityIndicator size="large" color="#014871" />
@@ -256,7 +229,65 @@ const SwiperComponent = () => {
     </View>
   );
 
+  function renderYep() {
+    return (
+      <View
+        style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginLeft: 30,
+          marginTop: 20,
+          borderColor: "lightgreen",
+          transform: [{ rotateZ: "-22deg" }],
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 32,
+            color: "lightgreen",
+            fontWeight: "bold",
+          }}
+        >
+          YEP
+        </Text>
+      </View>
+    )
+  }
 
+  function renderNope() {
+    return (
+      <View
+        style={{
+          borderWidth: 5,
+          borderRadius: 6,
+          padding: 8,
+          marginRight: 30,
+          marginTop: 25,
+          borderColor: "red",
+          transform: [{ rotateZ: "22deg" }],
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 32,
+            color: "red",
+            fontWeight: "bold",
+          }}
+        >
+          NOPE
+        </Text>
+      </View>
+    )
+  }
+
+  function renderNoMoreCard() {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-white text-5xl font-bold">Fuck.</Text>
+      </View>
+    )
+  }
 
 }
 
