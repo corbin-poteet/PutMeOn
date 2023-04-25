@@ -190,7 +190,7 @@ const SearchScreen = () => {
           </View>
           <View className='absolute top-20'>
             <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 artists and songs. Put Me On will fill your deck with recommendations:</Text>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
+            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-6 font-semibold text-1 text-black text-xl flex-row items-center justify-center rounded-lg border border-blue-300 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-500 top-5 px-8 py-3.5' style={{ backgroundColor: '#ecfbf5' }}></TextInput>
           </View>
 
           {/*Search Results*/}
