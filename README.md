@@ -1,6 +1,6 @@
 # PutMeOn
 
-Beta 0.9.4 - The TMI update
+Beta 0.9.7 - The Put it out update
 
 ### A music recommendation application
 
