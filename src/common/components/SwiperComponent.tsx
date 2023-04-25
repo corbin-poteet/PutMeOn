@@ -1,12 +1,5 @@
-import {
-  View,
-  Text,
-  Image,
-  ActivityIndicator,
-  Easing,
-} from "react-native";
-import React, { useContext } from "react";
-import useAuth from "@/common/hooks/useAuth";
+import { View, Text, Image, ActivityIndicator, Easing } from "react-native";
+import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import CardsSwipe from "react-native-cards-swipe";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -24,9 +17,9 @@ import DeckManager from './DeckManager';
 
 const SwiperComponent = () => {
 
-  const [deckManager, setDeckManager] = React.useState<DeckManager>(new DeckManager({}));
+  const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
   const [cardIndex, setCardIndex] = React.useState<number>(-1);
-  const [speed, setSpeed] = React.useState<number>(25);
+  const [speed] = React.useState<number>(25);
 
   const { audioPlayer } = useAudioPlayer();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
