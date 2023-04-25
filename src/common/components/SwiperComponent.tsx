@@ -158,7 +158,6 @@ const SwiperComponent = () => {
           : <></>}
 
         <View className="absolute left-4 right-4 top-8 bottom-0 opacity-100 z-0">
-
           <View className="flex-1 justify-start items-start">
             <View className="relative items-center w-full aspect-square justify-start">
               <Image

@@ -50,11 +50,13 @@ class DeckManager {
   }
 
   public handleLike(index: number) {
-
+    const track = this.tracks[index];
+    console.log("liked " + track.name);
   }
 
   public handleDislike(index: number) {
-
+    const track = this.tracks[index];
+    console.log("disliked " + track.name);
   }
 }
 
