@@ -6,20 +6,12 @@ import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ScrollView } from 'react-native-gesture-handler';
 
+//👌😂👌 🔥 🔥 🔥
 
 var searchResults: any[];
 var output: any[] = [];
 
-// const ChosenSeeds = (seeds: any, setSeeds: React.Dispatch<any>) => { //component to display a list of seeds the user has pressed, and remove them if user presses them
-//   return (
-//     <View className='flex-row'>
-//       <Text>Chosen Seeds: </Text>
-//       <TouchableOpacity onPress={() => {console.log("Will remove chosen seed")}}>
-//         <Text>{/*Will display seeds later*/}</Text>
-//       </TouchableOpacity>
-//     </View>
-//   )
-// }
+//Search bar screen for selecting seeds
 
 const SearchScreen = () => {
 
@@ -32,7 +24,10 @@ const SearchScreen = () => {
   const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
-  const [componentHandler, setComponentHandler] = useState<any>([]); //keeps track of search results
+  const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
+  const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
+  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
+  const [showSeedScreen, setShowSeedScreen] = useState<boolean>(false); //keeps track of whether or not to show the seed screen
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -42,13 +37,25 @@ const SearchScreen = () => {
     })
   }, [navigation])
 
-  useEffect(() => { //useEffect to navigate to next page once user is done selecting seeds
-    if (seeds?.length == 5) {
-      Alert.alert("5 seeds selected! Time to create a playlist");
-      output = seeds;
-      //@ts-ignore
-      navigation.navigate('CreatePlaylist');
+  useEffect(() => { //useEffect to clear search results when input goes back to empty
+    if (search == '') {
+      setComponentHandler([]);
     }
+  }, [search]);
+
+  useEffect(() => { //useEffect to show seeds and allow deletion of selected seeds
+    const seedsList = readableSeeds.map(
+      (seed) => {
+        return (
+          <View className='mt-2'>
+            <TouchableOpacity onPress={() => {}}>
+              <Text className='text-white font-semibold'>{seed}</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      }
+    )
+    setComponentHandler2(seedsList);
   }, [seeds]);
 
   useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
@@ -57,6 +64,17 @@ const SearchScreen = () => {
     }
   }, [user, search]);
 
+  function handleSubmit(){
+    if(seeds.length > 0){ //if seeds are selected, navigate to next screen
+      Alert.alert("Seeds selected! Time to create a playlist for the deck");
+      output = seeds;
+      //@ts-ignore
+      navigation.navigate('CreatePlaylist');
+    }
+    else{
+      Alert.alert("Please select at least one seed.");
+    }
+  }
 
   async function getSearchResults() {
     setLoaded(false); //when actively searching, set loaded false
@@ -82,6 +100,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setReadableSeeds([...readableSeeds, element.name+" "]);
                       Alert.alert("Added artist: " + element.name);
                       console.log("ADDING ARTIST: " + element.name);
                       console.log(seeds);
@@ -126,6 +145,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setReadableSeeds([...readableSeeds, element.name]);
                       Alert.alert("Added song: " + element.name);
                       console.log("ADDING SONG: " + element.name);
                       console.log(seeds);
@@ -155,8 +175,16 @@ const SearchScreen = () => {
   return (
     <View className='flex-1 justify-center'>
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-        {/* Search Bar / Header */}
-        <View className='items-center justify-center' style={{ marginTop: 50, flex: 1 }}>
+        { showSeedScreen
+          ?
+          <View className = "px-10 py-10 rounded-3xl" style={{borderWidth : 5, borderColor: "white"}}>
+              <View>{componentHandler2}</View>
+              <TouchableOpacity onPress={() => {setShowSeedScreen(false);}}>
+                <Text className='font-semibold text-1xl text-white bg-red-500'>Close</Text>
+              </TouchableOpacity>
+          </View>
+          :
+          <View className='items-center justify-center' style={{ marginTop: 50, flex: 1 }}>
           <View className='absolute top-4'>
             <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle} />
           </View>
@@ -164,22 +192,32 @@ const SearchScreen = () => {
             <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 artists and songs. Put Me On will fill your deck with recommendations:</Text>
             <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5' style={{ backgroundColor: '#014871' }}></TextInput>
           </View>
-        
-        {/* Search Results */}
-        <View className='py-2' style={{ marginTop: 120, marginBottom: 100, flex: 1 }}>
-          {/* <ChosenSeeds seeds={seeds} setSeeds={setSeeds}/> */}
-          {!loaded
-            ?
-            <View style={{ flex: 1, marginTop: 300 }}>
-              <ActivityIndicator size="large" color="#014871" />
+
+          {/*Search Results*/}
+          <View className='py-2' style={{ marginTop: 280, marginBottom: 100, flex: 1 }}>
+            {!loaded
+              ?
+              <View style={{ flex: 1, marginTop: 300 }}>
+                <ActivityIndicator size="large" color="#014871" />
+              </View>
+              :
+              <ScrollView style={{ flex: 1 }}>
+                {componentHandler}
+              </ScrollView>
+            }
+
+            {/*Buttons*/}
+            <View className='mt-12 flex-row justify-center items-center'>
+              <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { handleSubmit(); }}>
+                <Text className='font-semibold text-white'>Done</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className='mx-3 rounded-3xl px-5 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setShowSeedScreen(true); }}>
+                <Text className='font-semibold text-1xl text-white'>Seeds ({seeds.length}/5)</Text>
+              </TouchableOpacity>
             </View>
-            :
-            <ScrollView style={{ flex: 1, marginTop: 150 }}>
-              {componentHandler}
-            </ScrollView>
-          }
           </View>
         </View>
+        }
       </LinearGradient>
     </View>
   )

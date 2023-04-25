@@ -1,14 +1,15 @@
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet, Switch, ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/core';
 import useAuth from '@hooks/useAuth';
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SettingsSwitch from '@/common/components/SettingsSwitch';
+import SettingsButton from '@/common/components/SettingsButton';
 import { FontAwesome5 } from '@expo/vector-icons';
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 
+//Settings tab
 
 const SettingsScreen = () => {
 
@@ -25,7 +26,7 @@ const SettingsScreen = () => {
     });
   }, [navigation]);
 
-  React.useEffect(() => {
+  React.useEffect(() => { //Load user image
     if (user) {
       if (user.images) {
         if (user.images.length > 0) {
@@ -50,8 +51,8 @@ const SettingsScreen = () => {
               tintColor: '#01b1f1'
             }} />
 
-            {/* Settings Button */}
-            <TouchableOpacity className='ml-auto' onPress={() => { }}>
+            {/* Settings Button (but it's just an icon, button functionality removed)*/}
+            <TouchableOpacity className='ml-auto' activeOpacity={1} onPress={() => { }}> 
               <FontAwesome5 name="cog" size={36} color="#7d8490" />
             </TouchableOpacity>
 
@@ -87,59 +88,18 @@ const SettingsScreen = () => {
           <View className='flex-1 items-start py-5' style={{ backgroundColor: '#f0f2f4' }}>
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Discovery Settings</Text>
             <SettingsSwitch text='Filter Explicit' value={true} />
-            <SettingsSwitch text='Filter No Previews' />
-            <SettingsSwitch text='Opt in to PME Telemetry' />
+            <SettingsSwitch text='Opt in to PME Telemetry' onValueChange={() => {Alert.alert("HAHA You just opted into our spyware program. All of your data is ours now.")}}/>
+            
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Preferences</Text>
+            <SettingsButton text='Decks' navigateString='Decks'/>
+            <SettingsButton text='Themes' navigateString='Home'/>
+            
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Information</Text>
+            <SettingsButton text='User Information' navigateString='UserInfo'/>
+            <SettingsButton text='Put Me On Information' navigateString='AppInfo'/>
+            
           </View>
-
-          <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-            <View style={{ alignItems: 'left', backgroundColor: '#f0f2f4' }}>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('UserInfo')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 30, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10, }} name="person-circle-outline" size={30} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white' }}>Account</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('Decks')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <MaterialIcons style={{ marginRight: 12, marginLeft: 10 }} name="playlist-add-check" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playlists</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="brush-outline" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Themes</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="play-circle" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Playback</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={
-                () => {
-                  // @ts-ignore
-                  navigation.navigate('AppInfo')
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, marginBottom: 10 }}>
-                  <Ionicons style={{ marginRight: 12, marginLeft: 10 }} name="information-circle-outline" size={35} color="white" />
-                  <Text style={{ fontWeight: 'bold', fontSize: 30, color: 'white', }}>Information</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
-
         </ScrollView>
-
 
       </SafeAreaView>
     </LinearGradient >

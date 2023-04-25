@@ -4,12 +4,12 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import gameContext from '@/common/hooks/gameContext';
 
-//DUETO: Find out why the timer only works on the first round
+//Screen used to pad out each game round and announce current round in game
 
 const RoundScreen = () => {
     
     const navigation = useNavigation();
-    const { round } = useContext(gameContext);
+    const { round } = useContext(gameContext); //Maintain round number throughout rounds using context
 
     React.useLayoutEffect(() => {
       navigation.setOptions({
@@ -20,7 +20,7 @@ const RoundScreen = () => {
     }, [navigation]);
     
     setTimeout( () => {
-      navigation.navigate('Game');
+      navigation.navigate('Game'); //Navigate to the game screen after holding on the round screen for 2 seconds
     }, 2000 );
 
     return (

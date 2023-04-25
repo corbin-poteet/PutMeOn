@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import gameContext from '@/common/hooks/gameContext';
 
+//Display score after each game round
+
 const ScoreScreen = () => {
     
     const navigation = useNavigation();

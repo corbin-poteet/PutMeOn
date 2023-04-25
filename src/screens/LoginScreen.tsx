@@ -6,17 +6,19 @@ import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as Haptics from 'expo-haptics';
 
+//Login screen for Spotify Users
+
 const LoginScreen = () => {
 
   const navigation = useNavigation();
 
-  React.useLayoutEffect(() => {
+  React.useLayoutEffect(() => { 
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
 
-  const { token, signInWithSpotify } = useAuth();
+  const { signInWithSpotify } = useAuth();
 
   return (
     <View className='flex-1 justify-center'>

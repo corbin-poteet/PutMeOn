@@ -1,61 +1,113 @@
-import { TextInput, View, Text, TouchableOpacity, Image, Alert } from 'react-native'
-import React from 'react'
+import { TextInput, View, Text, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Image } from 'react-native'
+import React, { useEffect } from 'react'
+import useAuth from '@/common/hooks/useAuth'; 
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { push, ref, child, update } from 'firebase/database';
-import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
-import * as Haptics from 'expo-haptics';
+//@ts-ignore
+import database from "../../firebaseConfig.tsx";
 
-const appendPromotion = (artist:string, track:string) => { //function to append data to DB
-  const updates = { //New JSON object to send to DB
-    newArtistSample:{
-      artistName : artist,
-      trackURL : track
-    }
-  };
-  const newArtistKey = push(child(ref(database), 'ArtistPromos/SampleArtist/')).key; //Generate new key for posting location in DB
 
-  Alert.alert("Successfully submitted data to DB");
-
-  return update(ref(database), updates) //push updates object to DB
-}
+var searchResults: any[];
 
 const ArtistFormScreen = () => {
     
   const navigation = useNavigation();
-  const [artistName, setArtistName] = useState('');
-  const [trackName, setTrackName] = useState('');
+  const { spotify } = useAuth();
+
+  const result: any[] = []; //holds search results in getSearchResults function
+
+  const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
+  const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
+  const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
+
+  useEffect(() => { //useEffect to clear search results when input goes back to empty
+    if (search == '') {
+      setComponentHandler([]);
+    }
+  }, [search]);
+
+  useEffect(() => { //useEffect to search every time the user types in the search bar
+    getSearchResults();
+  }, [search]);
+
+  async function getSearchResults() {
+    console.log("CALLED GET SEARCH RESULTS");
+    setLoaded(false); //when actively searching, set loaded false
+
+    const result: any[] = []; //holds search results in getSearchResults function
+
+    const response = await spotify.searchTracks(search, { limit: 20 }).then(
+      function (data) {
+        console.log("SEARCH SUCCESSFUL, SETTING RESULTS");
+        searchResults = data.tracks.items;
+
+        for (let i = 0; i < searchResults.length; i++) {
+          console.log("SONG "+ i + ": " +searchResults[i].name);
+          result.push(
+            {
+              "name": searchResults[i].name,
+              "image": searchResults[i].album.images[0],
+              "id": searchResults[i].id
+            }
+          );
+        }
+
+        const listItems = result.map(
+          (element) => {
+            return (
+              <View>
+                <TouchableOpacity onPress={
+                  () => {
+                    //DUETO: push track ID to DB here
+                    //setComponentHandler([]); //clear search results on screen
+                  }
+                }>
+                  <View className='px-4' style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+                      <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                      <Text numberOfLines={1} style={{ fontSize: 24, color: 'white' }}>{element.name}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+            )
+          }
+        )
+        console.log("SETTING COMPONENT HANDLER");
+        setComponentHandler(listItems);
+      })
+      .catch(error => {
+        // Handle promise rejection
+        console.log("SEARCH ERROR: " + error.message);
+      });
+  console.log("LOADED");
+  setLoaded(true); //when searching is finished, set loaded true
+  }
   
   return (
     <View className='flex-1 justify-center'>
         <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-            <Text className="text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Enter your song details and submit a payment to promote your song.</Text>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Artist Name' onChangeText={setArtistName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-5 px-8 py-3'></TextInput>
-            <TextInput placeholderTextColor={"#0B0B45"} placeholder='Enter Track URL' onChangeText={setTrackName} className='font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-3xl top-10 px-8 py-3'></TextInput>
-            <TouchableOpacity onPress={ () => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              Alert.alert('You have successfully submitted a dummy payment');}}>
-            <Image source={require('@assets/dummybutton.png')} style={{
-                width: 200,
-                height: 200,
-                resizeMode: 'contain',
-                }}
-                className="mb-12"
-            />
-            </TouchableOpacity>
-            <TouchableOpacity className='flex-row items-center justify-center bg-green-500 rounded-3xl bottom-12 px-8 py-3' onPress={ () => 
-              {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                appendPromotion(artistName, trackName);
-              }}>
-              <Text className='font-semibold text-1 text-white text-xl'>Submit</Text></TouchableOpacity>
+          <View className='flex-col items-center absolute top-10'>
+            {/*Header / Search bar*/}
+            <Text className=" text-white text-xl px-5 py-2 text-1 font-semibold text-center">Welcome to the artist portal! Search for the song you want promoted and press to enter.</Text>
+            <TextInput style={{ width: "90%", backgroundColor: '#014871' }} placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={ () => {setSearch; console.log("Current search entry: " + search);} } className='mt-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center bg-green-500 rounded-2xl px-8 py-3'></TextInput>
+            
+            {/*Search Results*/}
+            {!loaded
+            ?
+            <ActivityIndicator className='mt-60' size='large' color='#0B0B45' />
+            :
+            <ScrollView className='mt-5 flex-1'>
+              {componentHandler}
+            </ScrollView>
+            }
+          </View>
         </LinearGradient>
     </View>
   )

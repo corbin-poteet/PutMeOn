@@ -6,106 +6,125 @@ import {
   ActivityIndicator,
   Easing,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import useAuth from "@/common/hooks/useAuth";
 import { LinearGradient } from "expo-linear-gradient";
 import CardsSwipe from "react-native-cards-swipe";
 import { FontAwesome5 } from "@expo/vector-icons";
 // @ts-ignore
 import database from "../../../../firebaseConfig.tsx";
-import { push, ref, set, child, get } from "firebase/database";
+import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 import Scrubber from "react-native-scrubber";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Audio } from "expo-av";
 import TextTicker from "react-native-text-ticker";
+import gameContext from '@/common/hooks/gameContext';
+import useAudioPlayer from "@/common/hooks/useAudioPlayer";
+import DeckManager from "../DeckManager";
+
 
 let speed: number = 25;
-let selectedPlaylist: string;
-type Props = {
-  tracks: SpotifyApi.TrackObjectFull[];
-};
 
-const Swiper = (props: Props) => {
+
+
+const Swiper = () => {
+
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
+
   /* VARIABLE/USESTATE DECLARATION */
   const { spotify, user } = useAuth();
-  const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
-  const [sound, setSound] = React.useState<Audio.Sound>();
+
+  // Audio Player
+  const { audioPlayer } = useAudioPlayer();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
-  const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
-  let trackStack: SpotifyApi.TrackObjectFull[] = [];
+  const [tracks, setTracks] = React.useState<SpotifyApi.TrackObjectFull[]>([]);
+  const [cardIndex, setCardIndex] = React.useState<number>(0);
 
-  var isPromo = false;
-  var promoCount = 0;
-  const dbRef = ref(database); // load database
+  const [swipedTrackIds, setswipedTrackIds] = React.useState<string[]>([]);
+  const [topArtistsIds, setTopArtistIds] = React.useState<string[]>([]);
+  const [loaded1, setLoaded1] = React.useState<boolean>(false);
+
+  let trackStack: SpotifyApi.TrackObjectFull[] = [];
 
   /****************************** FUNCTION DECLARATIONS *********************************/
 
-  //function gets user's top 5 artists and returns them as an array of artist ids
-  async function getTopArtists(numArtists: number = 5) {
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: numArtists }).then(
-      function (data: { items: any[]; }) {
-        return data.items.map((artist: any) => artist.id);
-      },
-      function (err: any) {
-        console.error(err);
+  async function loadSwipedArray() {
+    const dbRef = ref(database);
+    // query swiped tracks from the database and store them in an array
+    get(child(dbRef, "SwipedTracks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
+
+      let temp: string[] = [];
+
+      if (snapshot.exists()) {
+        snapshot.forEach((element: any) => {
+          const trackId = element.val().trackID;
+          //console.log("Track id value pulled from db: " + trackId)
+          temp.push(trackId); //Push db swiped song track id to an array (string)
+        });
+      } else {
+        console.log("Failed to retrieve data from database")
       }
-    ).catch((err) => {
-      console.log(err);
-    }) as string[];
+      setswipedTrackIds(temp);
 
-    return topArtistsIds;
-  }
-
-  async function addTrack() {
-    const topArtistsIds = await getTopArtists();
-    const recResponse = await spotify.getRecommendations({
-      seed_artists: topArtistsIds,
-      limit: 10,
     });
 
-    const newTracks = recResponse.tracks.map((track: any) => track);
+  }
 
-    for (let i = 0; i < newTracks.length; i++) {
-      if (newTracks[i].preview_url !== null) {
-        const newTracksArray = tracks.concat(newTracks[i]);
-        setTracks(newTracksArray);
-        console.log("Added track: " + newTracks[i].name);
-        break;
+  //pushes a new track to the tracks usestate, called on every swipe
+  async function addNewTrack() {
+    var addable: boolean = false;
+    var topArtists: string[] = topArtistsIds;
+
+    const recResponse = await spotify.getRecommendations({
+      seed_artists: topArtists,
+      limit: 15,
+    }).catch((err) => {
+      console.log(err);
+    }) as SpotifyApi.RecommendationsFromSeedsResponse;
+
+    if (recResponse) {
+
+      const newTracks = recResponse.tracks.map((track: any) => track);
+
+      for (let i = 0; i < newTracks.length; i++) {
+        if (newTracks[i].preview_url !== null) {
+          if (swipedTrackIds.includes(newTracks[i]) === false) {
+            addable = true;
+          }
+
+          if (addable) {
+            const newTracksArray = tracks.concat(newTracks[i]);
+            setTracks(newTracksArray);
+            console.log("Added track: " + newTracks[i].name);
+            break;
+          }
+        }
       }
     }
   }
 
   async function getTracks() {
-    //Do To: For default deck, shuffle the seeds to be random assortment of top artists and genres/tracks
-    const topArtistsIds = await getTopArtists();
 
+    // this was throwing an error
+    // so i made it catch the error
+    // then commented that out because we don't actually care
+    // get fucked
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
-      seed_genres: [],
       limit: 20,
-    }).then(
-      function (data: any) {
-        return data;
-      },
-      function (err: any) {
-        console.error(err);
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
+    }).catch((err) => {
+      //console.log(err);
+    }) as SpotifyApi.RecommendationsFromSeedsResponse;
 
-    //Update trackStack
-    trackStack = recResponse.tracks.map((track: any) => track);
-    //Cleaning time
-    //trackStack = await cleanTracks(trackStack);
-    cleanTracks(trackStack);
-    //Update tracks usestate
-    //setTracks(trackStack);
+    if (recResponse) {
+      trackStack = recResponse.tracks.map((track: any) => track);
+      cleanTracks(trackStack);
+    }
   }
 
   async function cleanTracks(tracks: SpotifyApi.TrackObjectFull[]) {
@@ -117,9 +136,8 @@ const Swiper = (props: Props) => {
       .then(
         // after promise returns of containsMySavedTracks
         function (isSavedArr: any[]) {
-          console.log("containsMySavedTracks Promise Returned: " + isSavedArr);
+          //console.log("containsMySavedTracks Promise Returned: " + isSavedArr);
           isSavedArr.forEach((element) => {
-            console.log(element);
             if (element === true) {
               console.log(
                 "Removing from tracks: " +
@@ -137,62 +155,40 @@ const Swiper = (props: Props) => {
         console.log(err);
       });
 
-
-    //remove song if detected as swiped from database, currently splice is not working
-    const dbRef = ref(database);
-    const trackIds2 = tracks.map((track: any) => track.id);
-    trackIds2.forEach((trackId: string) => {
-      get(child(dbRef, "SwipedTracks/" + user?.id + "/" + trackId))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log("REMOVED BASED ON DB: " + trackId)
-            tracks.splice(trackIds2.indexOf(trackId), 1);
-            console.log(
-              "SWIPED SONG DETECTED IN DB, REMOVING: " +
-              snapshot.val().trackID
-            );
-            console.log("track removed?" + trackIds2.indexOf(trackId), 1);
-          } else {
-            console.log("Swiped song not found");
-          }
-        })
-        .catch((error) => {
-          console.log("Query Failed, error; " + error);
-        });
-    });
-
-    //Removes tracks with no preview url
-    tracks.forEach((element) => {
-      console.log(element.name + "CLEAN TRACKS Preview Url: " + element.preview_url);
-      if (element.preview_url == null || element.preview_url == undefined) {
-        console.log(
-          "Null preview detected, Removing from tracks: " + element.name
-        );
-        tracks.splice(tracks.indexOf(element), 1);
+    //removes null previews as well as duplicates
+    for (let i = tracks.length - 1; i > 0; i--) {
+      if (swipedTrackIds.includes(tracks[i].id) || tracks[i].preview_url === null) {
+        tracks.splice(i, 1);
       }
-    });
+    }
 
-    console.log("Tracks length: " + tracks.length);
     setTracks(tracks);
-    //return tracks;
   }
 
   async function loadCurrentDeck() {
     const dbRef = ref(database);
     get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => {
       if (snapshot.exists()) {
-        // if(snapshot.val().seedArtists.exists() && snapshot.val().seedGenres.exists()){
-        //   console.log("Deck found in db, loading deck");
-        //   getTracksSeeded(snapshot.val().seedArtists, snapshot.val().seedGenres);
-        // }else{
-        //   console.log("Deck found in db, loading default top artists deck");
-        //   getTracks();
-        // }
         getTracks();
+        
+
+        // const existingDeckTracks: SpotifyApi.TrackObjectFull[] = [];   // pretend we got this from the database
+        // const deckManager = new DeckManager(existingDeckTracks);
+        
+
+        // // pretend we got these from the user
+        // const seed_tracks: string[] = [];
+        // const seed_genres: string[] = [];
+        // const seed_artists: string[] = [];
+
+        // const deckManager2 = new DeckManager();
+        // deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists);
+
+
+
 
       } else {
         console.log("Deck not found in db");
-        //getTracks();
       }
     }).catch((error) => {
       console.log("Query Failed, error; " + error)
@@ -200,8 +196,7 @@ const Swiper = (props: Props) => {
   }
 
   async function addToPlaylist(trackURIs: string[]) {
-    //console.log("PLAYLIST ID: "+selectedPlaylist);
-    const response = await spotify.addTracksToPlaylist(
+    await spotify.addTracksToPlaylist(
       selectedPlaylist,
       trackURIs
     );
@@ -211,78 +206,7 @@ const Swiper = (props: Props) => {
     if (playbackStatus.isLoaded) {
       setPlaybackPosition(playbackStatus.positionMillis);
       setPlaybackDuration(playbackStatus.durationMillis);
-    }
-  }
-
-  async function loadAudio(track: SpotifyApi.TrackObjectFull) {
-    if (track == null) {
-      return;
-    }
-
-    if (track.preview_url == null) {
-      return;
-    }
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: track.preview_url },
-      { shouldPlay: true },
-    );
-
-    sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-    sound.setProgressUpdateIntervalAsync(25);
-    setSound(sound);
-
-    sound.setIsLoopingAsync(true);
-
-    await sound.playAsync();
-    setIsPlaying(true);
-  }
-
-  async function playAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.playAsync();
-    setIsPlaying(true);
-  }
-
-  async function pauseAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  }
-
-  async function stopAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    await sound.stopAsync();
-    setIsPlaying(false);
-  }
-
-  async function setAudioPosition(position: number) {
-    if (sound == null) {
-      return;
-    }
-
-    setPlaybackPosition(position);
-    await sound.setPositionAsync(position);
-  }
-
-  async function togglePlayAudio() {
-    if (sound == null) {
-      return;
-    }
-
-    if (isPlaying) {
-      pauseAudio();
-    } else {
-      playAudio();
+      setIsPlaying(!playbackStatus.isPlaying);
     }
   }
 
@@ -291,7 +215,6 @@ const Swiper = (props: Props) => {
       return;
     }
 
-    console.log("NOPE: " + tracks[index].name);
     set(
       ref(database, "SwipedTracks/" + user.id + "/" + tracks[index].id),
       {
@@ -306,7 +229,6 @@ const Swiper = (props: Props) => {
       return;
     }
 
-    console.log("LIKE: " + tracks[index].name);
     set(
       ref(database, "SwipedTracks/" + user.id + "/" + tracks[index].id),
       {
@@ -314,21 +236,10 @@ const Swiper = (props: Props) => {
         liked: true,
       }
     );
-    //console.log("Playlist to add to: " + selectedPlaylist)
+
     const likedTrack: string[] = [];
     likedTrack.push(tracks[index].uri);
     addToPlaylist(likedTrack);
-  }
-
-  function checkDeck() {
-    get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
-      if (snapshot.exists()) {
-        var value = snapshot.val();
-        selectedPlaylist = value?.id;
-      } else {
-        console.log("Database connection failed in SWIPER component");
-      }
-    });
   }
 
   /******************** USE EFFECTS ***********************/
@@ -336,19 +247,44 @@ const Swiper = (props: Props) => {
     //check last deck used in database. if default deck, use top artists as seed, else use appropriate seeds
     loadCurrentDeck();
 
-    if (sound != null) {
-      return () => {
-        sound.unloadAsync();
-      };
+  }, [loaded1]);
+
+  React.useEffect(() => {
+    audioPlayer.sound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+  }, [audioPlayer]);
+
+  React.useEffect(() => {
+    loadSwipedArray();
+
+    const loadTopArtists = async (numArtists: number = 5) => {
+      const topArtistsIds = await spotify.getMyTopArtists({ limit: numArtists }).then(
+        function (data: { items: any[]; }) {
+          return data.items.map((artist: any) => artist.id);
+        },
+        function (err: any) {
+          console.error(err);
+        }
+      ).catch((err) => {
+        console.log(err);
+      }) as string[];
+
+      return topArtistsIds;
     }
+
+    loadTopArtists().then((data) => {
+      setTopArtistIds(data);
+      console.log(topArtistsIds);
+      var temp: boolean = true;
+      setLoaded1(temp);
+    });
   }, []);
 
   React.useEffect(() => {
 
     if (cardIndex == 0) {
-      sound && sound.unloadAsync();
+      //sound && sound.unloadAsync();
       setPlaybackPosition(0);
-      loadAudio(tracks[cardIndex]);
+      audioPlayer.setTrack(tracks[cardIndex]);
     }
   }, [tracks]);
 
@@ -367,19 +303,19 @@ const Swiper = (props: Props) => {
     <CardsSwipe
       cards={tracks}
       rotationAngle={15}
-      cardContainerStyle= {{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
+      cardContainerStyle={{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
           <LinearGradient
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
             colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : ['#3F3F3F', '#000000']}
-            className="relative w-full h-full rounded-2xl items-center shadow-lg" 
-            style={{  }}
+            className="relative w-full h-full rounded-2xl items-center shadow-lg"
+            style={{}}
           >
             {cardIndex % 5 === 0 ?
               <View className="top-3 items-center -mt-1" style={{ backgroundColor: '#7C7C7C', shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000', borderRadius: 3, width: 70, height: 18, justifyContent: 'center', alignItems: 'center' }}>
-                <Text className="text-center font-semibold tracking-tighter" style={{ fontSize:10, color: '#FFFFFF', textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 5 }}>Sponsored</Text>
+                <Text className="text-center font-semibold tracking-tighter" style={{ fontSize: 10, color: '#FFFFFF', textShadowColor: 'rgba(0, 0, 0, 0.5)', textShadowOffset: { width: 0, height: 0 }, textShadowRadius: 5 }}>Sponsored</Text>
               </View>
               : <></>}
 
@@ -450,20 +386,12 @@ const Swiper = (props: Props) => {
                     <View>
                       <View className="flex-row">
                         <Scrubber
-                          value={sound ? playbackPosition / 1000 : 0}
+                          value={playbackPosition / 1000}
                           onSlidingComplete={(value: number) => {
-                            setAudioPosition(value * 1000);
-                            //playAudio();
+                            audioPlayer.seek(value * 1000);
                           }}
-                          onSlidingStart={() => {
-                            //pauseAudio();
-                          }}
-                          // caused lag
-                          // onSlide={(value: number) => {
-                          //   setAudioPosition(value * 1000);
-                          // }}
                           totalDuration={
-                            sound ? Math.ceil(playbackDuration / 1000) : 0
+                            Math.ceil(playbackDuration / 1000)
                           }
                           trackColor="#29A3DA"
                           scrubbedColor="#29A3DA"
@@ -474,12 +402,17 @@ const Swiper = (props: Props) => {
                           <TouchableOpacity
                             className="rounded-full py-0"
                             onPress={() => {
-                              togglePlayAudio();
+                              setIsPlaying(!isPlaying);
+                              if (!isPlaying) {
+                                audioPlayer.pause();
+                              } else {
+                                audioPlayer.play();
+                              }
                             }}
                           >
                             <Ionicons
                               name={
-                                isPlaying
+                                !isPlaying
                                   ? "pause-circle-sharp"
                                   : "play-circle-sharp"
                               }
@@ -498,17 +431,11 @@ const Swiper = (props: Props) => {
         );
       }}
       onSwiped={(index: number) => {
-        console.log("SWIPED");
-
         setCardIndex(cardIndex + 1);
-        sound && sound.unloadAsync();
         setPlaybackPosition(0);
-        loadAudio(tracks[cardIndex + 1]);
-
-        console.log(tracks[cardIndex].name + " has preview url?: " + tracks[cardIndex].preview_url);
-
-        addTrack();
-        console.log("tracks length: " + tracks.length);
+        audioPlayer.setTrack(tracks[cardIndex + 1]);
+        swipedTrackIds.push(tracks[cardIndex].id);
+        addNewTrack();
       }}
       onSwipedLeft={
         //Add disliked song to the disliked database

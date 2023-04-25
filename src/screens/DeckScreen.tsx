@@ -1,21 +1,25 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react';
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ref, child, get, set } from 'firebase/database';
+import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 
-var selectedPlaylist: string;
 var playlists: any[];
 
 //let loaded: boolean = false;
 //Maybe add these values as props?
+
+//Landing page for creating decks and selecting current working decks
+
 const DeckScreen = () => {
 
   const navigation = useNavigation();
   const dbRef = ref(database);
+  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -41,15 +45,15 @@ const DeckScreen = () => {
 
   const result: any[] = [];
 
-  function getDecks() {
+  function getDecks() { //Obtain all spotify playlists that are hooked to a deck
     get(child(dbRef, "Decks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
 
       let temp: string[] = [];
 
-      if (snapshot.exists()) {
+      if (snapshot.exists()) { //If playlist ID is within the decks database, render that playlist as a valid deck
         snapshot.forEach((element: any) => {
           var value = element.val();
-          temp.push(value?.playlistId); //change to ID
+          temp.push(value?.id); //change to ID
           setDecks(temp); //Push database spotify playlist ids item to decks array (string)
         });
       } else {
@@ -59,8 +63,7 @@ const DeckScreen = () => {
     });
   }
 
-  async function getPlaylists() {
-
+  async function getPlaylists() { //Obtain all spotify playlists owned by current user
     const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
     ).then(
       function (data) {
@@ -103,8 +106,8 @@ const DeckScreen = () => {
             )
           }
         )
-        setComponentHandler(listItems);
-        setLoaded(true)
+        setComponentHandler(listItems); //Ensures that the playlists are all loaded and ready to be rendered
+        setLoaded(true);
         //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
       });
   }
@@ -118,14 +121,29 @@ const DeckScreen = () => {
       {
         text: 'Yes', onPress:
           () => {
-            selectedPlaylist = playlists[playlist.index].id;
-            //console.log("selected GAAAH" + playlists[playlist.index]?.id);
-            set(ref(database, "SelectedDecks/" + user?.id), {
-              id: playlists[playlist.index]?.id,
-              name: playlists[playlist.index]?.name,
-              seedArtistIds: [],
-              seedGenres: [],
+            //console.log("PLAYLIST SELECTED: "+playlists[playlist.index].name)
+            //selectedPlaylist = playlists[playlist.index].id;
+            
+            var temp; //Set seeds to this value to push to selectedDeck
+
+            get(child(dbRef, "Decks/" + user?.id + "/"+playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
+              if (snapshot.exists()) {
+                var value = snapshot.val();
+                temp = value?.seeds;
+
+                set(ref(database, "SelectedDecks/" + user?.id), {
+                  id: playlists[playlist.index]?.id,
+                  name: playlists[playlist.index]?.name, 
+                  seeds: temp
+                });
+                // @ts-ignore
+                setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
+
+              } else {
+                console.log("NO SNAPSHOT (DECK SCREEN)")
+              }
             });
+            
             // @ts-ignore
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
@@ -152,7 +170,7 @@ const DeckScreen = () => {
 
   React.useEffect(() => {
     //console.log("DECKS CHANGED: "+decks);
-    if (decks && decks.length > 0 && user) { //This loads twice. No time to fix it. Whatever...
+    if (decks && decks.length > 0 && user) { //Grab playlists upon decks being loaded from the database
       getPlaylists();
     }
   }, [decks]);
@@ -194,4 +212,3 @@ const DeckScreen = () => {
 }
 
 export default DeckScreen;
-export { selectedPlaylist };

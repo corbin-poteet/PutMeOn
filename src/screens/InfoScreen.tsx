@@ -11,7 +11,7 @@ const AppInfo = () => { //Display App information
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerTitle: 'App Information',
+      headerTitle: 'Put Me On Information',
     });
   }, [navigation]);
 

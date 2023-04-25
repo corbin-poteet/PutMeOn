@@ -8,6 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Audio } from 'expo-av';
 import { useIsFocused } from '@react-navigation/native'
 import TextTicker from 'react-native-text-ticker'
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 //import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 //import { push, ref, set, child, get } from 'firebase/database';
 
@@ -40,8 +41,9 @@ const GameScreen = () => {
   }, [navigation]);
 
   //sound states
-  const [sound, setSound] = React.useState<Audio.Sound | null>(null); //Audio playback hook
-  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
+
+  const { audioPlayer } = useAudioPlayer();
+
   const [loaded, setLoaded] = React.useState<boolean>(false);
 
   //track states
@@ -50,7 +52,7 @@ const GameScreen = () => {
 
   async function getTracks() { //get tracks -- pulled from swiper.tsx - pulls 4 tracks from API and puts them into the useState array
 
-    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( // This is a good start but will need to exclude seen songs before
+    const topArtistsIds = await spotify.getMyTopArtists({ limit: 4 }).then( 
       function (data: { items: any[]; }) {
         return data.items.map((artist: any) => artist.id);
       },
@@ -89,35 +91,14 @@ const GameScreen = () => {
     }
   }, [isFocused]);
 
-  async function playSound(track: SpotifyApi.TrackObjectFull) {
-    console.log('Loading Sound');
-    if (track.preview_url == null) {
-      console.log("NO PREVIEW URL");
-      return;
-    }
-
-
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: track.preview_url },
-      { shouldPlay: true }
-    );
-    setSound(sound);
-    console.log('Playing Sound');
-    await sound.playAsync();
-  }
-
-  async function stopSound() {
-    console.log('Stopping Sound');
-    await sound?.stopAsync();
-  }
-
   React.useEffect(() => {
     if (tracks.length >= 4) {
-      correctTrack = tracks[0];
-      playSound(correctTrack);
+      correctTrack = tracks[0]; //correct track selection starts as the first index of the tracks array
+      audioPlayer.setTrack(correctTrack);
       for (let i = 0; i < tracks.length; i++) {
         console.log("TRACK " + i + ": " + tracks[i]?.name);
       }
+      // @ts-ignore
       correctIndex = parseInt(Math.random() * tracks.length); //Randomize correct track index
 
       let trackStack = tracks;
@@ -126,29 +107,31 @@ const GameScreen = () => {
       trackStack[correctIndex] = trackStack[0]; //Correct track starts at the beginning of the array
       trackStack[0] = temp;
 
-      setTracks(trackStack);
-
-      console.log("correct index: " + correctIndex);
+      setTracks(trackStack); //set Use States to confirm generation of tracks is successful
       setLoaded(true);
     }
   }, [tracks]);
 
   //function to handle the press of buttons 1 - 4
-  function handleChoice(index: number) {
+  function handleChoice(index: number) { 
     console.log(tracks[index]);
     
-    stopSound();
+    audioPlayer.stop();
 
     if (correctTrack == tracks[index]) {
+      // @ts-ignore
       setScore(score + 10); //these work don't mind the errors
+      // @ts-ignore
       setEarnings(10);
       console.log("CORRECTCHOICE");
     }
     else {
       console.log("WRONGCHOICE");
+      // @ts-ignore
       setEarnings(0);
     }
     setLoaded(false);
+    // @ts-ignore
     navigation.navigate('Score');
   };
 
