@@ -272,8 +272,7 @@ const SwiperComponent = () => {
       </View>
     )
   }
-
-
+  
 }
 
 
