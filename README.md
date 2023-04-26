@@ -1,6 +1,6 @@
 # PutMeOn
 
-Beta 0.9.7 - The Put it out update
+Beta 0.9.8 - The Put it away update
 
 ### A music recommendation application
 
