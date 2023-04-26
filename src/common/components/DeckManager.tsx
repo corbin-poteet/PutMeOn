@@ -3,9 +3,11 @@ import database from "../../../firebaseConfig.tsx";
 import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 import React from 'react';
 import useAuth from '../hooks/useAuth';
+import database from "../../../firebaseConfig.tsx";
+import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 
-//const { spotify } = useAuth();
-
+const { spotify, user } = useAuth(); // Used exclusively for playlist addition, this is temporary until we
+                                       // find a new way to save liked songs
 // db reference
 // const deck = {
 //   id: "",
@@ -156,6 +158,14 @@ class DeckManager {
     return this.tracks;
   }
 
+  //public setSelectedDeck(playlist: string) { //Set selected deck by string
+  //  this.selectedDeck = playlist;
+  //}
+
+  //public getSelectedDeck() {
+  //  return this.selectedDeck;
+  //}
+
   public async handleSwipe(index: number, liked: boolean) {
     if (liked) {
       this.handleLike(index);
@@ -190,6 +200,7 @@ class DeckManager {
 
     this.dislikedTracks.push(track);
   }
+
 }
 
 export default DeckManager;

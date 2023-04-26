@@ -3,6 +3,7 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import CardsSwipe from "react-native-cards-swipe";
 import { FontAwesome5 } from "@expo/vector-icons";
+import useAuth from "@/common/hooks/useAuth";
 // @ts-ignore
 import database from "../../../../firebaseConfig.tsx";
 import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
