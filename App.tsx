@@ -7,7 +7,7 @@ import "./styles";
 import { AudioPlayerProvider } from "@/common/hooks/useAudioPlayer";
 import { DeckManagerProvider } from "@/common/hooks/useDeckManager";
 
-
+//@ts-ignore
 export default function App({ children }) {
 
   const [round, setRound] = useState(1);

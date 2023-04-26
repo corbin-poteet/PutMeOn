@@ -211,14 +211,14 @@ const SearchScreen = () => {
             <View className='absolute top-4'>
               <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle} />
             </View>
-            <View className='absolute top-20'>
-              {/* <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 artists and songs. Put Me On will fill your deck with recommendations: CSS IS MY PASSION</Text> */}
-              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Deck Name' onChangeText={setDeckName} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5 my-5' style={{ backgroundColor: '#014871' }}></TextInput>
-              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl top-5 px-8 py-2.5 my-5' style={{ backgroundColor: '#014871' }}></TextInput>
+            <View className='absolute top-20' style={{width: "90%"}}>
+              <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 seeds for your new deck:</Text>
+              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Deck Name' onChangeText={setDeckName} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl px-8 py-2.5 mt-5' style={{ backgroundColor: '#014871' }}></TextInput>
+              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl px-8 py-2.5 mt-6' style={{ backgroundColor: '#014871' }}></TextInput>
             </View>
 
             {/*Search Results*/}
-            <View className='py-2' style={{ marginTop: 280, marginBottom: 100, flex: 1 }}>
+            <View className='py-2' style={{ marginTop: 320, marginBottom: 60, flex: 1 }}>
               {!loaded
                 ?
                 <View style={{ flex: 1, marginTop: 300 }}>
@@ -231,7 +231,7 @@ const SearchScreen = () => {
               }
 
               {/*Buttons*/}
-              <View className='mt-12 flex-row justify-center items-center'>
+              <View className='top-10 flex-row justify-center items-center'>
                 <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { handleSubmit(); }}>
                   <Text className='font-semibold text-white'>Done</Text>
                 </TouchableOpacity>
