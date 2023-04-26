@@ -16,11 +16,14 @@ import gameContext from '@/common/hooks/gameContext';
 import useAudioPlayer from "@/common/hooks/useAudioPlayer";
 import DeckManager from './DeckManager';
 import useDeckManager from '@/common/hooks/useDeckManager';
+import { useIsFocused } from "@react-navigation/native";
 
 const SwiperComponent = () => {
 
   //const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
   const { deckManager } = useDeckManager();
+
+  const isFocused = useIsFocused();
 
   const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [speed] = React.useState<number>(25);
@@ -32,6 +35,17 @@ const SwiperComponent = () => {
 
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
+
+  // this is hacky as fuck but it works for now to rerender
+  React.useEffect(() => {
+    async function delay(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    delay(500).then(() => {
+      forceUpdate();
+    });
+  }, [isFocused]);
 
   React.useMemo(async () => {
     if (audioPlayer) {
@@ -46,16 +60,6 @@ const SwiperComponent = () => {
       );
     }
   }, [audioPlayer]);
-
-  React.useMemo(async () => {
-    // const seed_tracks = ["6SpLc7EXZIPpy0sVko0aoU", "1yjY7rpaAQvKwpdUliHx0d"];
-    // const seed_genres = [] as string[];
-    // const seed_artists = ["74XFHRwlV6OrjEM0A2NCMF",];
-    // await deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then((tracks) => {
-    //   forceUpdate();
-    //   setCardIndex(0);
-    // });
-  }, [deckManager]);
 
   React.useMemo(async () => {
     setPlaybackPosition(0);

@@ -8,6 +8,7 @@ import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 import useDeckManager, { Deck } from '@/common/hooks/useDeckManager';
+import DeckManager from '@/common/components/DeckManager';
 
 var playlists: any[];
 
@@ -185,7 +186,6 @@ const DeckScreen = () => {
       {
         text: 'Yes', onPress:
           () => {
-
             const loadDeck = deckManager.setSelectedDeck(deck);
             loadDeck.then(() => {
               // @ts-ignore

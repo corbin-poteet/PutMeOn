@@ -49,6 +49,12 @@ class AudioPlayer {
   }
 
   async play() {
+
+    if (!this.sound._loaded)
+    {
+      this.setTrack(this.currentTrack);        
+    }
+
     await this.sound.playAsync()
       .catch((error) => {
       console.log(error);
