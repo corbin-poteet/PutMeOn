@@ -3,7 +3,7 @@ import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
 import React from 'react';
 // @ts-ignore
 import database from "../../../firebaseConfig.tsx";
-import { push, ref, set, child, get, getDatabase, onValue, DatabaseReference } from "firebase/database";
+import { push, ref, set, child, get, getDatabase, onValue, DatabaseReference, update } from "firebase/database";
 import useAuth from './useAuth';
 import SpotifyWebApi from "spotify-web-api-js";
 
@@ -61,15 +61,23 @@ class DeckManager {
     const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
       if (snapshot.exists()) {
         console.log("User Found");
-        
+
         // find the selected deck
-        snapshot.forEach((deck) => {
 
-          console.log(deck.val().selected);
+        for (const deck in snapshot.val()) {
+          if (snapshot.val()[deck].selected) {
+            const selectedDeck = snapshot.val()[deck] as Deck;
+            this.setSelectedDeck(selectedDeck);
+            return;
+          }
+        }
 
-          
-        });
-        
+        // if no selected deck, select the first one
+        if (snapshot.val()[0] != undefined) {
+          const firstDeck = snapshot.val()[0] as Deck;
+          this.setSelectedDeck(firstDeck);
+        }
+
 
 
       } else {
@@ -91,19 +99,49 @@ class DeckManager {
 
     console.log("Setting selected deck");
 
-    if (this.id) {
-      set(ref(database, "Decks/" + this.user.id + "/" + this.id), {
-        selected: false
+    if (this.id != "") {
+
+      // check database for deck id
+      // if it exists, update it
+
+
+      const oldDeckId = this.id;
+      const newDeckId = deck.id;
+
+      update(ref(database, "Decks/" + this.user.id + "/" + oldDeckId), {
+        selected: false,
+      }).then(() => {
+        console.log(oldDeckId + " Deck Updated to false");
+        update(ref(database, "Decks/" + this.user.id + "/" + newDeckId), {
+          selected: true,
+        }).then(() => {
+          console.log(newDeckId + " Deck Updated to true");
+        }).catch((error) => {
+          console.error(error);
+        });
+      }).catch((error) => {
+        console.error(error);
       });
+
     }
 
     this.id = deck.id;
     this.name = deck.name;
     this.seeds = deck.seeds;
-    this.likedTracks = deck.likedTracks;
-    this.dislikedTracks = deck.dislikedTracks;
+
+    if (deck.likedTracks != undefined) {
+
+      this.likedTracks = deck.likedTracks;
+    }
+
+    if (deck.dislikedTracks != undefined) {
+
+      this.dislikedTracks = deck.dislikedTracks;
+    }
 
     this.tracks = [];
+
+  
 
     console.log("Loaded Seeds: " + this.seeds.map((seed) => seed.name).join(", "));
     console.log("Loaded Liked Tracks: " + this.likedTracks.map((track) => track.name).join(", "));
@@ -128,10 +166,33 @@ class DeckManager {
    */
   public async initializeDeck(name: string, seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
 
-    console.log("Initializing deck");
-    console.log(this.user.id);
 
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
+
+      if (this.id != "") {
+        get(child(this.dbRef, "Decks/" + this.user.id + "/" + this.id)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log("Deck Found");
+            update(ref(database, "Decks/" + this.user.id + "/" + this.id), {
+              selected: false,
+            }).then(() => {
+              console.log("Deck Updated");
+            }).catch((error) => {
+              console.error(error);
+            });
+          } else {
+            console.log("Deck " + this.id + " Not Found");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+
+
+
+
+
+
 
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
 
@@ -140,6 +201,10 @@ class DeckManager {
       this.seeds = seeds;
       this.likedTracks = [];
       this.dislikedTracks = [];
+
+
+
+
 
       const push = this.pushToDatabase();
     }).catch((error) => {
@@ -207,7 +272,12 @@ class DeckManager {
     }).then((ref) => {
       const r = ref as DatabaseReference;
       this.id = r.key as string;
-      console.log("Pushed deck to database");
+
+      console.log("==================== Creating new deck ====================");
+      console.log("NAME: " + this.name);
+      console.log("ID: " + this.id);
+      console.log("SEEDS: [" + this.seeds.map((seed) => seed.name).join(", ") + "]");
+
     });
   }
 
@@ -472,4 +542,8 @@ export const DeckManagerProvider = ({ children }) => {
 
 export default function useDeckManager() {
   return React.useContext(deckContext);
+}
+
+function put(arg0: DatabaseReference, arg1: any, arg2: { name: string; seeds: Seed[]; likedTracks: never[]; dislikedTracks: never[]; tracks: void | SpotifyApi.TrackObjectFull[]; selected: boolean; }) {
+  throw new Error('Function not implemented.');
 }
