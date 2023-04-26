@@ -19,8 +19,8 @@ export type Deck = {
   id: string,
   name: string,
   seeds: Seed[],
-  likedTracks: string[],
-  dislikedTracks: string[],
+  likedTracks: SpotifyApi.TrackObjectFull[],
+  dislikedTracks: SpotifyApi.TrackObjectFull[],
 }
 
 class DeckManager {
@@ -34,7 +34,7 @@ class DeckManager {
 
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
-  id: string = "";
+  id: string = "asdfawef3";
   name: string = "";
   seeds: Seed[] = [];
   likedTracks: SpotifyApi.TrackObjectFull[] = [];
@@ -92,11 +92,15 @@ class DeckManager {
     this.id = deck.id;
     this.name = deck.name;
     this.seeds = deck.seeds;
-    //this.likedTracks = await this.getTracksFromSpotify(deck.likedTracks);
-    //this.dislikedTracks = await this.getTracksFromSpotify(deck.dislikedTracks);
+    this.likedTracks = deck.likedTracks;
+    this.dislikedTracks = deck.dislikedTracks;
+
+    console.log("Loaded Seeds: " + this.seeds.map((seed) => seed.name).join(", "));
+    console.log("Loaded Liked Tracks: " + this.likedTracks.map((track) => track.name).join(", "));
+    console.log("Loaded Disliked Tracks: " + this.dislikedTracks.map((track) => track.name).join(", "));
 
     this.addNewTracksFromSpotify(5);
-    
+
   }
 
   private getTracksFromSpotify(ids: string[]): Promise<SpotifyApi.TrackObjectFull[]> {
@@ -139,8 +143,32 @@ class DeckManager {
     const decks = await get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
       if (snapshot.exists()) {
         const decks: Deck[] = Object.entries(snapshot.val()).map(([key, value]) => {
+
           const deck = value as Deck;
           deck.id = key;
+
+          //this took so fucking long to figure out
+          const v = value as any;
+          if (v.likedTracks) {
+            const likedTracks = Object.entries(v.likedTracks).map(([key, value]) => {
+              const track = value as SpotifyApi.TrackObjectFull;
+              return track;
+            });
+            deck.likedTracks = likedTracks;
+          } else {
+            deck.likedTracks = [] as SpotifyApi.TrackObjectFull[];
+          }
+
+          if (v.dislikedTracks) {
+            const dislikedTracks = Object.entries(v.dislikedTracks).map(([key, value]) => {
+              const track = value as SpotifyApi.TrackObjectFull;
+              return track;
+            });
+            deck.dislikedTracks = dislikedTracks;
+          } else {
+            deck.dislikedTracks = [] as SpotifyApi.TrackObjectFull[];
+          }
+
           return deck;
         });
         return decks;
@@ -163,8 +191,6 @@ class DeckManager {
     set(ref(database, "Decks/" + this.user.id + "/" + "asdfawef3"), {
       name: "Joe Mama",
       seeds: this.seeds,
-      likedTracks: this.likedTracks,
-      dislikedTracks: this.dislikedTracks
     }).catch((error) => {
       console.error(error);
     });
@@ -211,12 +237,20 @@ class DeckManager {
 
     var seeds = this.selectSeeds();
 
-    console.log("Seeds: " + seeds.map((seed) => seed.name));
+  
 
 
 
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
+      
+      const t = tracks as SpotifyApi.TrackObjectFull[];
+
+      console.log("==================== Adding new track(s) ====================");
+      console.log("TRACKS: [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
+      console.log("SEEDS USED: [" + seeds.map((seed) => seed.name).join(", ") + "]");
+
+
       return tracks;
     });
   }
@@ -317,6 +351,14 @@ class DeckManager {
     return this.tracks;
   }
 
+  private getTrackAsSeed(track: SpotifyApi.TrackObjectFull): Seed {
+    return {
+      name: track.name,
+      type: "track",
+      id: track.id,
+    }
+  }
+
   public async handleSwipe(index: number, liked: boolean) {
     if (liked) {
       this.handleLike(index);
@@ -331,8 +373,24 @@ class DeckManager {
     const trackId = track.id;
 
     // add this track id to the liked tracks in the database
-    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/likedTracks/" + trackId), {
-      trackID: trackId,
+    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/likedTracks/" + track.id), {
+      album: track.album,
+      artists: track.artists,
+      available_markets: track.available_markets,
+      disc_number: track.disc_number,
+      duration_ms: track.duration_ms,
+      explicit: track.explicit,
+      external_ids: track.external_ids,
+      external_urls: track.external_urls,
+      href: track.href,
+      id: track.id,
+      is_local: false,
+      name: track.name,
+      popularity: track.popularity,
+      preview_url: track.preview_url,
+      track_number: track.track_number,
+      type: track.type,
+      uri: track.uri,
     });
 
     this.likedTracks.push(track);
@@ -344,7 +402,23 @@ class DeckManager {
 
     // add this track id to the disliked tracks in the database
     set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/dislikedTracks/" + trackId), {
-      trackID: trackId,
+      album: track.album,
+      artists: track.artists,
+      available_markets: track.available_markets,
+      disc_number: track.disc_number,
+      duration_ms: track.duration_ms,
+      explicit: track.explicit,
+      external_ids: track.external_ids,
+      external_urls: track.external_urls,
+      href: track.href,
+      id: track.id,
+      is_local: false,
+      name: track.name,
+      popularity: track.popularity,
+      preview_url: track.preview_url,
+      track_number: track.track_number,
+      type: track.type,
+      uri: track.uri,
     });
 
     this.dislikedTracks.push(track);
@@ -358,6 +432,7 @@ const deckContext = createContext({
   deckManager: new DeckManager(),
 });
 
+// @ts-ignore
 export const DeckManagerProvider = ({ children }) => {
 
   const { spotify, user } = useAuth();
