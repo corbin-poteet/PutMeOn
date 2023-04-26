@@ -72,9 +72,12 @@ const SwiperComponent = () => {
           if (playbackStatus.isLoaded) {
             setPlaybackPosition(playbackStatus.positionMillis);
             setPlaybackDuration(playbackStatus.durationMillis);
-            if (playbackStatus.isPlaying != !isPlaying) {
-              setIsPlaying(!playbackStatus.isPlaying);
-            }
+
+            //delay(2000).then(() => {    
+              if (playbackStatus.isPlaying != isPlaying) {
+                setIsPlaying(!playbackStatus.isPlaying);
+              }
+            //});
           }
         }
       );
