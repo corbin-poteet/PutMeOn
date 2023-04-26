@@ -52,13 +52,16 @@ class AudioPlayer {
 
     if (!this.sound._loaded)
     {
-      this.setTrack(this.currentTrack);        
+      console.log("Sound not loaded");        
     }
 
-    await this.sound.playAsync()
-      .catch((error) => {
+    await this.sound.playAsync().then((playbackStatus) => {
+      this.playbackStatus = playbackStatus;
+      console.log("Playing preview: " + this.currentTrack.name);
+    }).catch((error) => {
       console.log(error);
     });
+      
 
     this._isPlaying = true;
   }

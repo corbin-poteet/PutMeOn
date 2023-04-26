@@ -25,7 +25,7 @@ const SwiperComponent = () => {
 
   const isFocused = useIsFocused();
 
-  const [cardIndex, setCardIndex] = React.useState<number>(0);
+  const [cardIndex, setCardIndex] = React.useState<number>(-1);
   const [speed] = React.useState<number>(25);
 
   const { audioPlayer } = useAudioPlayer();
@@ -36,14 +36,32 @@ const SwiperComponent = () => {
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
+
+  async function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
   // this is hacky as fuck but it works for now to rerender
   React.useEffect(() => {
-    async function delay(ms: number) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+
+    //setIsPlaying(!audioPlayer.isPlaying());
+    //console.log(!audioPlayer.isPlaying());
+    //forceUpdate();
+
+    if (isFocused) {
+      setIsPlaying(true);
+      forceUpdate();
     }
+
+
+
 
     delay(1000).then(() => {
       forceUpdate();
+
+      if (isFocused) {
+        console.log("UPDATEDINRWONJKRFNJKREFBKREFN")
+      }
+
     });
   }, [isFocused]);
 
@@ -54,7 +72,9 @@ const SwiperComponent = () => {
           if (playbackStatus.isLoaded) {
             setPlaybackPosition(playbackStatus.positionMillis);
             setPlaybackDuration(playbackStatus.durationMillis);
-            setIsPlaying(!playbackStatus.isPlaying);
+            if (playbackStatus.isPlaying != !isPlaying) {
+              setIsPlaying(!playbackStatus.isPlaying);
+            }
           }
         }
       );
