@@ -3,8 +3,6 @@ import database from "../../../firebaseConfig.tsx";
 import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 import React from 'react';
 import useAuth from '../hooks/useAuth';
-import database from "../../../firebaseConfig.tsx";
-import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 
 const { spotify, user } = useAuth(); // Used exclusively for playlist addition, this is temporary until we
                                        // find a new way to save liked songs
