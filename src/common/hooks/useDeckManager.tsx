@@ -40,6 +40,8 @@ class DeckManager {
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
       return this.tracks;
     });
+    this.likedTracks = [];
+    this.dislikedTracks = [];
     return this.tracks;
   }
 
