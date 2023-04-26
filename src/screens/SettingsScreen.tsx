@@ -97,7 +97,9 @@ const SettingsScreen = () => {
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Information</Text>
             <SettingsButton text='User Information' navigateString='UserInfo'/>
             <SettingsButton text='Put Me On Information' navigateString='AppInfo'/>
-            
+
+            <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Put Me On Business</Text>
+            <SettingsButton text='Put Me On Advertising' navigateString='Advertiser'/>
           </View>
         </ScrollView>
 

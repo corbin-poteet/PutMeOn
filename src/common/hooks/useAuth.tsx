@@ -10,6 +10,11 @@ import {
 import SpotifyWebApi from "spotify-web-api-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
+var spotifyApi = null;
+
+
+
 // this is the config for the spotify auth request
 const config = {
   // the client id is the id of the app we created on spotify's developer dashboard
@@ -85,6 +90,8 @@ export const AuthProvider = ({ children }) => {
 
   // this is the spotify api object
   const [spotify, setSpotify] = useState(new SpotifyWebApi());
+
+  spotifyApi = spotify;
 
   // this is the auth request hook from expo-auth-session
   const [request, response, promptAsync] = useAuthRequest(
