@@ -303,7 +303,7 @@ const Swiper = () => {
     <CardsSwipe
       cards={tracks}
       rotationAngle={15}
-      cardContainerStyle={{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 0, height: 0 }, shadowColor: '#000000' }}
+      cardContainerStyle={{ borderRadius: 20, shadowOpacity: 0.5, shadowRadius: 5, shadowOffset: { width: 3, height: 3 }, shadowColor: '#000000' }}
       renderCard={(track: SpotifyApi.TrackObjectFull) => {
         return (
           <LinearGradient

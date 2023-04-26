@@ -143,7 +143,7 @@ const HomeScreen = () => {
 
         {/* Body */}
         <View className='flex-1 items-center justify-center'>
-          <View className='h-full w-full px-2 pt-1 pb-2'>
+          <View className='h-full w-full px-5 pt-4 pb-4'>
             <Swiper tracks={tracks} />
           </View>
         </View>
