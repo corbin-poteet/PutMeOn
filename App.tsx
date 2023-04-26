@@ -5,6 +5,7 @@ import gameContext from "@hooks/gameContext";
 import StackNavigator from "@components/StackNavigator";
 import "./styles";
 import { AudioPlayerProvider } from "@/common/hooks/useAudioPlayer";
+import { DeckManagerProvider } from "@/common/hooks/useDeckManager";
 
 
 export default function App({ children }) {
@@ -16,12 +17,14 @@ export default function App({ children }) {
 
   return (
     <AuthProvider>
-      <AudioPlayerProvider>
-        <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings, selectedPlaylist, setSelectedPlaylist }}>
-          <StackNavigator />
-          <StatusBar style="auto" />
-        </gameContext.Provider>
-      </AudioPlayerProvider>
+      <DeckManagerProvider>
+        <AudioPlayerProvider>
+          <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings, selectedPlaylist, setSelectedPlaylist }}>
+            <StackNavigator />
+            <StatusBar style="auto" />
+          </gameContext.Provider>
+        </AudioPlayerProvider>
+      </DeckManagerProvider>
     </AuthProvider>
   );
 }
