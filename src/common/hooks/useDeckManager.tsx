@@ -52,7 +52,7 @@ class DeckManager {
     this._spotify = spotify;
     this._user = user;
 
-    this.getDecksFromDatabase();
+    //this.getDecksFromDatabase();
 
 
     console.log(user.id);
@@ -60,18 +60,20 @@ class DeckManager {
     const db = getDatabase();
     const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
       if (snapshot.exists()) {
-        console.log("Data available");
+        console.log("User Found");
+        
+        // find the selected deck
+        snapshot.forEach((deck) => {
+
+          console.log(deck.val().selected);
+
+          
+        });
+        
+
 
       } else {
-        console.log("No data available");
-
-
-        // // add user to database
-        // set(ref(db, `Decks/${userId}`), {
-        //   id: userId,
-        // });
-
-
+        console.log("User Not Found");
       }
     }).catch((error) => {
       console.error(error);
@@ -88,6 +90,12 @@ class DeckManager {
   public async setSelectedDeck(deck: Deck) {
 
     console.log("Setting selected deck");
+
+    if (this.id) {
+      set(ref(database, "Decks/" + this.user.id + "/" + this.id), {
+        selected: false
+      });
+    }
 
     this.id = deck.id;
     this.name = deck.name;
@@ -126,8 +134,6 @@ class DeckManager {
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
 
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
-
-      console.log(this.tracks.map((track) => track.name));
 
       this.name = name;
 
@@ -195,6 +201,7 @@ class DeckManager {
     const p = push(ref(database, "Decks/" + this.user.id), {
       name: this.name,
       seeds: this.seeds,
+      selected: true,
     }).catch((error) => {
       console.error(error);
     }).then((ref) => {
