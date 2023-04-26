@@ -14,10 +14,13 @@ import TextTicker from "react-native-text-ticker";
 import gameContext from '@/common/hooks/gameContext';
 import useAudioPlayer from "@/common/hooks/useAudioPlayer";
 import DeckManager from './DeckManager';
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 const SwiperComponent = () => {
 
-  const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
+  //const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
+  const { deckManager } = useDeckManager();
+
   const [cardIndex, setCardIndex] = React.useState<number>(-1);
   const [speed] = React.useState<number>(25);
 

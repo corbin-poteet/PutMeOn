@@ -5,19 +5,30 @@ import React from 'react';
 import database from "../../../firebaseConfig.tsx";
 import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 import useAuth from './useAuth';
+import SpotifyWebApi from "spotify-web-api-js";
+
+
 
 
 class DeckManager {
 
-  spotify = useAuth().spotify;
-  user = useAuth().user;
+  _spotify: SpotifyWebApi.SpotifyWebApiJs;
+  _user: any;
+
   tracks: SpotifyApi.TrackObjectFull[] = [];
   likedTracks: SpotifyApi.TrackObjectFull[] = [];
   dislikedTracks: SpotifyApi.TrackObjectFull[] = [];
 
-  constructor() {
-
+  constructor(public spotify?: SpotifyWebApi.SpotifyWebApiJs, public user?: any) {
+    if (spotify && user) {
+      this._spotify = spotify;
+      this._user = user;
+    } else {
+      this._spotify = new SpotifyWebApi();
+      this._user = null;
+    }
   }
+
 
   /**
    * Initializes the deck with a given size
@@ -37,7 +48,7 @@ class DeckManager {
    * @param trackIds the array of track ids
    */
   public async initializeDeckFromTrackIds(trackIds: string[]) {
-    await this.spotify.getTracks(trackIds).then((response) => {
+    await this._spotify.getTracks(trackIds).then((response) => {
       var tracks = response.tracks as SpotifyApi.TrackObjectFull[];
       this.tracks = tracks;
       return tracks;
@@ -87,7 +98,7 @@ class DeckManager {
    */
   private async getTrackRecommendationsFromSpotify(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 1, responseSize: number = 50) {
     const tracks = await
-      this.spotify.getRecommendations({
+      this._spotify.getRecommendations({
         seed_tracks: seed_tracks,
         seed_genres: seed_genres,
         seed_artists: seed_artists,
@@ -183,9 +194,6 @@ class DeckManager {
     this.dislikedTracks.push(track);
   }
 
-
-
-
 }
 
 
@@ -196,7 +204,9 @@ const deckContext = createContext({
 
 export const DeckManagerProvider = ({ children }) => {
 
-  const [deckManager] = React.useState(new DeckManager());
+  const { spotify, user } = useAuth();
+
+  const [deckManager] = React.useState(new DeckManager(spotify, user));
 
   return (
     <deckContext.Provider
