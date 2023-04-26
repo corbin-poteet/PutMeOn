@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ScrollView } from 'react-native-gesture-handler';
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 //👌😂👌 🔥 🔥 🔥
 
@@ -16,6 +17,7 @@ var output: any[] = [];
 const SearchScreen = () => {
 
   const { spotify, user } = useAuth();
+  const { deckManager } = useDeckManager();
   const navigation = useNavigation();
 
   const result: any[] = []; //holds search results in getSearchResults function
@@ -24,6 +26,10 @@ const SearchScreen = () => {
   const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
   const [seeds, setSeeds] = useState<any[]>([]); //holds up to 5 seeds to pass to next screen
+  
+  const [trackSeeds, setTrackSeeds] = useState<string[]>([]); //holds up to 5 track seeds to pass to next screen
+  const [artistSeeds, setArtistSeeds] = useState<string[]>([]); //holds up to 5 artist seeds to pass to next screen
+  
   const [readableSeeds, setReadableSeeds] = useState<string[]>([]); //holds the human-readable names of the seeds to display to user
   const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
   const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
@@ -68,6 +74,9 @@ const SearchScreen = () => {
     if(seeds.length > 0){ //if seeds are selected, navigate to next screen
       Alert.alert("Seeds selected! Time to create a playlist for the deck");
       output = seeds;
+
+      deckManager.initializeDeck(trackSeeds, [], artistSeeds);
+
       //@ts-ignore
       navigation.navigate('CreatePlaylist');
     }
@@ -100,6 +109,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setArtistSeeds([...artistSeeds, element.id]);
                       setReadableSeeds([...readableSeeds, element.name+" "]);
                       Alert.alert("Added artist: " + element.name);
                       console.log("ADDING ARTIST: " + element.name);
@@ -145,6 +155,7 @@ const SearchScreen = () => {
                   <TouchableOpacity onPress={
                     () => {
                       setSeeds([...seeds, element.id]);
+                      setTrackSeeds([...trackSeeds, element.id]);
                       setReadableSeeds([...readableSeeds, element.name]);
                       Alert.alert("Added song: " + element.name);
                       console.log("ADDING SONG: " + element.name);

@@ -48,13 +48,13 @@ const SwiperComponent = () => {
   }, [audioPlayer]);
 
   React.useMemo(async () => {
-    const seed_tracks = ["6SpLc7EXZIPpy0sVko0aoU", "1yjY7rpaAQvKwpdUliHx0d"];
-    const seed_genres = [] as string[];
-    const seed_artists = ["74XFHRwlV6OrjEM0A2NCMF",];
-    await deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then((tracks) => {
-      forceUpdate();
-      setCardIndex(0);
-    });
+    // const seed_tracks = ["6SpLc7EXZIPpy0sVko0aoU", "1yjY7rpaAQvKwpdUliHx0d"];
+    // const seed_genres = [] as string[];
+    // const seed_artists = ["74XFHRwlV6OrjEM0A2NCMF",];
+    // await deckManager.initializeDeck(seed_tracks, seed_genres, seed_artists).then((tracks) => {
+    //   forceUpdate();
+    //   setCardIndex(0);
+    // });
   }, [deckManager]);
 
   React.useMemo(async () => {
