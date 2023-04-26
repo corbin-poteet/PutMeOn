@@ -42,7 +42,7 @@ const SwiperComponent = () => {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    delay(500).then(() => {
+    delay(1000).then(() => {
       forceUpdate();
     });
   }, [isFocused]);

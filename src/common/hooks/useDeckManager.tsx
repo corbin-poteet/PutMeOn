@@ -3,7 +3,7 @@ import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
 import React from 'react';
 // @ts-ignore
 import database from "../../../firebaseConfig.tsx";
-import { push, ref, set, child, get, getDatabase, onValue, DatabaseReference } from "firebase/database";
+import { push, ref, set, child, get, getDatabase, onValue, DatabaseReference, update } from "firebase/database";
 import useAuth from './useAuth';
 import SpotifyWebApi from "spotify-web-api-js";
 
@@ -92,7 +92,7 @@ class DeckManager {
     console.log("Setting selected deck");
 
     if (this.id) {
-      set(ref(database, "Decks/" + this.user.id + "/" + this.id), {
+      update(ref(database, "Decks/" + this.user.id + "/" + this.id), {
         selected: false
       });
     }
