@@ -52,31 +52,12 @@ class DeckManager {
     this._spotify = spotify;
     this._user = user;
 
-    //this.getDecksFromDatabase();
-
-
-    console.log(user.id);
-    const userId = user.id;
-    const db = getDatabase();
-    const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("User Found");
-        
-        // find the selected deck
-        snapshot.forEach((deck) => {
-
-          console.log(deck.val().selected);
-
-          
-        });
-        
-
-
-      } else {
-        console.log("User Not Found");
+    console.log("==================== Querying Database ====================");
+    this.getDecksFromDatabase().then((decks) => {
+      console.log("Found " + decks.length + " decks in database");
+      if (decks.length > 0) {
+        console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
       }
-    }).catch((error) => {
-      console.error(error);
     });
 
 
@@ -189,7 +170,6 @@ class DeckManager {
     }).catch((error) => {
       console.error(error);
     }).finally(() => {
-      console.log("Finished getting decks from database");
       return [] as Deck[];
     });
 
