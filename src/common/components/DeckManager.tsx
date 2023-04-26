@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import gameContext from '@/common/hooks/gameContext';
 import useAuth from '../hooks/useAuth';
+import database from "../../../firebaseConfig.tsx";
+import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
 
-//const { spotify } = useAuth();
-
+const { spotify, user } = useAuth(); // Used exclusively for playlist addition, this is temporary until we
+                                       // find a new way to save liked songs
 // db reference
 // const deck = {
 //   id: "",
@@ -16,6 +19,8 @@ import useAuth from '../hooks/useAuth';
 class DeckManager {
   spotify = useAuth().spotify;
   tracks: SpotifyApi.TrackObjectFull[] = [];
+  static contextType = gameContext
+  //selectedDeck = "";
 
   constructor(props: any) {
     
@@ -49,13 +54,47 @@ class DeckManager {
     return this.tracks;
   }
 
-  public handleLike(index: number) {
+  //public setSelectedDeck(playlist: string) { //Set selected deck by string
+  //  this.selectedDeck = playlist;
+  //}
 
+  //public getSelectedDeck() {
+  //  return this.selectedDeck;
+  //}
+
+  public handleLike(index: number) {
+    set(
+      ref(database, "Decks/" + user?.id + "/" + selectedPlaylist + "/likedTracks/" + this.tracks[index].id),
+      {
+        trackID: this.tracks[index].id,
+        trackName: this.tracks[index].name,
+        liked: true,
+      }
+    );
+    
+    const likedTrack: string[] = [];
+    likedTrack.push(this.tracks[index].uri);
+    this.addToPlaylist(likedTrack); //Needs an array of tracks to add to playlist, so pass it one track in a new array
   }
 
   public handleDislike(index: number) {
-
+    set(
+      ref(database, "Decks/" + user?.id + "/" + selectedPlaylist + "/dislikedTracks/" + this.tracks[index].id),
+      {
+        trackID: this.tracks[index].id,
+        trackName: this.tracks[index].name,
+        liked: true,
+      }
+    );
   }
+
+  public addToPlaylist(trackURIs: string[]) { // TEMPORARY until we think of another way to save songs
+    spotify.addTracksToPlaylist( //Add trackURIs array to selected playlist
+      this.selectedPlaylist,
+      trackURIs
+    );
+  }
+
 }
 
 export default DeckManager;
