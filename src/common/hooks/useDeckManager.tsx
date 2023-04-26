@@ -15,7 +15,16 @@ export type Seed = {
   type: SeedType,
 }
 
+export type Deck = {
+  id: string,
+  name: string,
+  seeds: Seed[],
+  likedTracks: string[],
+  dislikedTracks: string[],
+}
+
 class DeckManager {
+
 
   dbRef: DatabaseReference = ref(database);
 
@@ -25,6 +34,8 @@ class DeckManager {
 
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
+  id: string = "";
+  name: string = "";
   seeds: Seed[] = [];
   likedTracks: SpotifyApi.TrackObjectFull[] = [];
   dislikedTracks: SpotifyApi.TrackObjectFull[] = [];
@@ -37,42 +48,62 @@ class DeckManager {
 
     console.log("CONSTRUCTING DECK MANAGER");
 
-    if (spotify && user) {
-      this._spotify = spotify;
-      this._user = user;
 
-      console.log(user.id);
-      const userId = user.id;
-      const db = getDatabase();
-      const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log(snapshot.val());
-          console.log(userId);
+    this._spotify = spotify;
+    this._user = user;
 
-        } else {
-          console.log("No data available");
+    this.getDecksFromDatabase();
 
 
-          // add user to database
-          set(ref(db, `Decks/${userId}`), {
-            id: userId,
-          });
+    console.log(user.id);
+    const userId = user.id;
+    const db = getDatabase();
+    const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Data available");
+
+      } else {
+        console.log("No data available");
 
 
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
+        // // add user to database
+        // set(ref(db, `Decks/${userId}`), {
+        //   id: userId,
+        // });
+
+
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
 
 
 
 
 
-    } 
+
   }
 
 
+  public async setSelectedDeck(deck: Deck) {
 
+    console.log("Setting selected deck");
+
+    this.id = deck.id;
+    this.name = deck.name;
+    this.seeds = deck.seeds;
+    //this.likedTracks = await this.getTracksFromSpotify(deck.likedTracks);
+    //this.dislikedTracks = await this.getTracksFromSpotify(deck.dislikedTracks);
+
+    this.addNewTracksFromSpotify(5);
+    
+  }
+
+  private getTracksFromSpotify(ids: string[]): Promise<SpotifyApi.TrackObjectFull[]> {
+    return this._spotify.getTracks(ids).then((tracks) => {
+      return tracks.tracks;
+    });
+  }
 
 
 
@@ -102,29 +133,33 @@ class DeckManager {
     });
   }
 
+  public async getDecksFromDatabase(): Promise<Deck[]> {
+    const userId = this.user.id;
+    const db = getDatabase();
+    const decks = await get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const decks: Deck[] = Object.entries(snapshot.val()).map(([key, value]) => {
+          const deck = value as Deck;
+          deck.id = key;
+          return deck;
+        });
+        return decks;
+      } else {
+        console.log("No data available");
+        return [] as Deck[];
+      }
+    }).catch((error) => {
+      console.error(error);
+    }).finally(() => {
+      console.log("Finished getting decks from database");
+      return [] as Deck[];
+    });
+
+    return decks as Deck[];
+  }
+
 
   private async pushToDatabase() {
-    
-
-    console.log(this.user.id);
-
-    const db = getDatabase();
-
-    console.log("Pushing to database");
-
-    // // add deck to database under user
-    // set(ref(db, `Decks/${userId}/${userId}`), {
-    //   name: "Joe Mama",
-    //   seed_tracks: this.seed_tracks,
-    //   seed_artists: this.seed_artists,
-    //   likedTracks: this.likedTracks,
-    //   dislikedTracks: this.dislikedTracks
-    // }).then(() => {
-    //   console.log("Deck added to database");
-    // }).catch((error) => {
-    //   console.error(error);
-    // });
-
     set(ref(database, "Decks/" + this.user.id + "/" + "asdfawef3"), {
       name: "Joe Mama",
       seeds: this.seeds,
@@ -150,8 +185,12 @@ class DeckManager {
 
   private selectSeeds(): Seed[] {
     // if there are no liked tracks, use the last 5 tracks in the deck
+    // if (this.likedTracks.length == 0) {
+    //   return this.getTrackSeeds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
+    // }
+
     if (this.likedTracks.length == 0) {
-      return this.getTrackSeeds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
+      return this.seeds;
     }
 
     const likedTrackIds = this.mapTracksToSeeds(this.likedTracks);
@@ -172,6 +211,10 @@ class DeckManager {
 
     var seeds = this.selectSeeds();
 
+    console.log("Seeds: " + seeds.map((seed) => seed.name));
+
+
+
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
       return tracks;
@@ -188,6 +231,11 @@ class DeckManager {
    * @returns the array of filtered tracks
    */
   private async getTrackRecommendationsFromSpotify(seeds: Seed[], finalSize: number = 1, responseSize: number = 50) {
+
+    if (seeds.length == 0) {
+      console.log("No seeds");
+      return [] as SpotifyApi.TrackObjectFull[];
+    }
 
     const seed_tracks = seeds.filter((seed) => seed.type == "track").map((seed) => seed.id);
     const seed_genres = seeds.filter((seed) => seed.type == "genre").map((seed) => seed.id);
@@ -280,26 +328,24 @@ class DeckManager {
 
   private handleLike(index: number) {
     const track = this.tracks[index];
-    set(
-      ref(database, "SwipedTracks/" + this.user?.id + "/" + track.id),
-      {
-        trackID: track.id,
-        liked: true,
-      }
-    );
+    const trackId = track.id;
+
+    // add this track id to the liked tracks in the database
+    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/likedTracks/" + trackId), {
+      trackID: trackId,
+    });
 
     this.likedTracks.push(track);
   }
 
   private handleDislike(index: number) {
     const track = this.tracks[index];
-    set(
-      ref(database, "SwipedTracks/" + this.user?.id + "/" + track.id),
-      {
-        trackID: track.id,
-        liked: false,
-      }
-    );
+    const trackId = track.id;
+
+    // add this track id to the disliked tracks in the database
+    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/dislikedTracks/" + trackId), {
+      trackID: trackId,
+    });
 
     this.dislikedTracks.push(track);
   }

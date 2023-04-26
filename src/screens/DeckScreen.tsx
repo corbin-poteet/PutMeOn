@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native'
 import React, { useContext } from 'react';
 import useAuth from '@hooks/useAuth';
 import { useNavigation } from '@react-navigation/core';
@@ -7,7 +7,7 @@ import { ref, child, get, set } from 'firebase/database';
 import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
-import useDeckManager from '@/common/hooks/useDeckManager';
+import useDeckManager, { Deck } from '@/common/hooks/useDeckManager';
 
 var playlists: any[];
 
@@ -32,8 +32,8 @@ const DeckScreen = () => {
   //const [selectedPlaylist, setSelectedPlaylist] = React.useState<any>();
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [componentHandler, setComponentHandler] = React.useState<any>();
-  const [fadeAnim] = React.useState(new Animated.Value(0))
   const [decks, setDecks] = React.useState<string[]>();
+  const [deckss, setDeckss] = React.useState<Deck[]>();
 
   React.useLayoutEffect(() => {
     if (selectedPlaylist == null) {
@@ -66,56 +66,118 @@ const DeckScreen = () => {
   }
 
   async function getPlaylists() { //Obtain all spotify playlists owned by current user
-    const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
-    ).then(
-      function (data) {
-        playlists = data.items;
 
-        for (var i = 0; i < playlists.length; i++) {
-          if (playlists[i].owner.id === user?.id) //Remove Playlists not created by user
-          {
-            decks?.forEach((item) => {
-              //console.log(item?.playlistId + " === " + playlists[i]?.id)
-              if (playlists[i]?.id == item) {
-                result.push({
-                  "name": playlists[i].name,
-                  "image": playlists[i].images[0],
-                  "index": i
-                });
-              }
-            })
-          }
-          //console.log("Playlists Names: " + playlists[i].name)
-        }
-        const listItems = result.map(
-          (element) => {
-            return (
-              <View>
-                <TouchableOpacity onPress={
-                  () => {
-                    createAlert(element)
-                    //selectedPlaylist = playlists[element.index].id;
-                    //console.log("SELECTED: "+selectedPlaylist)
-                    //navigation.navigate('Home')
-                  }
-                }>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                    <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {element.name} </Text>
-                  </View>
-                </TouchableOpacity>
+    const deckList = await deckManager.getDecksFromDatabase().then((decks) => {
+      setDeckss(decks);
+      console.log(decks);
+
+      // list of decks to be rendered
+      const deckList = decks.map((deck) => {
+        return (
+          <View key={deck.id}>
+            <TouchableOpacity onPress={() => {
+              createAlert(deck);
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {deck.name} </Text>
               </View>
-            )
-          }
-        )
-        setComponentHandler(listItems); //Ensures that the playlists are all loaded and ready to be rendered
-        setLoaded(true);
-        //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
+            </TouchableOpacity>
+          </View>
+        );
       });
-  }
 
-  function createAlert(playlist: any) { //Confirm playlist selection alert
-    Alert.alert('Confirm Deck', 'Select ' + playlist.name + ' as your Put Me On Deck?', [
+      return deckList;
+
+    }).catch((error) => {
+      console.log(error);
+    }).finally(() => {
+      setLoaded(true);
+    });
+
+    setComponentHandler(deckList);
+
+    setLoaded(true);
+
+
+  }
+  // setDeckss(decks);
+  // console.log(decks);
+  // const listItems = decks.map(
+  //   (deck) => {
+  //     return (
+  //       <View>
+  //         <TouchableOpacity onPress={
+  //           () => {
+  //             createAlert(deck)
+  //           }
+  //         }>
+  //           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+  //             <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+  //             <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {deck.name} </Text>
+  //           </View>
+  //         </TouchableOpacity>
+  //       </View>
+  //     )
+  //   }
+  // );
+
+
+  // setComponentHandler(listItems);
+  // setLoaded(true);
+
+
+
+  // const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
+  // ).then(
+  //   function (data) {
+  //     playlists = data.items;
+
+  //     for (var i = 0; i < playlists.length; i++) {
+  //       if (playlists[i].owner.id === user?.id) //Remove Playlists not created by user
+  //       {
+  //         decks?.forEach((item) => {
+  //           //console.log(item?.playlistId + " === " + playlists[i]?.id)
+  //           if (playlists[i]?.id == item) {
+  //             result.push({
+  //               "name": playlists[i].name,
+  //               "image": playlists[i].images[0],
+  //               "index": i
+  //             });
+  //           }
+  //         })
+  //       }
+  //       //console.log("Playlists Names: " + playlists[i].name)
+  //     }
+  //     const listItems = result.map(
+  //       (element) => {
+  //         return (
+  //           <View>
+  //             <TouchableOpacity onPress={
+  //               () => {
+  //                 createAlert(element)
+  //                 //selectedPlaylist = playlists[element.index].id;
+  //                 //console.log("SELECTED: "+selectedPlaylist)
+  //                 //navigation.navigate('Home')
+  //               }
+  //             }>
+  //               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
+  //                 <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+  //                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {element.name} </Text>
+  //               </View>
+  //             </TouchableOpacity>
+  //           </View>
+  //         )
+  //       }
+  //     )
+  //     setComponentHandler(listItems); //Ensures that the playlists are all loaded and ready to be rendered
+  //     setLoaded(true);
+  //     //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
+  //   });
+
+
+  async function createAlert(deck: Deck) { //Confirm playlist selection alert
+    Alert.alert('Confirm Deck', 'Select ' + deck.name + ' as your Put Me On Deck?', [
       {
         text: 'Cancel',
         style: 'cancel',
@@ -123,35 +185,45 @@ const DeckScreen = () => {
       {
         text: 'Yes', onPress:
           () => {
+
+            const loadDeck = deckManager.setSelectedDeck(deck);
+            loadDeck.then(() => {
+              // @ts-ignore
+              navigation.navigate('Home');
+            }).catch((error) => {
+              console.log(error);
+            });
+
+          
+
             //console.log("PLAYLIST SELECTED: "+playlists[playlist.index].name)
             //selectedPlaylist = playlists[playlist.index].id;
 
-            var temp; //Set seeds to this value to push to selectedDeck
+            //var temp; //Set seeds to this value to push to selectedDeck
 
-            get(child(dbRef, "Decks/" + user?.id + "/" + playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
-              if (snapshot.exists()) {
-                var value = snapshot.val();
-                temp = value?.seeds;
+            // get(child(dbRef, "Decks/" + user?.id + "/" + playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
+            //   if (snapshot.exists()) {
+            //     var value = snapshot.val();
+            //     temp = value?.seeds;
 
-                set(ref(database, "SelectedDecks/" + user?.id), {
-                  id: playlists[playlist.index]?.id,
-                  name: playlists[playlist.index]?.name,
-                  seeds: temp
-                });
+            //     set(ref(database, "SelectedDecks/" + user?.id), {
+            //       id: playlists[playlist.index]?.id,
+            //       name: playlists[playlist.index]?.name,
+            //       seeds: temp
+            //     });
 
-                // @ts-ignore
-                setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
+            //     // @ts-ignore
+            //     setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
 
-                deckMa
+            //     //deckManager
+                
 
-
-              } else {
-                console.log("NO SNAPSHOT (DECK SCREEN)")
-              }
-            });
+            //   } else {
+            //     console.log("NO SNAPSHOT (DECK SCREEN)")
+            //   }
+            // });
 
             // @ts-ignore
-            navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
             // {
             //   text: 'Okay',
@@ -165,12 +237,6 @@ const DeckScreen = () => {
   React.useEffect(() => {
     if (user != undefined && user.id != undefined) { //Load Playlists only after user credentials are retrieved
       getDecks();
-      Animated.timing(fadeAnim, { //Establish Animation
-        toValue: 1,
-        duration: 750,
-        delay: 1000,
-        useNativeDriver: true
-      }).start();
     }
   }, [user]);
 
@@ -188,13 +254,13 @@ const DeckScreen = () => {
           <Text className='text-white text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
         </View>
         <View style={{ padding: 10, flex: 1 }}>
-          {!loaded //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
+          {!true //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
             ?
             <View style={{ flex: 1, marginTop: 300 }}>
               <ActivityIndicator size="large" color="#014871" />
             </View>
             :
-            <Animated.View style={{ opacity: fadeAnim }}>
+            <View>
               <ScrollView style={{ flex: 1, marginTop: 150, marginBottom: 10, }}>
                 <TouchableOpacity onPress={() => {
                   // @ts-ignore
@@ -209,7 +275,7 @@ const DeckScreen = () => {
                 {componentHandler}
 
               </ScrollView>
-            </Animated.View>
+            </View>
           }
         </View>
       </LinearGradient>
