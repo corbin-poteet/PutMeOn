@@ -3,31 +3,77 @@ import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
 import React from 'react';
 // @ts-ignore
 import database from "../../../firebaseConfig.tsx";
-import { push, ref, set, child, get, getDatabase, onValue } from "firebase/database";
+import { push, ref, set, child, get, getDatabase, onValue, DatabaseReference } from "firebase/database";
 import useAuth from './useAuth';
 import SpotifyWebApi from "spotify-web-api-js";
 
+export type SeedType = "track" | "artist" | "genre";
 
-
+export type Seed = {
+  id: string
+  name: string,
+  type: SeedType,
+}
 
 class DeckManager {
 
-  _spotify: SpotifyWebApi.SpotifyWebApiJs;
+  dbRef: DatabaseReference = ref(database);
+
+
+  _spotify: SpotifyWebApi.SpotifyWebApiJs = new SpotifyWebApi();
   _user: any;
 
   tracks: SpotifyApi.TrackObjectFull[] = [];
+
+  seeds: Seed[] = [];
   likedTracks: SpotifyApi.TrackObjectFull[] = [];
   dislikedTracks: SpotifyApi.TrackObjectFull[] = [];
 
   constructor(public spotify?: SpotifyWebApi.SpotifyWebApiJs, public user?: any) {
+
+    if (!spotify || !user) {
+      return;
+    }
+
+    console.log("CONSTRUCTING DECK MANAGER");
+
     if (spotify && user) {
       this._spotify = spotify;
       this._user = user;
-    } else {
-      this._spotify = new SpotifyWebApi();
-      this._user = null;
-    }
+
+      console.log(user.id);
+      const userId = user.id;
+      const db = getDatabase();
+      const refe = get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          console.log(userId);
+
+        } else {
+          console.log("No data available");
+
+
+          // add user to database
+          set(ref(db, `Decks/${userId}`), {
+            id: userId,
+          });
+
+
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+
+
+
+
+
+    } 
   }
+
+
+
+
 
 
   /**
@@ -35,15 +81,60 @@ class DeckManager {
    * @param finalSize the size of the deck after filtering
    * @param responseSize the size of the response from the spotify api
    */
-  public async initializeDeck(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 5, responseSize: number = 50): Promise<SpotifyApi.TrackObjectFull[]> {
-    await this.getTrackRecommendationsFromSpotify(seed_tracks, seed_genres, seed_artists, finalSize, responseSize).then((tracks) => {
+  public async initializeDeck(seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
+
+    console.log("Initializing deck");
+    console.log(this.user.id);
+
+    await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
+
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
-      return this.tracks;
+
+      console.log(this.tracks.map((track) => track.name));
+
+      this.seeds = seeds;
+      this.likedTracks = [];
+      this.dislikedTracks = [];
+
+      const push = this.pushToDatabase();
+    }).catch((error) => {
+      console.error(error);
     });
-    this.likedTracks = [];
-    this.dislikedTracks = [];
-    return this.tracks;
   }
+
+
+  private async pushToDatabase() {
+    
+
+    console.log(this.user.id);
+
+    const db = getDatabase();
+
+    console.log("Pushing to database");
+
+    // // add deck to database under user
+    // set(ref(db, `Decks/${userId}/${userId}`), {
+    //   name: "Joe Mama",
+    //   seed_tracks: this.seed_tracks,
+    //   seed_artists: this.seed_artists,
+    //   likedTracks: this.likedTracks,
+    //   dislikedTracks: this.dislikedTracks
+    // }).then(() => {
+    //   console.log("Deck added to database");
+    // }).catch((error) => {
+    //   console.error(error);
+    // });
+
+    set(ref(database, "Decks/" + this.user.id + "/" + "asdfawef3"), {
+      name: "Joe Mama",
+      seeds: this.seeds,
+      likedTracks: this.likedTracks,
+      dislikedTracks: this.dislikedTracks
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
 
   /**
    * Initializes tracks from the given track id array
@@ -57,19 +148,15 @@ class DeckManager {
     });
   }
 
-  private selectSeedTracks(): string[] {
+  private selectSeeds(): Seed[] {
     // if there are no liked tracks, use the last 5 tracks in the deck
     if (this.likedTracks.length == 0) {
-      return this.getTrackIds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
+      return this.getTrackSeeds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
     }
 
-    const likedTrackIds = this.likedTracks.map((track) => track.id);
+    const likedTrackIds = this.mapTracksToSeeds(this.likedTracks);
     const lastLikedTrackIds = likedTrackIds.slice(Math.max(this.likedTracks.length - 5, 0), this.likedTracks.length);
     return lastLikedTrackIds;
-  }
-
-  private selectSeedArtists(): string[] {
-    return [];
   }
 
   /**
@@ -80,10 +167,12 @@ class DeckManager {
    */
   public async addNewTracksFromSpotify(finalSize: number = 1, responseSize: number = 50) {
 
-    var seed_tracks = this.selectSeedTracks();
-    var seed_artists = this.selectSeedArtists();
+    //var seed_tracks = this.selectSeedTracks();
+    //var seed_artists = this.selectSeedArtists();
 
-    await this.getTrackRecommendationsFromSpotify(seed_tracks, [], seed_artists, finalSize, responseSize).then((tracks) => {
+    var seeds = this.selectSeeds();
+
+    await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
       return tracks;
     });
@@ -98,7 +187,12 @@ class DeckManager {
    * @param responseSize the size of the response from the spotify api
    * @returns the array of filtered tracks
    */
-  private async getTrackRecommendationsFromSpotify(seed_tracks: string[], seed_genres: string[], seed_artists: string[], finalSize: number = 1, responseSize: number = 50) {
+  private async getTrackRecommendationsFromSpotify(seeds: Seed[], finalSize: number = 1, responseSize: number = 50) {
+
+    const seed_tracks = seeds.filter((seed) => seed.type == "track").map((seed) => seed.id);
+    const seed_genres = seeds.filter((seed) => seed.type == "genre").map((seed) => seed.id);
+    const seed_artists = seeds.filter((seed) => seed.type == "artist").map((seed) => seed.id);
+
     const tracks = await
       this._spotify.getRecommendations({
         seed_tracks: seed_tracks,
@@ -136,6 +230,20 @@ class DeckManager {
    */
   public getTrackIds(): string[] {
     return this.tracks.map((track) => track.id);
+  }
+
+  public getTrackSeeds(): Seed[] {
+    return this.mapTracksToSeeds(this.tracks);
+  }
+
+  public mapTracksToSeeds(tracks: SpotifyApi.TrackObjectFull[]): Seed[] {
+    return tracks.map((track) => {
+      return {
+        name: track.name,
+        type: "track",
+        id: track.id,
+      }
+    });
   }
 
   public addTrack(track: SpotifyApi.TrackObjectFull) {
@@ -208,7 +316,14 @@ export const DeckManagerProvider = ({ children }) => {
 
   const { spotify, user } = useAuth();
 
-  const [deckManager] = React.useState(new DeckManager(spotify, user));
+  const [deckManager, setDeckManager] = React.useState<DeckManager>(new DeckManager());
+
+  React.useEffect(() => {
+    if (spotify == null || user == null) return;
+
+    console.log("deck manager provider mounted");
+    setDeckManager(new DeckManager(spotify, user));
+  }, [spotify, user]);
 
   return (
     <deckContext.Provider

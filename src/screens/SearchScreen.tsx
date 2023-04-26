@@ -5,7 +5,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ScrollView } from 'react-native-gesture-handler';
-import useDeckManager from '@/common/hooks/useDeckManager';
+import useDeckManager, { Seed } from '@/common/hooks/useDeckManager';
+// @ts-ignore
+import database from "../../firebaseConfig.tsx";
+import { ref, child, get, set } from 'firebase/database';
 
 //👌😂👌 🔥 🔥 🔥
 
@@ -19,6 +22,8 @@ const SearchScreen = () => {
   const { spotify, user } = useAuth();
   const { deckManager } = useDeckManager();
   const navigation = useNavigation();
+
+
 
   const result: any[] = []; //holds search results in getSearchResults function
 
@@ -71,14 +76,26 @@ const SearchScreen = () => {
   }, [user, search]);
 
   function handleSubmit(){
-    if(seeds.length > 0){ //if seeds are selected, navigate to next screen
+    if(true){//seeds.length > 0){ //if seeds are selected, navigate to next screen
       Alert.alert("Seeds selected! Time to create a playlist for the deck");
       output = seeds;
 
-      deckManager.initializeDeck(trackSeeds, [], artistSeeds);
+      const track_seeds = [];
+      const artist_seeds = [];
+
+      const paramore: Seed = {
+        name: "Paramore",
+        type: "artist",
+        id: "74XFHRwlV6OrjEM0A2NCMF"
+      }
+
+      deckManager.initializeDeck([paramore]);
+
+      // push it to the database
+
 
       //@ts-ignore
-      navigation.navigate('CreatePlaylist');
+      navigation.navigate('Home');
     }
     else{
       Alert.alert("Please select at least one seed.");

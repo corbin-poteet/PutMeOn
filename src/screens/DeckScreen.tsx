@@ -7,6 +7,7 @@ import { ref, child, get, set } from 'firebase/database';
 import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 var playlists: any[];
 
@@ -17,6 +18,7 @@ var playlists: any[];
 
 const DeckScreen = () => {
 
+  const { deckManager } = useDeckManager();
   const navigation = useNavigation();
   const dbRef = ref(database);
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
@@ -123,27 +125,31 @@ const DeckScreen = () => {
           () => {
             //console.log("PLAYLIST SELECTED: "+playlists[playlist.index].name)
             //selectedPlaylist = playlists[playlist.index].id;
-            
+
             var temp; //Set seeds to this value to push to selectedDeck
 
-            get(child(dbRef, "Decks/" + user?.id + "/"+playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
+            get(child(dbRef, "Decks/" + user?.id + "/" + playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
               if (snapshot.exists()) {
                 var value = snapshot.val();
                 temp = value?.seeds;
 
                 set(ref(database, "SelectedDecks/" + user?.id), {
                   id: playlists[playlist.index]?.id,
-                  name: playlists[playlist.index]?.name, 
+                  name: playlists[playlist.index]?.name,
                   seeds: temp
                 });
+
                 // @ts-ignore
                 setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
+
+                deckMa
+
 
               } else {
                 console.log("NO SNAPSHOT (DECK SCREEN)")
               }
             });
-            
+
             // @ts-ignore
             navigation.navigate('Home')
             // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
