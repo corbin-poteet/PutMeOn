@@ -158,6 +158,7 @@ const HomeScreen = () => {
         <View className='flex-1 items-center justify-center'>
           <View className='h-full w-full px-2 pt-1 pb-2'>
             <SwiperComponent />
+
           </View>
         </View>
       </SafeAreaView>
