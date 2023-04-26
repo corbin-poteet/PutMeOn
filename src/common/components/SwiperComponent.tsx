@@ -22,7 +22,7 @@ const SwiperComponent = () => {
   //const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
   const { deckManager } = useDeckManager();
 
-  const [cardIndex, setCardIndex] = React.useState<number>(-1);
+  const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [speed] = React.useState<number>(25);
 
   const { audioPlayer } = useAudioPlayer();
