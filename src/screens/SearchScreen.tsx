@@ -201,9 +201,14 @@ const SearchScreen = () => {
         {showSeedScreen
           ?
           <View className="px-10 py-10 rounded-3xl" style={{ borderWidth: 5, borderColor: "white" }}>
-            <View>{componentHandler2}</View>
+            {JSON.stringify(componentHandler2) == JSON.stringify([])
+              ?
+              <Text className='text-white text-xl font-semibold mb-5'>No seeds</Text>
+              :
+              <View className='mb-5'>{componentHandler2}</View>
+            }
             <TouchableOpacity onPress={() => { setShowSeedScreen(false); }}>
-              <Text className='font-semibold text-1xl text-white bg-red-500'>Close</Text>
+              <Text className='text-center font-semibold text-white bg-red-500 px-3 py-2'>Close</Text>
             </TouchableOpacity>
           </View>
           :
