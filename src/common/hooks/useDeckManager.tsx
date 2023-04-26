@@ -52,13 +52,16 @@ class DeckManager {
     this._spotify = spotify;
     this._user = user;
 
+    console.log();
     console.log("==================== Querying Database ====================");
     this.getDecksFromDatabase().then((decks) => {
       if (decks.length > 0) {
         console.log("Found " + decks.length + " decks in database");
         console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
         console.log();
-        console.log("Selecting first deck: " + decks[0].name + "(" + decks[0].id + ")");
+        console.log("Selecting first deck");
+        console.log();
+
         this.setSelectedDeck(decks[0]);
       } else {
         console.log("No decks found in database");
@@ -79,7 +82,7 @@ class DeckManager {
 
   public async setSelectedDeck(deck: Deck) {
 
-    console.log("Setting selected deck");
+    console.log("Setting selected deck: " + deck.name + "(" + deck.id + ")");
 
     if (this.id) {
       update(ref(database, "Decks/" + this.user.id + "/" + this.id), {
@@ -249,7 +252,7 @@ class DeckManager {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
 
       const t = tracks as SpotifyApi.TrackObjectFull[];
-
+      console.log();
       console.log("==================== Adding new track" + (t.length > 1 ? "s" : "") + " ====================");
       console.log("TRACK" + (t.length > 1 ? "S" : "") + ": [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
       console.log("SEEDS USED: [" + seeds.map((seed) => seed.name).join(", ") + "]");
