@@ -54,10 +54,19 @@ class DeckManager {
 
     console.log("==================== Querying Database ====================");
     this.getDecksFromDatabase().then((decks) => {
-      console.log("Found " + decks.length + " decks in database");
       if (decks.length > 0) {
+        console.log("Found " + decks.length + " decks in database");
         console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
+        console.log();
+        console.log("Selecting first deck: " + decks[0].name + "(" + decks[0].id + ")");
+        this.setSelectedDeck(decks[0]);
+      } else {
+        console.log("No decks found in database");
       }
+
+
+
+      
     });
 
 
