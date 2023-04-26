@@ -126,6 +126,6 @@ export const AudioPlayerProvider = ({ children }) => {
   );
 };
 
-export default function useAuth() {
+export default function useAudioPlayer() {
   return React.useContext(audioPlayerContext);
 }
