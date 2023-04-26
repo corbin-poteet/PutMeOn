@@ -44,15 +44,24 @@ class AudioPlayer {
       this.sound.setProgressUpdateIntervalAsync(1000);
 
       // play the preview
-      this.play();
+      //this.play();
     }
   }
 
   async play() {
-    await this.sound.playAsync()
-      .catch((error) => {
+
+    if (!this.sound._loaded)
+    {
+      console.log("Sound not loaded");        
+    }
+
+    await this.sound.playAsync().then((playbackStatus) => {
+      this.playbackStatus = playbackStatus;
+      console.log("Playing preview: " + this.currentTrack.name);
+    }).catch((error) => {
       console.log(error);
     });
+      
 
     this._isPlaying = true;
   }
@@ -126,6 +135,6 @@ export const AudioPlayerProvider = ({ children }) => {
   );
 };
 
-export default function useAuth() {
+export default function useAudioPlayer() {
   return React.useContext(audioPlayerContext);
 }

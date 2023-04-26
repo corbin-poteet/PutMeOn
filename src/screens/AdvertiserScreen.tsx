@@ -43,9 +43,9 @@ const AdvertiserScreen = () => {
         <TouchableOpacity className="flex-row items-center justify-center bg-red-500 px-14 rounded-3xl top-8" onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           // @ts-ignore
-          navigation.navigate("Login")
+          navigation.navigate("Settings")
         }}>
-          <Text className="text-white text-xl px-5 py-2 text-1 font-semibold">Return to Login</Text>
+          <Text className="text-white text-xl px-3 py-2 text-1 font-semibold">Return to Settings</Text>
         </TouchableOpacity>
       </LinearGradient>
     </View>

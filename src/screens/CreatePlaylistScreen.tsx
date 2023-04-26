@@ -9,6 +9,7 @@ import { output } from './SearchScreen.tsx';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 import gameContext from '@/common/hooks/gameContext';
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 var playlists: any[];
 var createdPlaylist: any;
@@ -21,6 +22,8 @@ const CreatePlaylistScreen = () => {
 
   const { spotify, user } = useAuth();
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext);
+
+  const { deckManager } = useDeckManager();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

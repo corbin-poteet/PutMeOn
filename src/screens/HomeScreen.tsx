@@ -1,5 +1,6 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState, useContext } from 'react'
+//import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +17,9 @@ import gameContext from '@/common/hooks/gameContext';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 import { useIsFocused } from '@react-navigation/native'
+import SwiperComponent from '@/common/components/SwiperComponent';
+import DeckManager from '@/common/components/DeckManager';
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
@@ -24,10 +28,12 @@ const HomeScreen = () => {
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const [loaded, setLoaded] = React.useState<boolean>(false);
   const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
-  const [selectedDeck, setSelectedDeck] = React.useState<string>();
+  const [currentDeck, setCurrentDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
   
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
+
+  const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
   
@@ -48,53 +54,49 @@ const HomeScreen = () => {
         }
       }
 
-      setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
+      //setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
+      checkDeck(); //Check for user's decks
     }
   }, [user, isFocused]);
   
-  React.useEffect(() => { //Load the selectedDeck
-    if(loaded && user)
-      checkDeck();
-  }, [loaded]);
+  //React.useEffect(() => { //Load the selectedDeck upon spotify credentials loading, check user's current deck
+  //  if(loaded && user)
+  //    checkDeck();
+  //}, [loaded]);
 
-  React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
-    if (loaded === true) {
-      setDeckLoaded(true);
-    }
-  }, [selectedDeck])
+  //React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
+  //  if (loaded === true) {
+  //    setDeckLoaded(true);
+  //  }
+  //}, [selected])
 
-  // TODO: Change this to check the database to see if the user has swiped on any songs
   React.useEffect(() => {
-    if (deckLoaded === true) {
-      if (selectedDeck !== undefined) {
-        console.log('Found Deck and Loaded!');
-      }
-      else {
-        console.log("MOVING TO DEMO")
+    if (deckLoaded === true) { //If decks are loaded, check user's current deck
+      if (currentDeck === undefined) {
+        console.log("MOVING TO DEMO") 
         // @ts-ignore
-        navigation.navigate('Welcome'); //Navigate to the welcome demo screen if user has not selected a playlist, change later
+        navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
       }
     }
   }, [deckLoaded]); //check for cached credentials so we know if this is first time load 
 
-  function checkDeck() {
-    get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
+  async function checkDeck() {
+    await get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
         var value = snapshot.val();
-        setSelectedDeck(value?.id); 
-        // @ts-ignore
-        setSelectedPlaylist(value?.id); //Set selected spotify playlist in context 
-        
+        //@ts-ignore
+        setSelectedPlaylist(value?.id); //set actual selected Deck value
+        setCurrentDeck(value?.id); //set current deck use state
       } else {
-        set(ref(database, "Decks/" + user?.id +"/test"), {
+        set(ref(database, "Decks/" + user?.id +"/test"), { // temporary test value until playlists are unhooked from decks
           name: "test"
         });
-        setSelectedDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
-        setSelectedDeck(undefined);
-        
-        console.log("Database connection failed");
+        setCurrentDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
+        setCurrentDeck(undefined); //Ensures that we know the current deck doesn't exist, this is a new user
       }
     });
+
+    setDeckLoaded(true);
   }
 
   return (
@@ -106,6 +108,10 @@ const HomeScreen = () => {
         <View className='items-center relative'>
           <TouchableOpacity className='absolute left-5 top-3' onPress={
             () => {
+              if (audioPlayer) {
+                audioPlayer.pause();
+              }
+              
               // @ts-ignore
               navigation.navigate('UserInfo')
             }
@@ -133,8 +139,15 @@ const HomeScreen = () => {
           </View>
           <TouchableOpacity className='absolute right-5 top-3' onPress={
             () => {
+              if (audioPlayer) {
+                audioPlayer.pause();
+              }
+
               // @ts-ignore
               navigation.navigate('Decks')
+
+                
+              
             }
           }>
             <MaterialCommunityIcons className='' name="cards-outline" size={40} color="#7d8490" />
@@ -144,7 +157,8 @@ const HomeScreen = () => {
         {/* Body */}
         <View className='flex-1 items-center justify-center'>
           <View className='h-full w-full px-2 pt-1 pb-2'>
-            <Swiper tracks={tracks} />
+            <SwiperComponent />
+
           </View>
         </View>
       </SafeAreaView>
