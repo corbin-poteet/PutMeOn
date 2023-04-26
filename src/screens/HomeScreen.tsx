@@ -19,6 +19,7 @@ import database from "../../firebaseConfig.tsx"; //ignore this error the interpr
 import { useIsFocused } from '@react-navigation/native'
 import SwiperComponent from '@/common/components/SwiperComponent';
 import DeckManager from '@/common/components/DeckManager';
+import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
@@ -31,6 +32,8 @@ const HomeScreen = () => {
   const isFocused = useIsFocused() //Checks if screen is being looked at
   
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
+
+  const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
   
@@ -105,6 +108,10 @@ const HomeScreen = () => {
         <View className='items-center relative'>
           <TouchableOpacity className='absolute left-5 top-3' onPress={
             () => {
+              if (audioPlayer) {
+                audioPlayer.pause();
+              }
+              
               // @ts-ignore
               navigation.navigate('UserInfo')
             }
@@ -132,8 +139,15 @@ const HomeScreen = () => {
           </View>
           <TouchableOpacity className='absolute right-5 top-3' onPress={
             () => {
+              if (audioPlayer) {
+                audioPlayer.pause();
+              }
+
               // @ts-ignore
               navigation.navigate('Decks')
+
+                
+              
             }
           }>
             <MaterialCommunityIcons className='' name="cards-outline" size={40} color="#7d8490" />

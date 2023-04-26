@@ -34,7 +34,7 @@ class DeckManager {
 
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
-  id: string = "asdfawef3";
+  id: string = "";
   name: string = "";
   seeds: Seed[] = [];
   likedTracks: SpotifyApi.TrackObjectFull[] = [];
@@ -95,6 +95,8 @@ class DeckManager {
     this.likedTracks = deck.likedTracks;
     this.dislikedTracks = deck.dislikedTracks;
 
+    this.tracks = [];
+
     console.log("Loaded Seeds: " + this.seeds.map((seed) => seed.name).join(", "));
     console.log("Loaded Liked Tracks: " + this.likedTracks.map((track) => track.name).join(", "));
     console.log("Loaded Disliked Tracks: " + this.dislikedTracks.map((track) => track.name).join(", "));
@@ -116,7 +118,7 @@ class DeckManager {
    * @param finalSize the size of the deck after filtering
    * @param responseSize the size of the response from the spotify api
    */
-  public async initializeDeck(seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
+  public async initializeDeck(name: string, seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
 
     console.log("Initializing deck");
     console.log(this.user.id);
@@ -126,6 +128,8 @@ class DeckManager {
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
 
       console.log(this.tracks.map((track) => track.name));
+
+      this.name = name;
 
       this.seeds = seeds;
       this.likedTracks = [];
@@ -188,11 +192,15 @@ class DeckManager {
 
 
   private async pushToDatabase() {
-    set(ref(database, "Decks/" + this.user.id + "/" + "asdfawef3"), {
-      name: "Joe Mama",
+    const p = push(ref(database, "Decks/" + this.user.id), {
+      name: this.name,
       seeds: this.seeds,
     }).catch((error) => {
       console.error(error);
+    }).then((ref) => {
+      const r = ref as DatabaseReference;
+      this.id = r.key as string;
+      console.log("Pushed deck to database");
     });
   }
 
@@ -237,17 +245,17 @@ class DeckManager {
 
     var seeds = this.selectSeeds();
 
-  
+
 
 
 
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
-      
+
       const t = tracks as SpotifyApi.TrackObjectFull[];
 
-      console.log("==================== Adding new track(s) ====================");
-      console.log("TRACKS: [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
+      console.log("==================== Adding new track" + (t.length > 1 ? "s" : "") + " ====================");
+      console.log("TRACK" + (t.length > 1 ? "S" : "") + ": [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
       console.log("SEEDS USED: [" + seeds.map((seed) => seed.name).join(", ") + "]");
 
 
@@ -338,8 +346,6 @@ class DeckManager {
 
   public addTracks(tracks: SpotifyApi.TrackObjectFull[]) {
     if (tracks == null) return;
-
-    console.log("adding tracks: " + tracks.map((track) => track.name));
     this.tracks = this.tracks.concat(tracks);
   }
 
