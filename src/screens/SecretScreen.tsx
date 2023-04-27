@@ -24,8 +24,8 @@ const SecretScreen = () => { //Shhhhhhhh....
       <View className='flex-1 justify-center items-center'>
         <Image source={require('@assets/secret.png')} style={{
           width: '100%',
-          height: '75%',
-        }} />
+          height: '100%',
+        }} resizeMode='contain'/>
       </View>
     </View>
   );
