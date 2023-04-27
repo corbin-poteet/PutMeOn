@@ -137,7 +137,7 @@ const HomeScreen = () => {
                 height: 65,
                 transform: [{ translateX: -6 }],
                 resizeMode: 'contain',
-                tintColor: '#01b1f1'
+                tintColor: themes[selectedTheme].logo
               }} />
             </TouchableOpacity>
           </View>
