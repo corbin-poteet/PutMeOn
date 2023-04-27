@@ -54,7 +54,7 @@ export const ThemeProvider = ({children}) => {
       Mango: {
          topGradient: "#ff8c00",
          bottomGradient: "#4b941b",
-         topCard: "#e35e40",
+         topCard: "#824324",
          bottomCard: "#3d0f04",
          button: "#ff8c00",
          misc: "",
@@ -64,8 +64,8 @@ export const ThemeProvider = ({children}) => {
       Lemon: {
          topGradient: "#f5cc00",
          bottomGradient: "#2f6b2e",
-         topCard: "#aa6c39",
-         bottomCard: "#aa6c39",
+         topCard: "#4a653c",
+         bottomCard: "#a7c989",
          button: "#f5cc00",
          misc: "",
          logo: "#FFFFFF",
@@ -170,6 +170,26 @@ export const ThemeProvider = ({children}) => {
          misc: "",
          logo: "#fcb906",
          text: "#03e7fb"
+      },
+      Gilded: {
+         topGradient: "#ffb302", 
+         bottomGradient: "#7a5e39", 
+         topCard: "#aa6c39",  
+         bottomCard: "#b8860b", 
+         button: "#b8860b",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Null: {
+         topGradient: "#64155b", 
+         bottomGradient: "#0a0433", 
+         topCard: "#0000",  
+         bottomCard: "#0000", 
+         button: "#0000",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
       },
    };
 

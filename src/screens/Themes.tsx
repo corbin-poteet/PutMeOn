@@ -30,10 +30,12 @@ const Themes = () => {
     { id: '10', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' },
     { id: '11', label: 'Highcon', colors: ['#000000', '#000000'] },
     { id: '12', label: 'Midnight', colors: ['#000000', '#000032'] },
-    { id: '13', label: 'Spectre', colors: ['#5b9a48', '#1a3c0f'] },
+    { id: '13', label: 'Spectre', colors: ['#000000', '#0000'] },
     { id: '14', label: 'Desktop', colors: ['#8dbcf4', '#6e9123'] },
     { id: '15', label: 'Kokomo', colors: ['#7f2118', '#ab7d4a'] },
     { id: '16', label: 'Retro', colors: ['#0f011a', '#1e146e'] },
+    { id: '17', label: 'Gilded', colors: ['#ffb302', '#7a5e39'] },
+    { id: '18', label: 'Null', colors: ['#64155b', '#0a0433'] },
   ];
 
   //@ts-ignore
