@@ -1,6 +1,5 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState, useContext } from 'react'
-//import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,7 +34,6 @@ const HomeScreen = () => {
   const { themes, selectedTheme, setSelectedTheme } = useTheme();
   
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
-
   const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
