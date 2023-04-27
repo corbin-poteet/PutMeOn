@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const Themes = () => {
   const navigation = useNavigation();
-  const { user } = useAuth();
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,6 +29,7 @@ const Themes = () => {
 
   ];
 
+  //@ts-ignore
   const ThemeButton = ({ theme }) => (
     <TouchableOpacity style={styles.button}>
       <LinearGradient
