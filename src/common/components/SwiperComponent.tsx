@@ -17,11 +17,14 @@ import useAudioPlayer from "@/common/hooks/useAudioPlayer";
 import DeckManager from './DeckManager';
 import useDeckManager from '@/common/hooks/useDeckManager';
 import { useIsFocused } from "@react-navigation/native";
+import useTheme from "@/common/hooks/useThemes";
 
 const SwiperComponent = () => {
 
   //const [deckManager] = React.useState<DeckManager>(new DeckManager({}));
   const { deckManager } = useDeckManager();
+
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
 
   const isFocused = useIsFocused();
 
@@ -118,7 +121,8 @@ const SwiperComponent = () => {
       <LinearGradient
         start={{ x: 0, y: 0 }}
         locations={[0.67, 1]}
-        colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : ['#3F3F3F', '#000000']}
+        //@ts-ignore
+        colors={[themes[selectedTheme].topCard, themes[selectedTheme].bottomCard]}
         className="relative w-full h-full rounded-2xl items-center shadow-lg"
         style={{}}
       >
