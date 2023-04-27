@@ -6,7 +6,7 @@ import StackNavigator from "@components/StackNavigator";
 import "./styles";
 import { AudioPlayerProvider } from "@/common/hooks/useAudioPlayer";
 import { DeckManagerProvider } from "@/common/hooks/useDeckManager";
-import { ThemeProvider } from "@react-navigation/native";
+import { ThemeProvider } from "@/common/hooks/useThemes";
 
 //@ts-ignore
 export default function App({ children }) {
