@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-const themeContext = createContext({
+const ThemeContext = createContext({
    themes: {},
    selectedTheme: "",
    setSelectedTheme: {},
@@ -79,16 +79,16 @@ export const ThemeProvider = ({children}) => {
    const [currentTheme, setCurrentTheme] = useState<string>("default");
 
    return(
-      <themeContext.Provider value={{
+      <ThemeContext.Provider value={{
          themes: themeList,
          selectedTheme: currentTheme,
          setSelectedTheme: setCurrentTheme
       }}>
          {children}
-      </themeContext.Provider>
+      </ThemeContext.Provider>
    )
 }
 
 export default function useTheme() {
-   return useContext(themeContext);
+   return useContext(ThemeContext);
 }
