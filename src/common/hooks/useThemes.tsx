@@ -12,11 +12,11 @@ export const ThemeProvider = ({children}) => {
    const themeList = {
       default: {
          topGradient: "#FF0000",
-         bottomGradient: "00FF00",
-         topCard: "FF0000",
-         bottomCard: "FF0000",
-         button: "FF0000",
-         misc: "FF0000",
+         bottomGradient: "#00FF00",
+         topCard: "#FF0000",
+         bottomCard: "#FF0000",
+         button: "#FF0000",
+         misc: "#FF0000",
         },
       name2: {
          topGradient: "",
