@@ -23,11 +23,9 @@ import TextTicker from "react-native-text-ticker";
 import gameContext from '@/common/hooks/gameContext';
 import useAudioPlayer from "@/common/hooks/useAudioPlayer";
 import DeckManager from "../DeckManager";
-
+import useTheme from "@/common/hooks/useThemes";
 
 let speed: number = 25;
-
-
 
 const Swiper = () => {
 
@@ -35,6 +33,7 @@ const Swiper = () => {
 
   /* VARIABLE/USESTATE DECLARATION */
   const { spotify, user } = useAuth();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
 
   // Audio Player
   const { audioPlayer } = useAudioPlayer();
@@ -309,7 +308,7 @@ const Swiper = () => {
           <LinearGradient
             start={{ x: 0, y: 0 }}
             locations={[0.67, 1]}
-            colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : ['#3F3F3F', '#000000']}
+            colors={cardIndex % 5 !== 0 ? ["#3F3F3F", "#000000"] : [themes[selectedTheme].topCard, themes[selectedTheme].bottomCard]}
             className="relative w-full h-full rounded-2xl items-center shadow-lg"
             style={{}}
           >

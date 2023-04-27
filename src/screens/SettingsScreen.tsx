@@ -92,7 +92,7 @@ const SettingsScreen = () => {
             
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Preferences</Text>
             <SettingsButton text='Decks' navigateString='Decks'/>
-            <SettingsButton text='Themes' navigateString='Home'/>
+            <SettingsButton text='Themes' navigateString='Themes'/>
             
             <Text className='text-base font-bold px-5 py-3 uppercase tracking-tight' style={{ color: '#515864' }}>Information</Text>
             <SettingsButton text='User Information' navigateString='UserInfo'/>
