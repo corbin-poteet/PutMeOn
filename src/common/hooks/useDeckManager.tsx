@@ -104,6 +104,11 @@ class DeckManager {
 
     this.addNewTracksFromSpotify(5);
 
+    //const db = getDatabase();
+    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
+      id: this.id
+    });
+
   }
 
   private getTracksFromSpotify(ids: string[]): Promise<SpotifyApi.TrackObjectFull[]> {
@@ -138,6 +143,12 @@ class DeckManager {
     }).catch((error) => {
       console.error(error);
     });
+
+    //const db = getDatabase();
+    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
+      id: this.id
+    });
+
   }
 
   public async getDecksFromDatabase(): Promise<Deck[]> {
