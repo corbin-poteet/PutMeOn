@@ -35,7 +35,8 @@ const Themes = () => {
     { id: '15', label: 'Kokomo', colors: ['#7f2118', '#ab7d4a'] },
     { id: '16', label: 'Retro', colors: ['#0f011a', '#1e146e'] },
     { id: '17', label: 'Gilded', colors: ['#ffb302', '#7a5e39'] },
-    { id: '18', label: 'Null', colors: ['#64155b', '#0a0433'] },
+    { id: '18', label: 'Ink', colors: ['#000000', '#000000'] },
+    { id: '19', label: 'Null', colors: ['#0000', '#0000'] },
   ];
 
   //@ts-ignore

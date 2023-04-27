@@ -124,7 +124,7 @@ export const ThemeProvider = ({children}) => {
       Midnight: {
          topGradient: "#000000",
          bottomGradient: "#000032",
-         topCard: "#2f2f2f",
+         topCard: "#1f1f1f",
          bottomCard: "#121212",
          button: "#2f2f2f",
          misc: "",
@@ -181,15 +181,25 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
+      Ink: {
+         topGradient: "#000000", 
+         bottomGradient: "#000000", 
+         topCard: "#000000",  
+         bottomCard: "#000000", 
+         button: "#2f2f2f",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
       Null: {
-         topGradient: "#64155b", 
-         bottomGradient: "#0a0433", 
+         topGradient: "#000000", 
+         bottomGradient: "#000000", 
          topCard: "#0000",  
          bottomCard: "#0000", 
          button: "#0000",
          misc: "",
-         logo: "#FFFFFF",
-         text: "#FFFFFF"
+         logo: "#0000",
+         text: "#0000"
       },
    };
 
