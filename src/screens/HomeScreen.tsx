@@ -31,7 +31,7 @@ const HomeScreen = () => {
   const [currentDeck, setCurrentDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
 
-  const { themes, selectedTheme, setSelectedTheme } = useTheme();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
   
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
   const { audioPlayer } = useAudioPlayer(); //Maintain audio player
@@ -101,8 +101,8 @@ const HomeScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes.default.bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
-      {/* original color scheme for gradient: ['#f0f2f4' , '#f0f2f4']*/}
+    //@ts-ignore
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <SafeAreaView className='flex-1' edges={['top']}>
         {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
@@ -135,6 +135,7 @@ const HomeScreen = () => {
                 height: 65,
                 transform: [{ translateX: -6 }],
                 resizeMode: 'contain',
+                //@ts-ignore
                 tintColor: themes[selectedTheme].logo
               }} />
             </TouchableOpacity>
@@ -146,13 +147,11 @@ const HomeScreen = () => {
               }
 
               // @ts-ignore
-              navigation.navigate('Decks')
-
-                
-              
+              navigation.navigate('Decks');
             }
           }>
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="#7d8490" />
+            {/*@ts-ignore*/}
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].button} />
           </TouchableOpacity>
         </View>
 
