@@ -27,7 +27,13 @@ const Themes = () => {
     { id: '7', label: 'Sunset', colors: ['#8f34eb', '#eb7434'] },
     { id: '8', label: 'Firestone', colors: ['#a80707', '#210502'] },
     { id: '9', label: 'Volcano', colors: ['#e35e40', '#3d0f04'] },
-    { id: '10', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' }
+    { id: '10', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' },
+    { id: '11', label: 'Highcon', colors: ['#000000', '#000000'] },
+    { id: '12', label: 'Midnight', colors: ['#000000', '#000032'] },
+    { id: '13', label: 'Spectre', colors: ['#5b9a48', '#1a3c0f'] },
+    { id: '14', label: 'Desktop', colors: ['#8dbcf4', '#6e9123'] },
+    { id: '15', label: 'Kokomo', colors: ['#7f2118', '#ab7d4a'] },
+    { id: '16', label: 'Retro', colors: ['#0f011a', '#1e146e'] },
   ];
 
   //@ts-ignore

@@ -84,7 +84,7 @@ export const ThemeProvider = ({children}) => {
       Firestone: {
          topGradient: "#a80707",
          bottomGradient: "#210502",
-         topCard: "#210502",
+         topCard: "#3d0000",
          bottomCard: "#a80707",
          button: "#a80707",
          misc: "",
@@ -95,7 +95,7 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#e35e40",
          bottomGradient: "#3d0f04",
          topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         bottomCard: "#6f2e2d",
          button: "",
          misc: "",
          logo: "#FFFFFF",
@@ -105,12 +105,72 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#696969",
          bottomGradient: "#696969",
          topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         bottomCard: "#3F3F3F",
          button: "#82f252",
          misc: "",
          logo: "#82f252",
          text: "#82f252"
         },
+      Highcon: {
+         topGradient: "#000000",
+         bottomGradient: "#000000",
+         topCard: "#000000",
+         bottomCard: "#000000",
+         button: "#0000ff",
+         misc: "",
+         logo: "#0000ff",
+         text: "#FFFFFF"
+      },
+      Midnight: {
+         topGradient: "#000000",
+         bottomGradient: "#000032",
+         topCard: "#2f2f2f",
+         bottomCard: "#121212",
+         button: "#2f2f2f",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Spectre: {
+         topGradient: "#5b9a48", 
+         bottomGradient: "#1a3c0f", 
+         topCard: "#000000", 
+         bottomCard: "#0000", //Nick here, I found that leaving an incomplete hex value for the bottom gradient makes it transparent
+         button: "#5b9a48",
+         misc: "",
+         logo: "#5b9a48",
+         text: "#FFFFFF"
+      },
+      Desktop: {
+         topGradient: "#8dbcf4", 
+         bottomGradient: "#6e9123", 
+         topCard: "#1061cc", 
+         bottomCard: "#3e8ae8", 
+         button: "#198e19",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Kokomo: {
+         topGradient: "#7f2118", 
+         bottomGradient: "#ab7d4a", 
+         topCard: "#64155b", 
+         bottomCard: "#0a0433", 
+         button: "#0a0433",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Retro: {
+         topGradient: "#0f011a", 
+         bottomGradient: "#1e146e", 
+         topCard: "#64155b", 
+         bottomCard: "#0a0433", 
+         button: "#f900f5",
+         misc: "",
+         logo: "#fcb906",
+         text: "#03e7fb"
+      },
    };
 
    const [currentTheme, setCurrentTheme] = useState<string>("Default");
