@@ -15,15 +15,19 @@ const Themes = () => {
     });
   }, [navigation]);
 
+  //Theme list. Increment ID to add more.
   const themes = [
-    { id: '1', label: 'Default', colors: ['#abc7f7', '#005eff'] },
-    { id: '2', label: 'Dark', colors: ['#333', '#111'] },
-    { id: '3', label: 'Mango', colors: ['#ff8c00', '#4b941b'] },
-    { id: '4', label: 'Lemon', colors: ['#f5cc00', '#2f6b2e'] },
-    { id: '5', label: 'Firestone', colors: ['#a80707', '#210502'] },
+    { id: '1', label: 'Default', colors: ['#d9d9d9', '#4a4a4a'] },
+    { id: '2', label: 'PMO Blue', colors: ['#abc7f7', '#005eff'] },
+    { id: '3', label: 'Carbon', colors: ['#333', '#111'] },
+    { id: '4', label: 'Mango', colors: ['#ff8c00', '#4b941b'] },
+    { id: '5', label: 'Lemon', colors: ['#f5cc00', '#2f6b2e'] },
     { id: '6', label: 'Sunset', colors: ['#8f34eb', '#eb7434'] },
-    { id: '7', label: 'Volcano', colors: ['#e35e40', '3d0f04'] },
-    { id: '8', label: 'Legacy', colors: ['#69696', '#696969'] }
+    { id: '7', label: 'Firestone', colors: ['#a80707', '#210502'] },
+    { id: '8', label: 'Volcano', colors: ['#e35e40', '#3d0f04'] },
+    { id: '9', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' }
+
+
   ];
 
   const ThemeButton = ({ theme }) => (
@@ -34,7 +38,7 @@ const Themes = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <Text style={styles.label}>{theme.label}</Text>
+        <Text style={[styles.label, { color: theme.labelColor || '#fff' }]}>{theme.label}</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -64,7 +68,7 @@ const styles = StyleSheet.create({
   circle: {
     width: 100,
     height: 100,
-    borderRadius: 50,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
