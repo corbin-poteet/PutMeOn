@@ -11,14 +11,15 @@ export const ThemeProvider = ({children}) => {
 
    const themeList = {
       default: {
-         topGradient: "#FF0000",
-         bottomGradient: "#00FF00",
+         topGradient: "#f0f2f4",
+         bottomGradient: "#f0f2f4",
          topCard: "#FF0000",
          bottomCard: "#FF0000",
-         button: "#FF0000",
+         button: "#7d8490",
          misc: "#FF0000",
+         logo: '#01b1f1'
         },
-      name2: {
+      PMOBlue: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -26,7 +27,16 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name3: {
+      Carbon: {
+         topGradient: "",
+         bottomGradient: "",
+         topCard: "",
+         bottomCard: "",
+         button: "",
+         misc: "",
+         logo: "000000"
+        },
+      Mango: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -34,7 +44,7 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name4: {
+      Lemon: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -42,7 +52,7 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name5: {
+      Sunset: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -50,7 +60,7 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name6: {
+      Firestone: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -58,7 +68,7 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name7: {
+      Volcano: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
@@ -66,7 +76,7 @@ export const ThemeProvider = ({children}) => {
          button: "",
          misc: "",
         },
-      name8: {
+      Legacy: {
          topGradient: "",
          bottomGradient: "",
          topCard: "",
