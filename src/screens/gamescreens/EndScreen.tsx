@@ -4,12 +4,14 @@ import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import gameContext from '@/common/hooks/gameContext';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import useTheme from '@/common/hooks/useThemes';
 
 const EndScreen = () => {
 
   //End game screen, prompts user to return to menu screen after final score is displayed
 
   const navigation = useNavigation();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
   const { score, setScore, setEarnings, setRound } = useContext(gameContext);
 
   React.useLayoutEffect(() => {
@@ -28,12 +30,12 @@ const EndScreen = () => {
   }
 
   return (
-    <LinearGradient className="justify-center flex-1 items-center" start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+    <LinearGradient className="justify-center flex-1 items-center" start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <View className='justify-center items-center flex-1 p-10'>
-        <Text className='font-semibold text-3xl text-white absolute top-16'>This is the End Screen. Your final score: {score}</Text>
-        <TouchableOpacity className="flex-row items-center justify-center px-5 rounded-3xl" style={{ backgroundColor: '#014871' }}
+        <Text style={{ color: themes[selectedTheme].text }} className='font-bold text-3xl absolute top-16'>Game Over {"\n\n"}Final score: {score}</Text>
+        <TouchableOpacity className="flex-row items-center justify-center px-5 rounded-3xl" style={{ backgroundColor: themes[selectedTheme].button }}
           onPress={() => { clearGame(); navigation.navigate("Start"); }}>
-          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">End Game</Text>
+          <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Return Home</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>

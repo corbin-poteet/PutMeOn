@@ -19,7 +19,17 @@ export const ThemeProvider = ({children}) => {
          button: "#01b1f1",
          misc: "",
          logo: "#01b1f1",
-         text: "#000000"
+         text: "#5A5A5A"
+        },
+      Classic: {
+         topGradient: "#014871",
+         bottomGradient: "#A0EBCF",
+         topCard: "#183454",
+         bottomCard: "#071c2a",
+         button: "#014871",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
         },
       PMOBlue: {
          topGradient: "#abc7f7",
@@ -34,8 +44,8 @@ export const ThemeProvider = ({children}) => {
       Carbon: {
          topGradient: "#333",
          bottomGradient: "#111",
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         topCard: "#111",
+         bottomCard: "#3F3F3F",
          button: "#333",
          misc: "",
          logo: "#FFFFFF",
@@ -44,8 +54,8 @@ export const ThemeProvider = ({children}) => {
       Mango: {
          topGradient: "#ff8c00",
          bottomGradient: "#4b941b",
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         topCard: "#e35e40",
+         bottomCard: "#3d0f04",
          button: "#ff8c00",
          misc: "",
          logo: "#FFFFFF",
@@ -54,8 +64,8 @@ export const ThemeProvider = ({children}) => {
       Lemon: {
          topGradient: "#f5cc00",
          bottomGradient: "#2f6b2e",
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         topCard: "#aa6c39",
+         bottomCard: "#aa6c39",
          button: "#f5cc00",
          misc: "",
          logo: "#FFFFFF",
@@ -65,7 +75,7 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#8f34eb",
          bottomGradient: "#eb7434",
          topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         bottomCard: "#111",
          button: "#8f34eb",
          misc: "",
          logo: "#FFFFFF",
@@ -74,8 +84,8 @@ export const ThemeProvider = ({children}) => {
       Firestone: {
          topGradient: "#a80707",
          bottomGradient: "#210502",
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         topCard: "#210502",
+         bottomCard: "#a80707",
          button: "#a80707",
          misc: "",
          logo: "#FFFFFF",
@@ -96,10 +106,10 @@ export const ThemeProvider = ({children}) => {
          bottomGradient: "#696969",
          topCard: "#3F3F3F",
          bottomCard: "#000000",
-         button: "#696969",
+         button: "#82f252",
          misc: "",
          logo: "#82f252",
-         text: "#FFFFFF"
+         text: "#82f252"
         },
    };
 
