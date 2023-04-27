@@ -26,6 +26,7 @@ import StartScreen from '@/screens/gamescreens/StartScreen';
 import SearchScreen from '@/screens/SearchScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 import useAudioPlayer from '../hooks/useAudioPlayer';
+import Themes from '@/screens/Themes';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -110,6 +111,7 @@ const StackNavigator = () => {
             <Stack.Screen name="UserInfo" component={UserDetails} />
             <Stack.Screen name="AppInfo" component={AppInfo} />
             <Stack.Screen name="Secret" component={SecretScreen} />
+            <Stack.Screen name="Themes" component={Themes} />
             <Stack.Screen name="Search" component={SearchScreen} />
 
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
