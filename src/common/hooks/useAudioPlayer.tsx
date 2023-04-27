@@ -120,6 +120,7 @@ const audioPlayerContext = createContext({
   audioPlayer: new AudioPlayer(),
 });
 
+//@ts-ignore
 export const AudioPlayerProvider = ({ children }) => {
 
   const [audioPlayer] = React.useState(new AudioPlayer());

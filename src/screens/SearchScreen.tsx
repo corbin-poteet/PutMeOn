@@ -87,7 +87,7 @@ const SearchScreen = () => {
       navigation.navigate('Home');
     }
     else {
-      Alert.alert("Please select at least one seed.");
+      Alert.alert("Please select at least one seed and choose a deck name.");
     }
   }
 
