@@ -9,6 +9,7 @@ import gameContext from '@/common/hooks/gameContext';
 import database from "../../firebaseConfig.tsx";
 import useDeckManager, { Deck } from '@/common/hooks/useDeckManager';
 import DeckManager from '@/common/components/DeckManager';
+import useTheme from '@/common/hooks/useThemes';
 
 var playlists: any[];
 
@@ -35,7 +36,8 @@ const DeckScreen = () => {
   const [componentHandler, setComponentHandler] = React.useState<any>();
   const [decks, setDecks] = React.useState<string[]>();
   const [deckss, setDeckss] = React.useState<Deck[]>();
-
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+  
   React.useLayoutEffect(() => {
     if (selectedPlaylist == null) {
       navigation.setOptions({
@@ -249,7 +251,7 @@ const DeckScreen = () => {
 
   return (
     <View className='flex-1 justify-center'>
-      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
+      <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} className="flex-1 items-center justify-center">
         <View className='absolute top-1' style={{ marginTop: 50, flex: 1 }}>
           <Text className='text-white text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
         </View>
@@ -257,7 +259,7 @@ const DeckScreen = () => {
           {!true //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
             ?
             <View style={{ flex: 1, marginTop: 300 }}>
-              <ActivityIndicator size="large" color="#014871" />
+              <ActivityIndicator size="large" color={ themes[selectedTheme].button } />
             </View>
             :
             <View>
