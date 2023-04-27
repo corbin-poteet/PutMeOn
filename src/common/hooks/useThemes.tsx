@@ -10,7 +10,7 @@ const ThemeContext = createContext({
 export const ThemeProvider = ({children}) => {
 
    const themeList = {
-      default: {
+      Default: {
          topGradient: "#f0f2f4",
          bottomGradient: "#f0f2f4",
          topCard: "#FF0000",
@@ -93,7 +93,7 @@ export const ThemeProvider = ({children}) => {
         },
    };
 
-   const [currentTheme, setCurrentTheme] = useState<string>("default");
+   const [currentTheme, setCurrentTheme] = useState<string>("Default");
 
    return(
       <ThemeContext.Provider value={{
