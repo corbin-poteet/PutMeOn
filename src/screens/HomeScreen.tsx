@@ -151,7 +151,7 @@ const HomeScreen = () => {
             }
           }>
             {/*@ts-ignore*/}
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].button} />
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].logo} />
           </TouchableOpacity>
         </View>
 

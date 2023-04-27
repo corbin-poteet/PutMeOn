@@ -7,7 +7,7 @@ import useTheme from '@/common/hooks/useThemes';
 
 const Themes = () => {
   const navigation = useNavigation();
-  const { setSelectedTheme, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+  const { setSelectedTheme, selectedTheme, themes } = useTheme(); //Allows dynamic theme color changing
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -17,16 +17,17 @@ const Themes = () => {
   }, [navigation]);
 
   //Theme list. Increment ID to add more.
-  const themes = [
+  const themeList = [
     { id: '1', label: 'Default', colors: ['#d9d9d9', '#4a4a4a'] },
-    { id: '2', label: 'PMOBlue', colors: ['#abc7f7', '#005eff'] },
-    { id: '3', label: 'Carbon', colors: ['#333', '#111'] },
-    { id: '4', label: 'Mango', colors: ['#ff8c00', '#4b941b'] },
-    { id: '5', label: 'Lemon', colors: ['#f5cc00', '#2f6b2e'] },
-    { id: '6', label: 'Sunset', colors: ['#8f34eb', '#eb7434'] },
-    { id: '7', label: 'Firestone', colors: ['#a80707', '#210502'] },
-    { id: '8', label: 'Volcano', colors: ['#e35e40', '#3d0f04'] },
-    { id: '9', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' }
+    { id: '2', label: 'Classic', colors: ['#014871', '#A0EBCF']},
+    { id: '3', label: 'PMOBlue', colors: ['#abc7f7', '#005eff'] },
+    { id: '4', label: 'Carbon', colors: ['#333', '#111'] },
+    { id: '5', label: 'Mango', colors: ['#ff8c00', '#4b941b'] },
+    { id: '6', label: 'Lemon', colors: ['#f5cc00', '#2f6b2e'] },
+    { id: '7', label: 'Sunset', colors: ['#8f34eb', '#eb7434'] },
+    { id: '8', label: 'Firestone', colors: ['#a80707', '#210502'] },
+    { id: '9', label: 'Volcano', colors: ['#e35e40', '#3d0f04'] },
+    { id: '10', label: 'Legacy', colors: ['#696969', '#696969'], labelColor: '#82f252' }
   ];
 
   //@ts-ignore
@@ -47,14 +48,16 @@ const Themes = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={themes}
-        renderItem={({ item }) => <ThemeButton theme={item} />}
-        keyExtractor={(item) => item.id}
-        numColumns={3}
-      />
-    </View>
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>  
+      <View style={styles.container}>
+        <FlatList
+          data={themeList}
+          renderItem={({ item }) => <ThemeButton theme={item} />}
+          keyExtractor={(item) => item.id}
+          numColumns={3}
+        />
+      </View>
+    </LinearGradient>
   );
 };
 
@@ -63,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
   button: {
     margin: 10,
