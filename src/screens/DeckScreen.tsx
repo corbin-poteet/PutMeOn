@@ -251,6 +251,7 @@ const DeckScreen = () => {
 
   return (
     <View className='flex-1 justify-center'>
+      {/*@ts-ignore*/}
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} className="flex-1 items-center justify-center">
         <View className='absolute top-1' style={{ marginTop: 50, flex: 1 }}>
           <Text className='text-white text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
@@ -259,6 +260,7 @@ const DeckScreen = () => {
           {!true //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
             ?
             <View style={{ flex: 1, marginTop: 300 }}>
+              {/*@ts-ignore*/}
               <ActivityIndicator size="large" color={ themes[selectedTheme].button } />
             </View>
             :
