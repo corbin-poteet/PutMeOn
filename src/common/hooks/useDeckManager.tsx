@@ -61,7 +61,10 @@ class DeckManager {
         console.log();
         console.log("pulling from selected deck (first deck for now)");
         console.log();
-
+        //const selectedId = /** query selected deck id */
+        // const selected = decks.filter(deck => {
+        //   return deck.id === selectedId;
+        // });
         //this.setSelectedDeck(/** The deck with the same id as selectedDeck */)
         this.setSelectedDeck(decks[0]);
       } else {
