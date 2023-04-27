@@ -6,6 +6,7 @@ import StackNavigator from "@components/StackNavigator";
 import "./styles";
 import { AudioPlayerProvider } from "@/common/hooks/useAudioPlayer";
 import { DeckManagerProvider } from "@/common/hooks/useDeckManager";
+import { ThemeProvider } from "@react-navigation/native";
 
 //@ts-ignore
 export default function App({ children }) {
@@ -17,14 +18,16 @@ export default function App({ children }) {
 
   return (
     <AuthProvider>
-      <DeckManagerProvider>
-        <AudioPlayerProvider>
-          <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings, selectedPlaylist, setSelectedPlaylist }}>
-            <StackNavigator />
-            <StatusBar style="auto" />
-          </gameContext.Provider>
-        </AudioPlayerProvider>
-      </DeckManagerProvider>
+      <ThemeProvider>
+        <DeckManagerProvider>
+          <AudioPlayerProvider>
+            <gameContext.Provider value={{ round, setRound, score, setScore, earnings, setEarnings, selectedPlaylist, setSelectedPlaylist }}>
+              <StackNavigator />
+              <StatusBar style="auto" />
+            </gameContext.Provider>
+          </AudioPlayerProvider>
+        </DeckManagerProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

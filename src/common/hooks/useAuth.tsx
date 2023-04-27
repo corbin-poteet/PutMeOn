@@ -84,6 +84,7 @@ const extraParams = {
  * We use a hook because we want to be able to access the auth state from anywhere in the app
  * @returns the auth state
  */
+//@ts-ignore
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState<SpotifyApi.CurrentUsersProfileResponse>();
