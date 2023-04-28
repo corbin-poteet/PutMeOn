@@ -111,7 +111,7 @@ const SwiperComponent = () => {
           renderCard={(track: SpotifyApi.TrackObjectFull) => renderCard(track)}
         />
       ) : (
-        <ActivityIndicator size="large" color="#014871" />
+        <ActivityIndicator size="large" color={themes[selectedTheme].text} />
       )}
     </View>
   );
@@ -209,8 +209,8 @@ const SwiperComponent = () => {
                       totalDuration={
                         Math.ceil(playbackDuration / 1000)
                       }
-                      trackColor="#29A3DA"
-                      scrubbedColor="#29A3DA"
+                      trackColor={themes[selectedTheme].logo}
+                      scrubbedColor={themes[selectedTheme].logo}
                     />
                   </View>
                   <View className="flex-row justify-center items-center w-full">
