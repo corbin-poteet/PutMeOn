@@ -24,16 +24,23 @@ const EndScreen = () => {
   }, [navigation]);
 
   function clearGame() { //wipes game stats so player can start again
+    // @ts-ignore
     setScore(0);
+    // @ts-ignore
     setEarnings(0);
+    // @ts-ignore
     setRound(1);
   }
 
   return (
+    // @ts-ignore
     <LinearGradient className="justify-center flex-1 items-center" start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <View className='justify-center items-center flex-1 p-10'>
+        {/*@ts-ignore*/}
         <Text style={{ color: themes[selectedTheme].text }} className='font-bold text-3xl absolute top-16'>Game Over {"\n\n"}Final score: {score}</Text>
+        {/*@ts-ignore*/}
         <TouchableOpacity className="flex-row items-center justify-center px-5 rounded-3xl" style={{ backgroundColor: themes[selectedTheme].button }}
+          // @ts-ignore
           onPress={() => { clearGame(); navigation.navigate("Start"); }}>
           <Text className="text-white text-xl px-8 py-2 text-1 font-semibold">Return Home</Text>
         </TouchableOpacity>

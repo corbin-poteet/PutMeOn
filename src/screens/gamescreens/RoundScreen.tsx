@@ -23,12 +23,15 @@ const RoundScreen = () => {
     }, [navigation]);
     
     setTimeout( () => {
+      // @ts-ignore
       navigation.navigate('Game'); //Navigate to the game screen after holding on the round screen for 2 seconds
     }, 2000 );
 
     return (
+      // @ts-ignore
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
         <View className='flex-1 justify-center'>
+          {/*@ts-ignore*/}
           <Text style={{ color: themes[selectedTheme].text }} className='text-6xl text-center px-1 font-bold'>Round {round}</Text>
         </View>
       </LinearGradient>

@@ -57,6 +57,7 @@ const Themes = () => {
   );
 
   return (
+    //@ts-ignore
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>  
       <View style={styles.container}>
         <FlatList

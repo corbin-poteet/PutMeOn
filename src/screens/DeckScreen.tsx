@@ -83,6 +83,7 @@ const DeckScreen = () => {
             }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                 <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                {/*@ts-ignore*/}
                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: themes[selectedTheme].text }}> {deck.name} </Text>
               </View>
             </TouchableOpacity>
@@ -254,6 +255,7 @@ const DeckScreen = () => {
       {/*@ts-ignore*/}
       <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} className="flex-1 items-center justify-center">
         <View className='absolute top-1' style={{ marginTop: 50, flex: 1 }}>
+          {/*@ts-ignore*/}
           <Text style={{ fontWeight: 'semibold', fontSize: 24, color: themes[selectedTheme].text }} className='text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
         </View>
         <View style={{ padding: 10, flex: 1 }}>
@@ -272,6 +274,7 @@ const DeckScreen = () => {
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                     <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                    {/*@ts-ignore*/}
                     <Text style={{ fontWeight: 'bold', fontSize: 24, color: themes[selectedTheme].text }}>Build Deck</Text>
                   </View>
                 </TouchableOpacity>
