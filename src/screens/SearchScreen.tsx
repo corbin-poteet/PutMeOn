@@ -1,67 +1,39 @@
-import { TextInput, View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, Platform, ImageURISource } from 'react-native'
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import { View, Text, Platform} from 'react-native'
+import React, { useState, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ScrollView } from 'react-native-gesture-handler';
 import useDeckManager, { Seed, SeedType } from '@/common/hooks/useDeckManager';
-// @ts-ignore
-import database from "../../firebaseConfig.tsx";
-import { ref, child, get, set } from 'firebase/database';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Avatar, Button, ButtonGroup, Dialog, Divider, Input, SearchBar, TabView } from '@rneui/themed';
-import Constants from 'expo-constants';
-import { ListItem } from '@rneui/themed';
+import { Button, Dialog, Divider, Input, SearchBar, TabView } from '@rneui/themed';
 import TrackSearchResult from '@/common/components/TrackSearchResult';
 import SelectedSeed from '@/common/components/SelectedSeed';
 import { Tab } from '@rneui/themed';
 import ArtistSearchResult from '@/common/components/ArtistSearchResult';
 import SelectedArtistSeed from '@/common/components/SelectedArtistSeed';
-
-
-
-
-
 //👌😂👌 🔥 🔥 🔥
 
-var searchResults: any[];
 var output: any[] = [];
 
 //Search bar screen for selecting seeds
 
 const SearchScreen = () => {
 
-  const { spotify, user } = useAuth();
+  const { spotify } = useAuth();
   const { deckManager } = useDeckManager();
   const navigation = useNavigation();
 
   const [searchResultObject, setSearchResultObject] = useState<SpotifyApi.SearchResponse>(); //holds search results in getSearchResults function
-
-  const [selectedTracks, setSelectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]); //holds selected tracks
-  const [selectedArtists, setSelectedArtists] = useState<SpotifyApi.ArtistObjectFull[]>([]); //holds selected tracks
-
+  const [selectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]); //holds selected tracks
+  const [selectedArtists] = useState<SpotifyApi.ArtistObjectFull[]>([]); //holds selected tracks
   const [dialogVisible, setDialogVisible] = useState<boolean>(false); //keeps track of whether or not to show the dialog box
-
-
-  const result: any[] = []; //holds search results in getSearchResults function
-
-  const [toggle, setToggle] = useState<boolean>(false); //false for genre search, true for artist search
   const [search, setSearch] = useState("");
   const [deckName, setDeckName] = useState<string>(''); //keeps track of deck name
-  const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
-
-  const [seeds, setSeeds] = useState<Seed[]>([]); //holds up to 5 seeds to pass to next screen
-
   const [trackSearchResultComponents, setTrackSearchResultComponents] = useState<any>([]); //component handler for showing search results
   const [artistSearchResultComponents, setArtistSearchResultComponents] = useState<any>([]); //component handler for showing search results
   const [selectedSeedComponents, setSelectedSeedComponents] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
-
-  const [showSeedScreen, setShowSeedScreen] = useState<boolean>(false); //keeps track of whether or not to show the seed screen
-
   const [searching, setSearching] = useState<boolean>(false); //keeps track of whether or not the user is actively searching
-
-
   const [index, setIndex] = React.useState(0);
 
   useLayoutEffect(() => { //hide header
@@ -71,9 +43,6 @@ const SearchScreen = () => {
       gestureDirection: 'horizontal'
     })
   }, [navigation])
-
-
-
 
   async function updateSearch(search: string) {
     setSearch(search);
@@ -97,7 +66,6 @@ const SearchScreen = () => {
 
 
   function updateSelectedList() {
-
     const selectedTrackComponents = selectedTracks.map(
       (track) => {
         return (
@@ -119,7 +87,6 @@ const SearchScreen = () => {
   }
 
   function removeSelectedTrack(track: SpotifyApi.TrackObjectFull) {
-
     for (var i = 0; i < selectedTracks.length; i++) {
       if (selectedTracks[i].id == track.id) {
         selectedTracks.splice(i, 1);
@@ -135,7 +102,6 @@ const SearchScreen = () => {
   }
 
   function removeSelectedArtist(artist: SpotifyApi.ArtistObjectFull) {
-
     for (var i = 0; i < selectedArtists.length; i++) {
       if (selectedArtists[i].id == artist.id) {
         selectedArtists.splice(i, 1);
@@ -155,14 +121,9 @@ const SearchScreen = () => {
       return;
     }
 
-
-
-
     if (searchResultObject.tracks != undefined) {
-
       const trackSearchResults = searchResultObject.tracks.items.map(
         (track) => {
-
           var isSelected = false;
           for (var i = 0; i < selectedTracks.length; i++) {
             if (selectedTracks[i].id == track.id) {
@@ -170,15 +131,12 @@ const SearchScreen = () => {
               break;
             }
           }
-
           return (
             <TrackSearchResult key={track.id} track={track} onPress={onSelectTrack} onDeselect={removeSelectedTrack} isChecked={isSelected} />
           )
         }
       );
-
       setTrackSearchResultComponents(trackSearchResults);
-
     }
 
     if (searchResultObject.artists != undefined) {
@@ -193,19 +151,13 @@ const SearchScreen = () => {
               break;
             }
           }
-
           return (
             <ArtistSearchResult key={artist.id} artist={artist} onPress={onSelectArtist} onDeselect={removeSelectedArtist} isChecked={isSelected} />
           )
         }
       );
-
       setArtistSearchResultComponents(artistSearchResults);
-
     }
-
-
-
   }, [searchResultObject]);
 
 
@@ -216,22 +168,15 @@ const SearchScreen = () => {
       setArtistSearchResultComponents([]);
       setTrackSearchResultComponents([]);
     }
-
     console.log("selected tracks: " + selectedTracks.length);
     updateSelectedList();
-
   }, [searching]);
 
   React.useEffect(() => {
     if (dialogVisible) {
       setDeckName('');
-
     }
-
   }, [dialogVisible]);
-
-
-
 
   return (
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#f0f2f4', '#f0f2f4']} style={{ flex: 1, justifyContent: 'flex-start' }}>
@@ -247,17 +192,13 @@ const SearchScreen = () => {
         />
         <Dialog.Actions>
           <Button onPress={() => {
-
             const seeds = [] as Seed[];
-
             for (var i = 0; i < selectedTracks.length; i++) {
               seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name });
             }
-
             for (var i = 0; i < selectedArtists.length; i++) {
               seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name });
             }
-
             setDialogVisible(false);
             deckManager.initializeDeck(deckName, seeds);
             navigation.navigate('Home');
