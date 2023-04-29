@@ -1,14 +1,27 @@
-import { TextInput, View, Text, Image, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
+import { TextInput, View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, Platform, ImageURISource } from 'react-native'
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import SearchSwitch from '@/common/components/SearchSwitch';
 import useAuth from '@/common/hooks/useAuth';
 import { ScrollView } from 'react-native-gesture-handler';
-import useDeckManager, { Seed } from '@/common/hooks/useDeckManager';
+import useDeckManager, { Seed, SeedType } from '@/common/hooks/useDeckManager';
 // @ts-ignore
 import database from "../../firebaseConfig.tsx";
 import { ref, child, get, set } from 'firebase/database';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Avatar, Button, ButtonGroup, Dialog, Divider, Input, SearchBar, TabView } from '@rneui/themed';
+import Constants from 'expo-constants';
+import { ListItem } from '@rneui/themed';
+import TrackSearchResult from '@/common/components/TrackSearchResult';
+import SelectedSeed from '@/common/components/SelectedSeed';
+import { Tab } from '@rneui/themed';
+import ArtistSearchResult from '@/common/components/ArtistSearchResult';
+import SelectedArtistSeed from '@/common/components/SelectedArtistSeed';
+
+
+
+
 
 //👌😂👌 🔥 🔥 🔥
 
@@ -23,20 +36,33 @@ const SearchScreen = () => {
   const { deckManager } = useDeckManager();
   const navigation = useNavigation();
 
+  const [searchResultObject, setSearchResultObject] = useState<SpotifyApi.SearchResponse>(); //holds search results in getSearchResults function
+
+  const [selectedTracks, setSelectedTracks] = useState<SpotifyApi.TrackObjectFull[]>([]); //holds selected tracks
+  const [selectedArtists, setSelectedArtists] = useState<SpotifyApi.ArtistObjectFull[]>([]); //holds selected tracks
+
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false); //keeps track of whether or not to show the dialog box
 
 
   const result: any[] = []; //holds search results in getSearchResults function
 
   const [toggle, setToggle] = useState<boolean>(false); //false for genre search, true for artist search
-  const [search, setSearch] = useState<string>(''); //keeps track of text entered in search bar dynamically
+  const [search, setSearch] = useState("");
   const [deckName, setDeckName] = useState<string>(''); //keeps track of deck name
   const [loaded, setLoaded] = useState<boolean>(false); //keeps track of if a screen is done loading
 
   const [seeds, setSeeds] = useState<Seed[]>([]); //holds up to 5 seeds to pass to next screen
 
-  const [componentHandler, setComponentHandler] = useState<any>([]); //component handler for showing search results
-  const [componentHandler2, setComponentHandler2] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
+  const [trackSearchResultComponents, setTrackSearchResultComponents] = useState<any>([]); //component handler for showing search results
+  const [artistSearchResultComponents, setArtistSearchResultComponents] = useState<any>([]); //component handler for showing search results
+  const [selectedSeedComponents, setSelectedSeedComponents] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
+
   const [showSeedScreen, setShowSeedScreen] = useState<boolean>(false); //keeps track of whether or not to show the seed screen
+
+  const [searching, setSearching] = useState<boolean>(false); //keeps track of whether or not the user is actively searching
+
+
+  const [index, setIndex] = React.useState(0);
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -46,210 +72,294 @@ const SearchScreen = () => {
     })
   }, [navigation])
 
-  useEffect(() => { //useEffect to clear search results when input goes back to empty
-    if (search == '') {
-      setComponentHandler([]);
-    }
-  }, [search]);
 
-  useEffect(() => { //useEffect to show seeds and allow deletion of selected seeds
-    const seedsList = seeds.map(
-      (seed) => {
-        return (
-          <View className='mt-2'>
-            <TouchableOpacity onPress={() => { }}>
-              <Text className='text-white font-semibold'>{seed.name}</Text>
-            </TouchableOpacity>
-          </View>
-        )
+
+
+  async function updateSearch(search: string) {
+    setSearch(search);
+  };
+
+  React.useEffect(() => {
+    if (search == '') {
+      return;
+    }
+
+    const response = spotify.search(search, ['track', 'artist'], { limit: 20 }).then(
+      function (data) {
+        setSearchResultObject(data);
+      }
+    ).catch(
+      function (error) {
+        console.log(error);
       }
     )
-    setComponentHandler2(seedsList);
-  }, [seeds]);
-
-  useEffect(() => { //useEffect to search every time the user types in the search bar, but only if user's credentials are valid
-    if (user != undefined && user.id != undefined) {
-      getSearchResults();
-    }
-  }, [user, search]);
-
-  function handleSubmit() {
-    if (seeds.length > 0 && deckName.length > 0) { //if seeds are selected, navigate to next screen
-      Alert.alert("Seeds selected! Time to create a playlist for the deck");
+  }, [search]);
 
 
-      deckManager.initializeDeck(deckName, seeds);
+  function updateSelectedList() {
 
-      // push it to the database
+    const selectedTrackComponents = selectedTracks.map(
+      (track) => {
+        return (
+          <SelectedSeed key={track.id} track={track} remove={removeSelectedTrack} />
+        )
+      }
+    );
 
+    const selectedArtistComponents = selectedArtists.map(
+      (artist) => {
+        return (
+          <SelectedArtistSeed key={artist.id} artist={artist} remove={removeSelectedArtist} />
+        )
+      }
+    );
 
-      //@ts-ignore
-      navigation.navigate('Home');
-    }
-    else {
-      Alert.alert("Please select at least one seed and choose a deck name.");
+    const selectedComponents = selectedTrackComponents.concat(selectedArtistComponents);
+    setSelectedSeedComponents(selectedComponents);
+  }
+
+  function removeSelectedTrack(track: SpotifyApi.TrackObjectFull) {
+
+    for (var i = 0; i < selectedTracks.length; i++) {
+      if (selectedTracks[i].id == track.id) {
+        selectedTracks.splice(i, 1);
+        updateSelectedList();
+        break;
+      }
     }
   }
 
-  async function getSearchResults() {
-    setLoaded(false); //when actively searching, set loaded false
-    if (toggle) { //if toggle true: search for artists
-      const response = await spotify.searchArtists(search, { limit: 20 }).then(
-        function (data) {
-          searchResults = data.artists.items;
-
-          for (let i = 0; i < searchResults.length; i++) {
-            result.push(
-              {
-                "name": searchResults[i].name,
-                "image": searchResults[i].images[0],
-                "id": searchResults[i].id
-              }
-            );
-          }
-
-          const listItems = result.map(
-            (element) => {
-              return (
-                <View>
-                  <TouchableOpacity onPress={
-                    () => {
-
-                      const seed = {
-                        id: element.id,
-                        name: element.name,
-                        type: "artist",
-                      } as Seed;
-
-                      setSeeds([...seeds, seed]);
-
-                      //setComponentHandler([]); //clear search results on screen
-                    }
-                  }>
-                    <View className='px-4' style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                      <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                      <Text numberOfLines={1} style={{ fontSize: 24, color: 'white' }}>{element.name}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )
-            }
-          )
-          setComponentHandler(listItems);
-        })
-        .catch(error => {
-          // Handle promise rejection
-          console.log("SEARCH ERROR: " + error.message);
-        });
-    }
-    else { //if toggle false: search for tracks
-      const response = await spotify.searchTracks(search, { limit: 20 }).then(
-        function (data) {
-          searchResults = data.tracks.items;
-
-          for (let i = 0; i < searchResults.length; i++) {
-            result.push(
-              {
-                "name": searchResults[i].name,
-                "image": searchResults[i].album.images[0],
-                "id": searchResults[i].id
-              }
-            );
-          }
-
-          const listItems = result.map(
-            (element) => {
-              return (
-                <View>
-                  <TouchableOpacity onPress={
-                    () => {
-
-                      const seed = {
-                        id: element.id,
-                        name: element.name,
-                        type: "track",
-                      } as Seed;
-
-                      setSeeds([...seeds, seed]);
-
-                      setComponentHandler([]); //clear search results on screen
-                    }
-                  }>
-                    <View className='px-4' style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                      <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                      <Text numberOfLines={1} style={{ fontSize: 24, color: 'white' }}>{element.name}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )
-            }
-          )
-          setComponentHandler(listItems);
-        })
-        .catch(error => {
-          // Handle promise rejection
-          console.log("SEARCH ERROR: " + error.message);
-        });
-    }
-    setLoaded(true); //when searching is finished, set loaded true
+  function onSelectTrack(track: SpotifyApi.TrackObjectFull) {
+    selectedTracks.push(track);
+    updateSelectedList();
   }
+
+  function removeSelectedArtist(artist: SpotifyApi.ArtistObjectFull) {
+
+    for (var i = 0; i < selectedArtists.length; i++) {
+      if (selectedArtists[i].id == artist.id) {
+        selectedArtists.splice(i, 1);
+        updateSelectedList();
+        break;
+      }
+    }
+  }
+
+  function onSelectArtist(artist: SpotifyApi.ArtistObjectFull) {
+    selectedArtists.push(artist);
+    updateSelectedList();
+  }
+
+  React.useEffect(() => {
+    if (searchResultObject == undefined) {
+      return;
+    }
+
+
+
+
+    if (searchResultObject.tracks != undefined) {
+
+      const trackSearchResults = searchResultObject.tracks.items.map(
+        (track) => {
+
+          var isSelected = false;
+          for (var i = 0; i < selectedTracks.length; i++) {
+            if (selectedTracks[i].id == track.id) {
+              isSelected = true;
+              break;
+            }
+          }
+
+          return (
+            <TrackSearchResult key={track.id} track={track} onPress={onSelectTrack} onDeselect={removeSelectedTrack} isChecked={isSelected} />
+          )
+        }
+      );
+
+      setTrackSearchResultComponents(trackSearchResults);
+
+    }
+
+    if (searchResultObject.artists != undefined) {
+
+      const artistSearchResults = searchResultObject.artists.items.map(
+        (artist) => {
+
+          var isSelected = false;
+          for (var i = 0; i < selectedArtists.length; i++) {
+            if (selectedArtists[i].id == artist.id) {
+              isSelected = true;
+              break;
+            }
+          }
+
+          return (
+            <ArtistSearchResult key={artist.id} artist={artist} onPress={onSelectArtist} onDeselect={removeSelectedArtist} isChecked={isSelected} />
+          )
+        }
+      );
+
+      setArtistSearchResultComponents(artistSearchResults);
+
+    }
+
+
+
+  }, [searchResultObject]);
+
+
+
+  React.useEffect(() => {
+    if (search == '') {
+      setSearchResultObject(undefined);
+      setArtistSearchResultComponents([]);
+      setTrackSearchResultComponents([]);
+    }
+
+    console.log("selected tracks: " + selectedTracks.length);
+    updateSelectedList();
+
+  }, [searching]);
+
+  React.useEffect(() => {
+    if (dialogVisible) {
+      setDeckName('');
+
+    }
+
+  }, [dialogVisible]);
+
+
 
 
   return (
-    <View className='flex-1 justify-center'>
-      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
-        {showSeedScreen
-          ?
-          <View className="px-10 py-10 rounded-3xl" style={{ borderWidth: 5, borderColor: "white" }}>
-            {JSON.stringify(componentHandler2) == JSON.stringify([])
-              ?
-              <Text className='text-white text-xl font-semibold mb-5'>No seeds</Text>
-              :
-              <View className='mb-5'>{componentHandler2}</View>
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#f0f2f4', '#f0f2f4']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+      <Dialog
+        isVisible={dialogVisible}
+        onBackdropPress={() => { setDialogVisible(false) }}
+      >
+        <Dialog.Title title='Give your deck a name' />
+        <Input
+          placeholder='Deck name'
+          onChangeText={text => setDeckName(text)}
+          value={deckName}
+        />
+        <Dialog.Actions>
+          <Button onPress={() => {
+
+            const seeds = [] as Seed[];
+
+            for (var i = 0; i < selectedTracks.length; i++) {
+              seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name });
             }
-            <TouchableOpacity onPress={() => { setShowSeedScreen(false); }}>
-              <Text className='text-center font-semibold text-white bg-red-500 px-3 py-2'>Close</Text>
-            </TouchableOpacity>
-          </View>
-          :
-          <View className='items-center justify-center' style={{ marginTop: 50, flex: 1 }}>
-            <View className='absolute top-4'>
-              <SearchSwitch text={toggle.toString()} value={false} onValueChange={setToggle} />
-            </View>
-            <View className='absolute top-20' style={{width: "90%"}}>
-              <Text className="text-white text-2xl px-5 py-2 text-1 font-semibold text-center">Search for up to 5 seeds for your new deck:</Text>
-              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Deck Name' onChangeText={setDeckName} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl px-8 py-2.5 mt-5' style={{ backgroundColor: '#014871' }}></TextInput>
-              <TextInput placeholderTextColor={"#0B0B45"} placeholder='Search' onChangeText={setSearch} className='mx-5 font-semibold text-1 text-white text-xl flex-row items-center justify-center rounded-3xl px-8 py-2.5 mt-6' style={{ backgroundColor: '#014871' }}></TextInput>
-            </View>
 
-            {/*Search Results*/}
-            <View className='py-2' style={{ marginTop: 320, marginBottom: 60, flex: 1 }}>
-              {!loaded
-                ?
-                <View style={{ flex: 1, marginTop: 300 }}>
-                  <ActivityIndicator size="large" color="#014871" />
-                </View>
-                :
-                <ScrollView style={{ flex: 1 }}>
-                  {componentHandler}
-                </ScrollView>
-              }
+            for (var i = 0; i < selectedArtists.length; i++) {
+              seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name });
+            }
 
-              {/*Buttons*/}
-              <View className='top-10 flex-row justify-center items-center'>
-                <TouchableOpacity className='mx-3 rounded-3xl px-8 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { handleSubmit(); }}>
-                  <Text className='font-semibold text-white'>Done</Text>
-                </TouchableOpacity>
-                <TouchableOpacity className='mx-3 rounded-3xl px-5 py-3' style={{ backgroundColor: '#014871' }} onPress={() => { setShowSeedScreen(true); }}>
-                  <Text className='font-semibold text-1xl text-white'>Seeds ({seeds.length}/5)</Text>
-                </TouchableOpacity>
+            setDialogVisible(false);
+            deckManager.initializeDeck(deckName, seeds);
+            navigation.navigate('Home');
+          }}
+            disabled={deckName == ''}
+          >Create</Button>
+        </Dialog.Actions>
+      </Dialog>
+      <SafeAreaView className='flex-1 pt-5 bg-white' >
+        <View className='flex-1 bg-white'>
+          <View >
+            {!searching ?
+              <Text className='text-3xl font-bold text-start px-5' style={{ color: '#000000' }}>Search</Text>
+              : <></>}
+            <SearchBar
+              platform={Platform.OS === 'ios' ? 'ios' : 'android'}
+              placeholder={index ? "Search for an artist" : "Search for a track"}
+              onChangeText={updateSearch}
+              value={search}
+              containerStyle={{ backgroundColor: 'transparent', marginBottom: 5 }}
+              inputContainerStyle={searching ? { backgroundColor: '#EEEEEF', height: 15 } : { backgroundColor: '#EEEEEF' }}
+              inputStyle={searching ? { fontSize: 0 } : { fontSize: 20 }}
+              onSubmitEditing={() => { }}
+              onPressIn={() => { setSearching(true); console.log("searching true") }}
+              onKeyboardHide={() => { setSearching(false); console.log("searching false") }}
+              onCancel={() => { setSearching(false); console.log("searching false") }}
+              showCancel={true}
+              cancelButtonTitle="Done"
+            />
+            {searching ?
+              <View>
+                <Tab
+                  value={index}
+                  onChange={(e) => setIndex(e)}
+                  indicatorStyle={{
+                    backgroundColor: '#01b1f1',
+                    height: 3,
+                  }}
+                  variant="default"
+                >
+                  <Tab.Item
+                    title="Tracks"
+                    titleStyle={{ fontSize: 12, color: 'black' }}
+                    icon={{ name: 'music-note-quarter', type: 'material-community', color: 'black' }}
+                  />
+                  <Tab.Item
+                    title="Artists"
+                    titleStyle={{ fontSize: 12, color: 'black' }}
+                    icon={{ name: 'account-music', type: 'material-community', color: 'black' }}
+                  />
+                </Tab>
               </View>
-            </View>
+              : <></>}
+            <Divider />
+
           </View>
-        }
-      </LinearGradient>
-    </View>
+
+          {searching ?
+            <View className='flex-1'>
+              <TabView value={index} onChange={setIndex} animationType="timing" animationConfig={{ duration: 100 }} >
+                <TabView.Item style={{ backgroundColor: '#f0f2f4', width: '100%' }}>
+                  <ScrollView>
+                    {trackSearchResultComponents}
+                  </ScrollView>
+                </TabView.Item>
+                <TabView.Item style={{ backgroundColor: '#f0f2f4', width: '100%' }}>
+                  <ScrollView>
+                    {artistSearchResultComponents}
+                  </ScrollView>
+                </TabView.Item>
+              </TabView>
+            </View>
+            :
+            <View className='flex-1'>
+              <ScrollView>
+                {selectedSeedComponents}
+              </ScrollView>
+              <Button
+                title="Create Deck"
+                onPress={() => {
+                  setDialogVisible(true);
+                }}
+                style={{ alignSelf: 'center', width: '50%', marginVertical: 10 }}
+                disabled={selectedTracks.length == 0 && selectedArtists.length == 0 && selectedTracks.length + selectedArtists.length < 5}
+                buttonStyle={{ backgroundColor: '#01b1f1', borderRadius: 30 }}
+              />
+            </View>
+
+
+
+          }
+        </View>
+      </SafeAreaView>
+    </LinearGradient >
   )
+
+
+
 }
+
+
+
+
 export { output, };
-export default SearchScreen
+export default SearchScreen;
