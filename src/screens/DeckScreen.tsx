@@ -9,6 +9,7 @@ import gameContext from '@/common/hooks/gameContext';
 import database from "../../firebaseConfig.tsx";
 import useDeckManager, { Deck } from '@/common/hooks/useDeckManager';
 import DeckManager from '@/common/components/DeckManager';
+import useTheme from '@/common/hooks/useThemes';
 
 var playlists: any[];
 
@@ -35,7 +36,8 @@ const DeckScreen = () => {
   const [componentHandler, setComponentHandler] = React.useState<any>();
   const [decks, setDecks] = React.useState<string[]>();
   const [deckss, setDeckss] = React.useState<Deck[]>();
-
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+  
   React.useLayoutEffect(() => {
     if (selectedPlaylist == null) {
       navigation.setOptions({
@@ -81,7 +83,8 @@ const DeckScreen = () => {
             }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                 <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {deck.name} </Text>
+                {/*@ts-ignore*/}
+                <Text style={{ fontWeight: 'bold', fontSize: 24, color: themes[selectedTheme].text }}> {deck.name} </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -249,15 +252,18 @@ const DeckScreen = () => {
 
   return (
     <View className='flex-1 justify-center'>
-      <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} className="flex-1 items-center justify-center">
+      {/*@ts-ignore*/}
+      <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} className="flex-1 items-center justify-center">
         <View className='absolute top-1' style={{ marginTop: 50, flex: 1 }}>
-          <Text className='text-white text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
+          {/*@ts-ignore*/}
+          <Text style={{ fontWeight: 'semibold', fontSize: 24, color: themes[selectedTheme].text }} className='text-2xl px-3'>Select an existing deck below, or tap "Build Deck" to build a brand new one!</Text>
         </View>
         <View style={{ padding: 10, flex: 1 }}>
           {!true //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
-            ?
+            ? 
             <View style={{ flex: 1, marginTop: 300 }}>
-              <ActivityIndicator size="large" color="#014871" />
+              {/*@ts-ignore*/}
+              <ActivityIndicator size="large" color={ themes[selectedTheme].text } />
             </View>
             :
             <View>
@@ -268,11 +274,12 @@ const DeckScreen = () => {
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
                     <Image source={require('@assets/add_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}>Build Deck</Text>
+                    {/*@ts-ignore*/}
+                    <Text style={{ fontWeight: 'bold', fontSize: 24, color: themes[selectedTheme].text }}>Build Deck</Text>
                   </View>
                 </TouchableOpacity>
 
-                {componentHandler}
+                { componentHandler }
 
               </ScrollView>
             </View>

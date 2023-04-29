@@ -9,6 +9,7 @@ import { Audio } from 'expo-av';
 import { useIsFocused } from '@react-navigation/native'
 import TextTicker from 'react-native-text-ticker'
 import useAudioPlayer from '@/common/hooks/useAudioPlayer';
+import useTheme from '@/common/hooks/useThemes';
 //import database from "../../../../../firebaseConfig.tsx"; //ignore this error the interpreter is being stupid it works fine
 //import { push, ref, set, child, get } from 'firebase/database';
 
@@ -29,6 +30,7 @@ const GameScreen = () => {
   const navigation = useNavigation();
   const { round, score, setScore, setEarnings } = useContext(gameContext);
   const { spotify } = useAuth();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -148,13 +150,16 @@ const GameScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#014871', '#A0EBCF']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+    // @ts-ignore
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <View className='flex-1 items-center flex-1'>
-        <Text className='text-white text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
+        {/*@ts-ignore*/}
+        <Text style={{color: themes[selectedTheme].text}}className='text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
       </View>
       {!(loaded) ?
         <View className='flex-1 justify-center'>
-          <ActivityIndicator size="large" color="#014871" />
+          {/*@ts-ignore*/}
+          <ActivityIndicator size="large" color={themes[selectedTheme].text} />
         </View>
         :
         <Animated.View style={{ opacity: fadeAnim }} className='flex-1 justify-center items-center absolute top-32 mx-2' >
@@ -173,12 +178,15 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className='text-white text-2xl font-bold'>{(questionType == 'name') ? '???????' : correctTrack?.name}
+                  // @ts-ignore
+                  style = {{color: themes[selectedTheme].text}}
+                  className='text-2xl font-bold'>{(questionType == 'name') ? '???????' : correctTrack?.name}
                 </TextTicker>
               </View>
               {/* Artist Name */}
               <View className='flex-row items-center opacity-80 px-2'>
-                <FontAwesome5 name="user-alt" size={16} color="white" />
+                {/*@ts-ignore*/}
+                <FontAwesome5 name="user-alt" size={16} color = {themes[selectedTheme].text}  />
                 <TextTicker
                   scrollSpeed={speed}
                   loop
@@ -186,13 +194,16 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className='px-2 text-white text-xl font-bold'>
+                  // @ts-ignore
+                  style = {{color: themes[selectedTheme].text}}
+                  className='px-2 text-xl font-bold'>
                   {(questionType == 'artist name') ? '???????' : correctTrack?.artists?.map((artist: any) => artist?.name).join(', ')}
                 </TextTicker>
               </View>
               {/* Album Name */}
               <View className='flex-row items-center opacity-80 px-2'>
-                <FontAwesome5 name="compact-disc" size={16} color="white" />
+                {/*@ts-ignore*/}
+                <FontAwesome5 name="compact-disc" size={16} color = {themes[selectedTheme].text} />
                 <TextTicker
                   scrollSpeed={speed}
                   loop
@@ -200,38 +211,47 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
-                  className='px-2 text-white text-xl font-bold'>{(questionType == 'album name') ? '???????' : correctTrack?.album?.name}
+                  // @ts-ignore
+                  style = {{color: themes[selectedTheme].text}}
+                  className='px-2 text-xl font-bold'>{(questionType == 'album name') ? '???????' : correctTrack?.album?.name}
                 </TextTicker>
               </View>
             </View>
 
             {/*Question*/}
             <View className='flex-1 justify-center items-center'>
-              <Text className='p-2 text-white text-3xl font-bold'>What is the {questionType} for this track?</Text>
+              <Text 
+                // @ts-ignore
+                style = {{color: themes[selectedTheme].text}} 
+                className='p-2 text-3xl font-bold'>What is the {questionType} for this track?</Text>
 
               {/*Button choices*/}
-              <TouchableOpacity className="flex-row items-center justify-center my-2 px-8 rounded-3xl" style={{ backgroundColor: '#014871' }}
+              {/*@ts-ignore*/}
+              <TouchableOpacity className="flex-row items-center justify-center my-2 px-8 rounded-3xl" style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(0); }}>
                 <Text numberOfLines={1}
                 className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(0)}
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              {/*@ts-ignore*/}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(1); }}>
                 <Text numberOfLines={1}
                 className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(1)}
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              {/*@ts-ignore*/}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(2); }}>
                 <Text numberOfLines={1}
                 className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(2)}
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: '#014871' }}
+              {/*@ts-ignore*/}
+              <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(3); }}>
                 <Text numberOfLines={1}
                 className="text-white text-xl px-30 py-2 text-1 font-semibold">{buttonContent(3)}

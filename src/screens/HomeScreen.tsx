@@ -1,6 +1,5 @@
 import { View, Text, Button, Image, TouchableOpacity, StyleSheet, ImageBackground, Alert, ActivityIndicator } from 'react-native'
 import React, { useMemo, useRef, useState, useContext } from 'react'
-//import React, { useMemo, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '@hooks/useAuth';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +19,7 @@ import { useIsFocused } from '@react-navigation/native'
 import SwiperComponent from '@/common/components/SwiperComponent';
 import DeckManager from '@/common/components/DeckManager';
 import useAudioPlayer from '@/common/hooks/useAudioPlayer';
+import useTheme from '@/common/hooks/useThemes';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
@@ -30,9 +30,10 @@ const HomeScreen = () => {
   const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
   const [currentDeck, setCurrentDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
+
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
   
   const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
-
   const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
@@ -100,7 +101,8 @@ const HomeScreen = () => {
   }
 
   return (
-    <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#f0f2f4', '#f0f2f4']} style={{ flex: 1, justifyContent: 'flex-start' }}>
+    //@ts-ignore
+    <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <SafeAreaView className='flex-1' edges={['top']}>
         {/* <ImageBackground source={require('@assets/Swipe_Concept_v2.png')} className='flex-1'> */}
 
@@ -133,7 +135,8 @@ const HomeScreen = () => {
                 height: 65,
                 transform: [{ translateX: -6 }],
                 resizeMode: 'contain',
-                tintColor: '#01b1f1'
+                //@ts-ignore
+                tintColor: themes[selectedTheme].logo
               }} />
             </TouchableOpacity>
           </View>
@@ -144,13 +147,11 @@ const HomeScreen = () => {
               }
 
               // @ts-ignore
-              navigation.navigate('Decks')
-
-                
-              
+              navigation.navigate('Decks');
             }
           }>
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color="#7d8490" />
+            {/*@ts-ignore*/}
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].logo} />
           </TouchableOpacity>
         </View>
 
