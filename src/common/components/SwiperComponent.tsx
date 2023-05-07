@@ -28,7 +28,7 @@ const SwiperComponent = () => {
 
   const isFocused = useIsFocused();
 
-  const [cardIndex, setCardIndex] = React.useState<number>(-1);
+  const [cardIndex, setCardIndex] = React.useState<number>(0);
   const [speed] = React.useState<number>(25);
 
   const { audioPlayer } = useAudioPlayer();
@@ -88,6 +88,7 @@ const SwiperComponent = () => {
   }, [audioPlayer]);
 
   React.useMemo(async () => {
+    console.log("cardIndex: " + cardIndex);
     setPlaybackPosition(0);
     if (cardIndex >= 0 && deckManager.getTracks().length > 0) {
       await audioPlayer.setTrack(deckManager.getTracks()[cardIndex]);
