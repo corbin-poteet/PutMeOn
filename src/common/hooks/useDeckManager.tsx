@@ -337,14 +337,7 @@ class DeckManager {
    */
   public async addNewTracksFromSpotify(finalSize: number = 1, responseSize: number = 50) {
 
-    //var seed_tracks = this.selectSeedTracks();
-    //var seed_artists = this.selectSeedArtists();
-
     var seeds = this.selectSeeds();
-
-
-
-
 
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
@@ -355,16 +348,13 @@ class DeckManager {
       console.log("TRACK" + (t.length > 1 ? "S" : "") + ": [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
       console.log("SEEDS USED: [" + seeds.map((seed) => seed.name).join(", ") + "]");
 
-
       return tracks;
     });
   }
 
   /**
    * Calls the spotify api to get track recommendations then filters them
-   * @param seed_tracks the seed tracks
-   * @param seed_genres the seed genres
-   * @param seed_artists the seed artists
+   * @param seeds the seeds to use for the spotify api
    * @param finalSize the size of the final array
    * @param responseSize the size of the response from the spotify api
    * @returns the array of filtered tracks
@@ -409,7 +399,9 @@ class DeckManager {
    * @returns array of filtered tracks
    */
   public filterTracks(tracks: SpotifyApi.TrackObjectFull[]): SpotifyApi.TrackObjectFull[] {
-    return tracks.filter((track) => track.preview_url != null);
+    return tracks.filter((track) => track.preview_url != null
+      && this.selectedDeck.likedTracks.findIndex((likedTrack) => likedTrack.id == track.id) == -1
+      && this.selectedDeck.dislikedTracks.findIndex((dislikedTrack) => dislikedTrack.id == track.id) == -1);
   }
 
   /***
@@ -429,6 +421,7 @@ class DeckManager {
         name: track.name,
         type: "track",
         id: track.id,
+        image: track.album.images[0].url,
       }
     });
   }
@@ -452,14 +445,6 @@ class DeckManager {
 
   public getTracks(): SpotifyApi.TrackObjectFull[] {
     return this.tracks;
-  }
-
-  private getTrackAsSeed(track: SpotifyApi.TrackObjectFull): Seed {
-    return {
-      name: track.name,
-      type: "track",
-      id: track.id,
-    }
   }
 
   public async handleSwipe(index: number, liked: boolean) {

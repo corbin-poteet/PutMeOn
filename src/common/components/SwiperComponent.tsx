@@ -41,32 +41,19 @@ const SwiperComponent = () => {
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
-
   async function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+
   // this is hacky as fuck but it works for now to rerender
   React.useEffect(() => {
-
-    //setIsPlaying(!audioPlayer.isPlaying());
-    //console.log(!audioPlayer.isPlaying());
-    //forceUpdate();
-
     if (isFocused) {
       setIsPlaying(true);
       forceUpdate();
     }
 
-
-
-
     delay(1000).then(() => {
       forceUpdate();
-
-      if (isFocused) {
-        console.log("Focused Screen")
-      }
-
     });
   }, [isFocused]);
 
@@ -90,9 +77,6 @@ const SwiperComponent = () => {
   }, [audioPlayer]);
 
   React.useEffect(() => {
-    console.log("useEffect: " + deckManager.getTracks().length);
-
-
     if (deckManager.getTracks().length > 0) {
       if (cardIndex == -1) {
         // Deck has been loaded for the first time
@@ -119,7 +103,6 @@ const SwiperComponent = () => {
   }, [deckManager.getTracks()]);
 
   React.useMemo(async () => {
-    console.log("cardIndex: " + cardIndex);
     setPlaybackPosition(0);
     if (cardIndex >= 0 && deckManager.getTracks().length > 0) {
       await audioPlayer.setTrack(deckManager.getTracks()[cardIndex]);
