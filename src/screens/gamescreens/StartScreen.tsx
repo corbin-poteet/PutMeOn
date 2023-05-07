@@ -35,15 +35,16 @@ const StartScreen = () => { //Game Welcome Screen
                         height: 120,
                         transform: [{ translateX: -6 }],
                         resizeMode: 'contain',
+                        tintColor: themes[selectedTheme].logo
                     }}
                         className="mb-20" />
              <View style={{ paddingTop: 40 }}>
                 {/*@ts-ignore*/}
-                  <Text style={{ color: themes[selectedTheme].text, fontWeight: 'bold' }} className='text-2xl text-center px-1 my-1'>
+                  <Text style={{ color: themes[selectedTheme].text, fontWeight: 'bold' }} className='text-2xl mx-2 text-center px-1 my-1'>
                     Put Me On Match-Up makes music discovery fun! 
                    </Text>
                 {/*@ts-ignore*/}
-                  <Text style={{ color: themes[selectedTheme].text, fontWeight: 'bold' }} className='text-2xl text-center px-1 my-10'>
+                  <Text style={{ color: themes[selectedTheme].text, fontWeight: 'bold' }} className='text-2xl mx-2 text-center px-1 my-10'>
                       The faster you guess each song, the more points you'll earn!
                  </Text>
              </View>

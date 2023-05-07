@@ -19,7 +19,7 @@ export const ThemeProvider = ({children}) => {
          button: "#01b1f1",
          misc: "",
          logo: "#01b1f1",
-         text: "#5A5A5A"
+         text: "#444444"
         },
       Classic: {
          topGradient: "#014871",
@@ -65,7 +65,7 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#8f34eb",
          bottomGradient: "#eb7434",
          topCard: "#3F3F3F",
-         bottomCard: "#111",
+         bottomCard: "#000000",
          button: "#8f34eb",
          misc: "",
          logo: "#FFFFFF",
@@ -73,9 +73,9 @@ export const ThemeProvider = ({children}) => {
         },
       Firestone: {
          topGradient: "#a80707",
-         bottomGradient: "#1c0101",
+         bottomGradient: "#0d0101",
          topCard: "#210502",
-         bottomCard: "#631209",
+         bottomCard: "#4d0f08",
          button: "#a80707",
          misc: "",
          logo: "#FFFFFF",
@@ -83,23 +83,23 @@ export const ThemeProvider = ({children}) => {
         },
       Volcano: {
          topGradient: "#e35e40",
-         bottomGradient: "#3d0f04",
-         topCard: "#4d0000",
-         bottomCard: "#750000",
+         bottomGradient: "#24100b",
+         topCard: "#3d0f04",
+         bottomCard: "#611908",
          button: "#750000",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
         },
-      Legacy: {
-         topGradient: "#696969",
-         bottomGradient: "#696969",
+      Channel: {
+         topGradient: "#ff7303",
+         bottomGradient: "#482000",
          topCard: "#3F3F3F",
-         bottomCard: "#3F3F3F",
-         button: "#82f252",
+         bottomCard: "#000000",
+         button: "#ff7303",
          misc: "",
-         logo: "#82f252",
-         text: "#82f252"
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
         },
       Contrast: {
          topGradient: "#000000",
@@ -111,12 +111,32 @@ export const ThemeProvider = ({children}) => {
          logo: "#0000ff",
          text: "#FFFFFF"
       },
+      Kokomo: {
+         topGradient: "#7f2118", 
+         bottomGradient: "#ab7d4a", 
+         topCard: "#64155b", 
+         bottomCard: "#0a0433", 
+         button: "#0a0433",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Retro: {
+         topGradient: "#0f011a", 
+         bottomGradient: "#1e146e", 
+         topCard: "#64155b", 
+         bottomCard: "#0a0433", 
+         button: "#f900f5",
+         misc: "",
+         logo: "#03e7fb",
+         text: "#03e7fb"
+      },
       Midnight: {
          topGradient: "#000000",
          bottomGradient: "#1541d8",
          topCard: "#1f1f1f",
-         bottomCard: "#121212",
-         button: "#2f2f2f",
+         bottomCard: "#000000",
+         button: "#1f1f1f",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
@@ -141,32 +161,22 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
-      Kokomo: {
-         topGradient: "#7f2118", 
-         bottomGradient: "#ab7d4a", 
-         topCard: "#64155b", 
-         bottomCard: "#0a0433", 
-         button: "#0a0433",
+      ZABA: {
+         topGradient: "#245c5d", 
+         bottomGradient: "#432b48", 
+         topCard: "#c37d1b",  
+         bottomCard: "#7e5112", 
+         button: "#c37d1b",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
-      Retro: {
-         topGradient: "#0f011a", 
-         bottomGradient: "#1e146e", 
-         topCard: "#64155b", 
-         bottomCard: "#0a0433", 
-         button: "#f900f5",
-         misc: "",
-         logo: "#03e7fb",
-         text: "#03e7fb"
-      },
-      Gilded: {
-         topGradient: "#ffb302", 
-         bottomGradient: "#7a5e39", 
-         topCard: "#aa6c39",  
-         bottomCard: "#b8860b", 
-         button: "#b8860b",
+      RAM: {
+         topGradient: "#000000", 
+         bottomGradient: "#282828", 
+         topCard: "#b89900",
+         bottomCard: "#625100",
+         button: "#808080",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
@@ -174,13 +184,47 @@ export const ThemeProvider = ({children}) => {
       Ink: {
          topGradient: "#000000", 
          bottomGradient: "#000000", 
-         topCard: "#000000",  
-         bottomCard: "#000000", 
-         button: "#2f2f2f",
+         topCard: "#3F3F3F",
+         bottomCard: "#3F3F3F",
+         button: "#808080",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
+      
+      Atlantic: {
+         topGradient: "#29527b", 
+         bottomGradient: "#08121a", 
+         topCard: "#030e14",
+         bottomCard: "#07202f",
+         button: "#29527b",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+
+      Mint: {
+         topGradient: "#008080",
+         bottomGradient: "#001b1b", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#008080",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+
+      F1: {
+         topGradient: "#a80707",
+         bottomGradient: "#FFFFFF", 
+         topCard: "#2f6b2e",
+         bottomCard: "#184318",
+         button: "#2f6b2e",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      
       Null: {
          topGradient: "#000000", 
          bottomGradient: "#000000", 
