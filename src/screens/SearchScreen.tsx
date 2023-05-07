@@ -200,7 +200,7 @@ const SearchScreen = () => {
               seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name });
             }
             setDialogVisible(false);
-            deckManager.initializeDeck(deckName, seeds);
+            deckManager.createNewDeck(deckName, seeds);
             navigation.navigate('Home');
           }}
             disabled={deckName == ''}
