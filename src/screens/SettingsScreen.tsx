@@ -112,7 +112,7 @@ const SettingsScreen = () => {
 
           <View className='flex-1 items-center pb-5' style={{ backgroundColor: '#f0f2f4' }}>
             <TouchableOpacity className='bg-red-500 px-10 rounded-2xl justify-center' onPress={deleteData}>
-              <Text className='text-white text-xl px-8 py-2 font-bold'>Delete Data</Text>
+              <Text className='text-white text-xl px-8 py-2 font-bold'>Delete User Data</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
