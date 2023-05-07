@@ -132,12 +132,9 @@ class DeckManager {
 
   }
 
-  private getTracksFromSpotify(ids: string[]): Promise<SpotifyApi.TrackObjectFull[]> {
-    return this._spotify.getTracks(ids).then((tracks) => {
-      return tracks.tracks;
-    });
-  }
-
+  /**
+   * Removes all of the data of the current user from the database
+   */
   public async deleteData() {
     const db = getDatabase();
     console.log("USER TO DELETE: " + this.user.id)
@@ -182,16 +179,11 @@ class DeckManager {
       // Push new deck to database
       this.pushDeckToDatabase(newDeck).then((id) => {
         newDeck.id = id;
-
-        // Set new deck as selected deck
-        console.log("Setting selected deck: " + newDeck.name + "(" + newDeck.id + ")");
         this.setSelectedDeck(newDeck);
+        console.log("Setting selected deck: " + newDeck.name + "(" + newDeck.id + ")");
       }).catch((error) => {
         console.error(error);
       });
-
-
-
     }).catch((error) => {
       console.error(error);
     });
