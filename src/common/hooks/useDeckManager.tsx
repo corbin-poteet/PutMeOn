@@ -147,6 +147,17 @@ class DeckManager {
     await set(ref(db, "SelectedDecks/" + this.user.id), null).catch((error) => {
       console.error(error);
     });
+
+    this.selectedDeck = {
+      id: "",
+      name: "",
+      seeds: [],
+      likedTracks: [],
+      dislikedTracks: []
+    };
+
+    this.tracks = [];
+
   }
 
 
@@ -425,6 +436,8 @@ class DeckManager {
       }
     });
   }
+
+  
 
   public addTrack(track: SpotifyApi.TrackObjectFull) {
     this.tracks.push(track);

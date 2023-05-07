@@ -50,6 +50,7 @@ const SwiperComponent = () => {
     if (isFocused) {
       setIsPlaying(true);
       forceUpdate();
+      console.log(deckManager.getTracks.length);
     }
 
     delay(1000).then(() => {

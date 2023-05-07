@@ -47,7 +47,6 @@ const HomeScreen = () => {
   }, [konami]);
 
   React.useEffect(() => { //If user is looking at Home screen
-    console.log("ENTER USE EFFECTS, USER: " + user + " FOCUSED? " + isFocused)
     if (user && isFocused) {
       if (user.images) {
         if (user.images.length > 0) {
