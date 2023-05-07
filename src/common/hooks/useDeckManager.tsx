@@ -160,7 +160,40 @@ class DeckManager {
       id: this.id
     });
 
+    const deck = await this.getDeckFromDatabase(this.id);
+    if (deck) {
+      this.setSelectedDeck(deck);
+    }
+
   }
+
+  public async getDeckFromDatabase(id: string): Promise<Deck | null> {
+    const userId = this.user.id;
+    const db = getDatabase();
+    const deck = await get(child(this.dbRef, `Decks/${userId}/${id}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const deck = snapshot.val() as Deck;
+        deck.id = id;
+        return deck;
+      } else {
+        console.log("No data available");
+        return null;
+      }
+    }).catch((error) => {
+      console.error(error);
+      return null;
+    });
+
+    if (!deck) {
+      console.log("No deck found");
+      return null;
+    }
+
+    return deck;
+  }
+
+
+
 
   public async getDecksFromDatabase(): Promise<Deck[]> {
     const userId = this.user.id;
