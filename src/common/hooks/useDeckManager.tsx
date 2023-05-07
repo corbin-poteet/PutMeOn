@@ -13,6 +13,7 @@ export type Seed = {
   id: string
   name: string,
   type: SeedType,
+  image: string,
 }
 
 export type Deck = {

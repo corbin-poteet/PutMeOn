@@ -11,6 +11,7 @@ import useDeckManager, { Deck } from '@/common/hooks/useDeckManager';
 import DeckManager from '@/common/components/DeckManager';
 import useTheme from '@/common/hooks/useThemes';
 
+
 var playlists: any[];
 
 //let loaded: boolean = false;
@@ -37,7 +38,7 @@ const DeckScreen = () => {
   const [decks, setDecks] = React.useState<string[]>();
   const [deckss, setDeckss] = React.useState<Deck[]>();
   const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
-  
+
   React.useLayoutEffect(() => {
     if (selectedPlaylist == null) {
       navigation.setOptions({
@@ -68,6 +69,16 @@ const DeckScreen = () => {
     });
   }
 
+  function getImageForDeck(deck: Deck) {
+    const seeds = deck.seeds;
+    if (seeds.length > 0) {
+      return { uri: seeds[0].image };
+    }
+
+    return require("@assets/blank_playlist.png");
+
+  }
+
   async function getPlaylists() { //Obtain all spotify playlists owned by current user
 
     const deckList = await deckManager.getDecksFromDatabase().then((decks) => {
@@ -82,7 +93,7 @@ const DeckScreen = () => {
               createAlert(deck);
             }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-                <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
+                <Image source={getImageForDeck(deck)} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
                 {/*@ts-ignore*/}
                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: themes[selectedTheme].text }}> {deck.name} </Text>
               </View>
@@ -100,85 +111,8 @@ const DeckScreen = () => {
     });
 
     setComponentHandler(deckList);
-
     setLoaded(true);
-
-
   }
-  // setDeckss(decks);
-  // console.log(decks);
-  // const listItems = decks.map(
-  //   (deck) => {
-  //     return (
-  //       <View>
-  //         <TouchableOpacity onPress={
-  //           () => {
-  //             createAlert(deck)
-  //           }
-  //         }>
-  //           <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-  //             <Image source={require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-  //             <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {deck.name} </Text>
-  //           </View>
-  //         </TouchableOpacity>
-  //       </View>
-  //     )
-  //   }
-  // );
-
-
-  // setComponentHandler(listItems);
-  // setLoaded(true);
-
-
-
-  // const response = await spotify.getUserPlaylists(user?.id, { limit: 50 }
-  // ).then(
-  //   function (data) {
-  //     playlists = data.items;
-
-  //     for (var i = 0; i < playlists.length; i++) {
-  //       if (playlists[i].owner.id === user?.id) //Remove Playlists not created by user
-  //       {
-  //         decks?.forEach((item) => {
-  //           //console.log(item?.playlistId + " === " + playlists[i]?.id)
-  //           if (playlists[i]?.id == item) {
-  //             result.push({
-  //               "name": playlists[i].name,
-  //               "image": playlists[i].images[0],
-  //               "index": i
-  //             });
-  //           }
-  //         })
-  //       }
-  //       //console.log("Playlists Names: " + playlists[i].name)
-  //     }
-  //     const listItems = result.map(
-  //       (element) => {
-  //         return (
-  //           <View>
-  //             <TouchableOpacity onPress={
-  //               () => {
-  //                 createAlert(element)
-  //                 //selectedPlaylist = playlists[element.index].id;
-  //                 //console.log("SELECTED: "+selectedPlaylist)
-  //                 //navigation.navigate('Home')
-  //               }
-  //             }>
-  //               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5, marginBottom: 5 }}>
-  //                 <Image source={element.image != undefined ? { uri: element.image.url } : require('@assets/blank_playlist.png')} style={{ marginRight: 12, marginLeft: 0, width: 50, height: 50 }} />
-  //                 <Text style={{ fontWeight: 'bold', fontSize: 24, color: 'white' }}> {element.name} </Text>
-  //               </View>
-  //             </TouchableOpacity>
-  //           </View>
-  //         )
-  //       }
-  //     )
-  //     setComponentHandler(listItems); //Ensures that the playlists are all loaded and ready to be rendered
-  //     setLoaded(true);
-  //     //https://www.geeksforgeeks.org/how-to-render-an-array-of-objects-in-reactjs/
-  //   });
-
 
   async function createAlert(deck: Deck) { //Confirm playlist selection alert
     Alert.alert('Confirm Deck', 'Select ' + deck.name + ' as your Put Me On Deck?', [
@@ -197,41 +131,7 @@ const DeckScreen = () => {
               console.log(error);
             });
 
-          
 
-            //console.log("PLAYLIST SELECTED: "+playlists[playlist.index].name)
-            //selectedPlaylist = playlists[playlist.index].id;
-
-            //var temp; //Set seeds to this value to push to selectedDeck
-
-            // get(child(dbRef, "Decks/" + user?.id + "/" + playlists[playlist.index]?.id)).then((snapshot) => { //When User is obtained, establish database array
-            //   if (snapshot.exists()) {
-            //     var value = snapshot.val();
-            //     temp = value?.seeds;
-
-            //     set(ref(database, "SelectedDecks/" + user?.id), {
-            //       id: playlists[playlist.index]?.id,
-            //       name: playlists[playlist.index]?.name,
-            //       seeds: temp
-            //     });
-
-            //     // @ts-ignore
-            //     setSelectedPlaylist(playlists[playlist.index]?.id); //set spotify playlist context
-
-            //     //deckManager
-                
-
-            //   } else {
-            //     console.log("NO SNAPSHOT (DECK SCREEN)")
-            //   }
-            // });
-
-            // @ts-ignore
-            // Alert.alert('Welcome to Put Me On!', 'Swipe right to add a song you like to a playlist, swipe left to dislike it', [
-            // {
-            //   text: 'Okay',
-            //   style: 'cancel',
-            // }]);
           }
       }
     ]);
@@ -260,10 +160,10 @@ const DeckScreen = () => {
         </View>
         <View style={{ padding: 10, flex: 1 }}>
           {!true //Render Loading Effect, come back to center perfectly later. DOESN'T WORK PROPERLY YET...
-            ? 
+            ?
             <View style={{ flex: 1, marginTop: 300 }}>
               {/*@ts-ignore*/}
-              <ActivityIndicator size="large" color={ themes[selectedTheme].text } />
+              <ActivityIndicator size="large" color={themes[selectedTheme].text} />
             </View>
             :
             <View>
@@ -279,7 +179,7 @@ const DeckScreen = () => {
                   </View>
                 </TouchableOpacity>
 
-                { componentHandler }
+                {componentHandler}
 
               </ScrollView>
             </View>

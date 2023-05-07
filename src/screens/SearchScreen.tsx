@@ -194,10 +194,10 @@ const SearchScreen = () => {
           <Button onPress={() => {
             const seeds = [] as Seed[];
             for (var i = 0; i < selectedTracks.length; i++) {
-              seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name });
+              seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name, image: selectedTracks[i].album.images[0].url });
             }
             for (var i = 0; i < selectedArtists.length; i++) {
-              seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name });
+              seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name, image: selectedArtists[i].images[0].url });
             }
             setDialogVisible(false);
             deckManager.createNewDeck(deckName, seeds);
