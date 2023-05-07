@@ -35,6 +35,7 @@ const StartScreen = () => { //Game Welcome Screen
                         height: 120,
                         transform: [{ translateX: -6 }],
                         resizeMode: 'contain',
+                        //@ts-ignore
                         tintColor: themes[selectedTheme].logo
                     }}
                         className="mb-20" />
