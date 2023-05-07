@@ -45,7 +45,21 @@ class DeckManager {
     this._spotify = spotify;
     this._user = user;
 
+    this.initializeSelectedDeck().then((deck) => {
+      this.setSelectedDeck(deck);
+    }).catch((error) => {
+      console.error(error);
+    });
 
+  }
+
+  /**
+   * Initializes the selected deck by querying the database for the selected deck.
+   * If no selected deck is found, the user's first deck is selected.
+   * If no deck is found, a default empty deck is created and selected.
+   */
+  public async initializeSelectedDeck(): Promise<Deck> {
+    // Set the selected deck
     var deck: Deck = {
       id: "",
       name: "",
@@ -56,7 +70,7 @@ class DeckManager {
 
     console.log();
     console.log("==================== Querying Database ====================");
-    this.getDecksFromDatabase().then((decks) => {
+    const query = this.getDecksFromDatabase().then((decks) => {
       if (decks.length > 0) {
         console.log("Found " + decks.length + " decks in database");
         console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
@@ -68,9 +82,17 @@ class DeckManager {
       } else {
         console.log("No decks found in database, creating default empty deck");
       }
+
+      return deck;
     }).finally(() => {
       this.setSelectedDeck(deck);
+      return deck;
+    }).catch((error) => {
+      console.error(error);
+      return deck;
     });
+
+    return query;
   }
 
 
@@ -156,28 +178,28 @@ class DeckManager {
     });
   }
 
-    /**
-   * Pushes the given deck to the database and returns the id of the deck
-   * @param deck the deck to push to the database
-   * @returns the newly assigned id of the deck
-   */
-    private async pushDeckToDatabase(deck: Deck): Promise<string> {
-      const p = push(ref(database, "Decks/" + this.user.id), {
-        name: deck.name,
-        seeds: deck.seeds,
-        likedTracks: deck.likedTracks,
-        dislikedTracks: deck.dislikedTracks,
-        selected: true,
-      }).catch((error) => {
-        console.error(error);
-        return null;
-      }).then((ref) => {
-        const dbRef = ref as DatabaseReference;
-        const id = dbRef.key as string;
-        return id;
-      });
-      return p;
-    }
+  /**
+ * Pushes the given deck to the database and returns the id of the deck
+ * @param deck the deck to push to the database
+ * @returns the newly assigned id of the deck
+ */
+  private async pushDeckToDatabase(deck: Deck): Promise<string> {
+    const p = push(ref(database, "Decks/" + this.user.id), {
+      name: deck.name,
+      seeds: deck.seeds,
+      likedTracks: deck.likedTracks,
+      dislikedTracks: deck.dislikedTracks,
+      selected: true,
+    }).catch((error) => {
+      console.error(error);
+      return null;
+    }).then((ref) => {
+      const dbRef = ref as DatabaseReference;
+      const id = dbRef.key as string;
+      return id;
+    });
+    return p;
+  }
 
   public async getDeckFromDatabase(id: string): Promise<Deck | null> {
     const userId = this.user.id;
@@ -464,6 +486,8 @@ class DeckManager {
       track_number: track.track_number,
       type: track.type,
       uri: track.uri,
+    }).catch((error) => {
+      console.log(error);
     });
 
     this.selectedDeck.likedTracks.push(track);
@@ -492,6 +516,8 @@ class DeckManager {
       track_number: track.track_number,
       type: track.type,
       uri: track.uri,
+    }).catch((error) => {
+      console.log(error);
     });
 
     this.selectedDeck.dislikedTracks.push(track);
