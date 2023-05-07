@@ -87,9 +87,6 @@ class DeckManager {
       }
 
       return deck;
-    }).finally(() => {
-      this.setSelectedDeck(deck);
-      return deck;
     }).catch((error) => {
       console.error(error);
       return deck;
@@ -109,11 +106,15 @@ class DeckManager {
     //   });
     // }
 
-    this.selectedDeck.id = deck.id;
-    this.selectedDeck.name = deck.name;
-    this.selectedDeck.seeds = deck.seeds;
-    this.selectedDeck.likedTracks = deck.likedTracks;
-    this.selectedDeck.dislikedTracks = deck.dislikedTracks;
+    const newDeck = {
+      id: deck.id,
+      name: deck.name,
+      seeds: deck.seeds,
+      likedTracks: deck.likedTracks,
+      dislikedTracks: deck.dislikedTracks,
+    }
+
+    this.selectedDeck = newDeck;
 
     this.tracks = [];
 
@@ -169,12 +170,15 @@ class DeckManager {
       // Push new deck to database
       this.pushDeckToDatabase(newDeck).then((id) => {
         newDeck.id = id;
+
+        // Set new deck as selected deck
+        console.log("Setting selected deck: " + newDeck.name + "(" + newDeck.id + ")");
+        this.setSelectedDeck(newDeck);
       }).catch((error) => {
         console.error(error);
       });
 
-      // Set new deck as selected deck
-      this.setSelectedDeck(newDeck);
+
 
     }).catch((error) => {
       console.error(error);
