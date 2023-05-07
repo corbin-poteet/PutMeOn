@@ -83,7 +83,6 @@ const DeckScreen = () => {
 
     const deckList = await deckManager.getDecksFromDatabase().then((decks) => {
       setDeckss(decks);
-      console.log(decks);
 
       // list of decks to be rendered
       const deckList = decks.map((deck) => {
