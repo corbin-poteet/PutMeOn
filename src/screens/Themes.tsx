@@ -39,7 +39,13 @@ const Themes = () => {
     { id: '19', label: 'Atlantic', colors: ['#29527b', '#050c1c'] },
     { id: '20', label: 'Mint', colors: ['#008080', '#111'] },
     { id: '21', label: 'F1', colors: ['#a80707', '#2f6b2e'] },
-    { id: '22', label: 'Null', colors: ['#0000', '#0000'] },
+    { id: '22', label: 'Brick', colors: ['#a80707', '#a80707'] },
+    { id: '23', label: 'Aqua', colors: ['#29527b', '#29527b'] },
+    { id: '24', label: 'Pine', colors: ['#2f6b2e', '#2f6b2e'] },
+    { id: '25', label: 'Royalty', colors: ['#64155b', '#64155b'] },
+    { id: '25', label: 'Cocoa', colors: ['#512b18', '#512b18'] },
+    { id: '26', label: 'Tangerine', colors: ['#ff7303', '#ff7303'] },
+    { id: '27', label: 'Null', colors: ['#0000', '#0000'] },
   ];
 
   //@ts-ignore
