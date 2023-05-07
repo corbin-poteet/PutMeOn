@@ -48,30 +48,22 @@ const HomeScreen = () => {
   }, [konami]);
 
   React.useEffect(() => { //If user is looking at Home screen
+    console.log("ENTER USE EFFECTS, USER: "+user+" FOCUSED? "+isFocused)
     if (user && isFocused) {
+      setDeckLoaded(false) //Reset current deck selected status to catch deleted data
       if (user.images) {
         if (user.images.length > 0) {
           setUserImage(user.images[0].url)
         }
       }
-
+      console.log("MOVING TO CHECK DECKS")
       //setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
       checkDeck(); //Check for user's decks
     }
   }, [user, isFocused]);
-  
-  //React.useEffect(() => { //Load the selectedDeck upon spotify credentials loading, check user's current deck
-  //  if(loaded && user)
-  //    checkDeck();
-  //}, [loaded]);
-
-  //React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
-  //  if (loaded === true) {
-  //    setDeckLoaded(true);
-  //  }
-  //}, [selected])
 
   React.useEffect(() => {
+    console.log("DECK LOADED: "+currentDeck)
     if (deckLoaded === true) { //If decks are loaded, check user's current deck
       if (currentDeck === undefined) {
         console.log("MOVING TO DEMO") 
@@ -81,23 +73,30 @@ const HomeScreen = () => {
     }
   }, [deckLoaded]); //check for cached credentials so we know if this is first time load 
 
+  React.useEffect(() => {
+    console.log("Patchwork: "+currentDeck)
+    if (isFocused && user && deckLoaded === false) { //If decks are loaded, check user's current deck
+      setDeckLoaded(true)
+    }
+  }, [currentDeck]); //check for cached credentials so we know if this is first time load 
+
   async function checkDeck() {
     await get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
       if (snapshot.exists()) {
+        console.log("Setting selected deck in home")
         var value = snapshot.val();
         //@ts-ignore
         setSelectedPlaylist(value?.id); //set actual selected Deck value
         setCurrentDeck(value?.id); //set current deck use state
       } else {
-        set(ref(database, "Decks/" + user?.id +"/test"), { // temporary test value until playlists are unhooked from decks
-          name: "test"
-        });
+        //set(ref(database, "Decks/" + user?.id +"/test"), { // temporary test value until playlists are unhooked from decks
+        //  name: "test"
+        //});
+        console.log("FAILURE TO GET SELECTED DECK")
         setCurrentDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
         setCurrentDeck(undefined); //Ensures that we know the current deck doesn't exist, this is a new user
       }
     });
-
-    setDeckLoaded(true);
   }
 
   return (

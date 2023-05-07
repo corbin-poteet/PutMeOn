@@ -54,12 +54,13 @@ class DeckManager {
 
     console.log();
     console.log("==================== Querying Database ====================");
+    //let selectedDeck = this.getSelectedDeck(); //I added a get selected deck function
     this.getDecksFromDatabase().then((decks) => {
       if (decks.length > 0) {
         console.log("Found " + decks.length + " decks in database");
         console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
         console.log();
-        console.log("pulling from selected deck (first deck for now)");
+        console.log("pulling from selected deck (searching through loop for matching ID for now)");
         console.log();
         //const selectedId = /** query selected deck id */
         // const selected = decks.filter(deck => {
@@ -110,7 +111,7 @@ class DeckManager {
     this.addNewTracksFromSpotify(5);
 
     //const db = getDatabase();
-    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
+    const p = set(ref(database, "SelectedDecks/" + this.user?.id), {
       id: this.id
     });
 
@@ -124,7 +125,11 @@ class DeckManager {
 
   public async deleteData() {
     const db = getDatabase();
+    console.log("USER TO DELETE: "+this.user.id)
     await set(ref(db, "Decks/" + this.user.id), null).catch((error) => {
+      console.error(error);
+    });
+    await set(ref(db, "SelectedDecks/" + this.user.id), null).catch((error) => {
       console.error(error);
     });
   }
@@ -194,6 +199,19 @@ class DeckManager {
 
 
 
+  public async getSelectedDeck() {
+    const userId = this.user.id;
+    const db = getDatabase();
+    get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) =>{
+      if(snapshot.exists()) {
+        snapshot.forEach((deckEntry) => {
+          let deck = deckEntry.val();
+          return deck.id;
+        })
+      }
+    });
+    return "Error failed to retrieve selected deck";
+  }
 
   public async getDecksFromDatabase(): Promise<Deck[]> {
     const userId = this.user.id;
