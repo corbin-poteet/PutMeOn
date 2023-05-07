@@ -164,8 +164,8 @@ export const ThemeProvider = ({children}) => {
       ZABA: {
          topGradient: "#245c5d", 
          bottomGradient: "#432b48", 
-         topCard: "#3F3F3F",
-         bottomCard: "#000000", 
+         topCard: "#111",
+         bottomCard: "#3F3F3F", 
          button: "#efa71c",
          misc: "",
          logo: "#efa71c",
@@ -206,8 +206,8 @@ export const ThemeProvider = ({children}) => {
       Mint: {
          topGradient: "#008080",
          bottomGradient: "#001b1b", 
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
+         topCard: "#111",
+         bottomCard: "#3F3F3F",
          button: "#008080",
          misc: "",
          logo: "#FFFFFF",
