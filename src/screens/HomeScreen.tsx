@@ -20,24 +20,23 @@ import SwiperComponent from '@/common/components/SwiperComponent';
 import DeckManager from '@/common/components/DeckManager';
 import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 import useTheme from '@/common/hooks/useThemes';
+import { async } from '@firebase/util';
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
   const [konami, setKonami] = React.useState<number>(0);
   const { user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
-  const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
-  const [currentDeck, setCurrentDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
+  const { deckManager } = useDeckManager(); //Maintain deck manager
 
   const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
-  
-  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
+
   const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
-  
+
   const dbRef = ref(database); // load database
 
   React.useEffect(() => {
@@ -48,56 +47,29 @@ const HomeScreen = () => {
   }, [konami]);
 
   React.useEffect(() => { //If user is looking at Home screen
-    console.log("ENTER USE EFFECTS, USER: "+user+" FOCUSED? "+isFocused)
+    console.log("ENTER USE EFFECTS, USER: " + user + " FOCUSED? " + isFocused)
     if (user && isFocused) {
-      setDeckLoaded(false) //Reset current deck selected status to catch deleted data
       if (user.images) {
         if (user.images.length > 0) {
           setUserImage(user.images[0].url)
         }
       }
-      console.log("MOVING TO CHECK DECKS")
-      //setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
-      checkDeck(); //Check for user's decks
     }
   }, [user, isFocused]);
 
   React.useEffect(() => {
-    console.log("DECK LOADED: "+currentDeck)
-    if (deckLoaded === true) { //If decks are loaded, check user's current deck
-      if (currentDeck === undefined) {
-        console.log("MOVING TO DEMO") 
-        // @ts-ignore
-        navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
-      }
+    if (deckManager) {
+      deckManager.getDecksFromDatabase().then((decks) => {
+        if (decks.length > 0) {
+          console.log("MOVING TO DEMO")
+          // @ts-ignore
+          navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
+        }
+      }).catch((error) => {
+        console.log("ERROR GETTING DECKS: " + error)
+      })
     }
-  }, [deckLoaded]); //check for cached credentials so we know if this is first time load 
-
-  React.useEffect(() => {
-    console.log("Patchwork: "+currentDeck)
-    if (isFocused && user && deckLoaded === false) { //If decks are loaded, check user's current deck
-      setDeckLoaded(true)
-    }
-  }, [currentDeck]); //check for cached credentials so we know if this is first time load 
-
-  async function checkDeck() {
-    await get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
-      if (snapshot.exists()) {
-        console.log("Setting selected deck in home")
-        var value = snapshot.val();
-        //@ts-ignore
-        setSelectedPlaylist(value?.id); //set actual selected Deck value
-        setCurrentDeck(value?.id); //set current deck use state
-      } else {
-        //set(ref(database, "Decks/" + user?.id +"/test"), { // temporary test value until playlists are unhooked from decks
-        //  name: "test"
-        //});
-        console.log("FAILURE TO GET SELECTED DECK")
-        setCurrentDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
-        setCurrentDeck(undefined); //Ensures that we know the current deck doesn't exist, this is a new user
-      }
-    });
-  }
+  }, [deckManager]);
 
   return (
     //@ts-ignore
@@ -112,7 +84,7 @@ const HomeScreen = () => {
               if (audioPlayer) {
                 audioPlayer.pause();
               }
-              
+
               // @ts-ignore
               navigation.navigate('UserInfo')
             }
@@ -150,7 +122,7 @@ const HomeScreen = () => {
             }
           }>
             {/*@ts-ignore*/}
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].logo} />
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color={themes[selectedTheme].logo} />
           </TouchableOpacity>
         </View>
 

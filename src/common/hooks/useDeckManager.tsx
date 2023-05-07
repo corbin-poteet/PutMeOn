@@ -100,11 +100,11 @@ class DeckManager {
 
     console.log("Setting selected deck: " + deck.name + "(" + deck.id + ")");
 
-    if (this.selectedDeck.id) {
-      update(ref(database, "Decks/" + this.user.id + "/" + this.selectedDeck.id), {
-        selected: false
-      });
-    }
+    // if (this.selectedDeck.id) {
+    //   update(ref(database, "Decks/" + this.user.id + "/" + this.selectedDeck.id), {
+    //     selected: false
+    //   });
+    // }
 
     this.selectedDeck.id = deck.id;
     this.selectedDeck.name = deck.name;
