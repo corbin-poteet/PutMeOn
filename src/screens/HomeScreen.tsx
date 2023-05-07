@@ -58,9 +58,9 @@ const HomeScreen = () => {
   }, [user, isFocused]);
 
   React.useEffect(() => {
-    if (deckManager) {
+    if (deckManager && deckManager.isInitialized) {
       deckManager.getDecksFromDatabase().then((decks) => {
-        if (decks.length > 0) {
+        if (decks.length == 0) {
           console.log("MOVING TO DEMO")
           // @ts-ignore
           navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
@@ -130,7 +130,6 @@ const HomeScreen = () => {
         <View className='flex-1 items-center justify-center'>
           <View className='h-full w-full px-2 pt-1 pb-2'>
             <SwiperComponent />
-
           </View>
         </View>
       </SafeAreaView>

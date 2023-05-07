@@ -36,11 +36,14 @@ class DeckManager {
 
   selectedDeck!: Deck;
 
+  public isInitialized: boolean = false;
+
   constructor(public spotify?: SpotifyWebApi.SpotifyWebApiJs, public user?: any) {
 
     if (!spotify || !user) {
       return;
     }
+    this.isInitialized = true;
 
     this._spotify = spotify;
     this._user = user;
