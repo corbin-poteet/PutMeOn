@@ -28,13 +28,15 @@ const SwiperComponent = () => {
 
   const isFocused = useIsFocused();
 
-  const [cardIndex, setCardIndex] = React.useState<number>(0);
+  const [cardIndex, setCardIndex] = React.useState<number>(-1);
   const [speed] = React.useState<number>(25);
 
   const { audioPlayer } = useAudioPlayer();
   const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
+
+  const [currentDeckId, setCurrentDeckId] = React.useState<string>("");
 
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
@@ -77,15 +79,44 @@ const SwiperComponent = () => {
             setPlaybackDuration(playbackStatus.durationMillis);
 
             //delay(2000).then(() => {    
-              if (playbackStatus.isPlaying != isPlaying) {
-                setIsPlaying(!playbackStatus.isPlaying);
-              }
+            if (playbackStatus.isPlaying != isPlaying) {
+              setIsPlaying(!playbackStatus.isPlaying);
+            }
             //});
           }
         }
       );
     }
   }, [audioPlayer]);
+
+  React.useEffect(() => {
+    console.log("useEffect: " + deckManager.getTracks().length);
+
+
+    if (deckManager.getTracks().length > 0) {
+      if (cardIndex == -1) {
+        // Deck has been loaded for the first time
+        console.log("Deck has been initialized");
+        setCurrentDeckId(deckManager.selectedDeck.id);
+        setCardIndex(0);
+      } else if (currentDeckId != deckManager.selectedDeck.id) {
+        // Deck has been changed
+        console.log("Deck has been changed");
+        setCurrentDeckId(deckManager.selectedDeck.id);
+        setCardIndex(0);
+        // We have to call this here because it doesn't work in the useMemo below when called from here because fuck me i guess
+        setPlaybackPosition(0);
+        audioPlayer.setTrack(deckManager.getTracks()[cardIndex]).then(() => {
+          audioPlayer.play();
+        });
+      }
+    } else if (cardIndex != -1) {
+      // Deck has been emptied
+      console.log("Deck has been emptied");
+      setCurrentDeckId("");
+      setCardIndex(-1);
+    }
+  }, [deckManager.getTracks()]);
 
   React.useMemo(async () => {
     console.log("cardIndex: " + cardIndex);
