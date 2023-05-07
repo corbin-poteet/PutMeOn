@@ -122,6 +122,12 @@ class DeckManager {
     });
   }
 
+  public async deleteData() {
+    const db = getDatabase();
+    await set(ref(db, "Decks/" + this.user.id), null).catch((error) => {
+      console.error(error);
+    });
+  }
 
 
   /**
