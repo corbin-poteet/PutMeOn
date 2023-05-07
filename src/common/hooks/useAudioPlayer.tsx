@@ -58,12 +58,13 @@ class AudioPlayer {
     await this.sound.playAsync().then((playbackStatus) => {
       this.playbackStatus = playbackStatus;
       console.log("Playing preview: " + this.currentTrack.name);
+      this._isPlaying = true;
+
     }).catch((error) => {
       console.log(error);
     });
       
 
-    this._isPlaying = true;
   }
 
   async pause() {
