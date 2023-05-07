@@ -62,7 +62,7 @@ const SwiperComponent = () => {
       forceUpdate();
 
       if (isFocused) {
-        console.log("UPDATEDINRWONJKRFNJKREFBKREFN")
+        console.log("Focused Screen")
       }
 
     });

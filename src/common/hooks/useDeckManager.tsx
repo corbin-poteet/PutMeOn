@@ -150,7 +150,7 @@ class DeckManager {
     });
 
     //const db = getDatabase();
-    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
+    const p = set(ref(database, "SelectedDecks/" + this.user?.id), {
       id: this.id
     });
 
