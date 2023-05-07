@@ -43,9 +43,9 @@ const Themes = () => {
     { id: '23', label: 'Aqua', colors: ['#29527b', '#29527b'] },
     { id: '24', label: 'Pine', colors: ['#2f6b2e', '#2f6b2e'] },
     { id: '25', label: 'Royalty', colors: ['#64155b', '#64155b'] },
-    { id: '25', label: 'Cocoa', colors: ['#512b18', '#512b18'] },
-    { id: '26', label: 'Tangerine', colors: ['#ff7303', '#ff7303'] },
-    { id: '27', label: 'Null', colors: ['#0000', '#0000'] },
+    { id: '26', label: 'Cocoa', colors: ['#512b18', '#512b18'] },
+    { id: '27', label: 'Tangerine', colors: ['#ff7303', '#ff7303'] },
+    { id: '28', label: 'Null', colors: ['#0000', '#0000'] },
   ];
 
   //@ts-ignore
