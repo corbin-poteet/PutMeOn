@@ -68,6 +68,7 @@ const SettingsScreen = () => {
               width: 128,
               height: 65,
               resizeMode: 'contain',
+              //@ts-ignore
               tintColor: themes[selectedTheme].button
             }} />
 
@@ -86,6 +87,7 @@ const SettingsScreen = () => {
                 userImage !== null
                   ?
                   <View className='rounded-full' style={{ borderWidth: 0, borderColor: '#01b1f1' }}>
+                    {/*@ts-ignore*/}
                     <Image source={{ uri: userImage }} className="w-48 h-48 rounded-full" style={{ borderWidth: 5, borderColor: themes[selectedTheme].button }} />
                   </View>
                   :
@@ -126,8 +128,6 @@ const SettingsScreen = () => {
       </SafeAreaView>
     </LinearGradient >
   )
-
-
 }
 
 export default SettingsScreen

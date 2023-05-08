@@ -27,12 +27,14 @@ import SearchScreen from '@/screens/SearchScreen';
 import { FinishScreen, TutorialScreen, WelcomeScreen } from '@/screens/DemoScreen';
 import useAudioPlayer from '../hooks/useAudioPlayer';
 import Themes from '@/screens/Themes';
+import useTheme from '@/common/hooks/useThemes';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const Tab = () => { //Any screens that show the bottom navbar should be located here, not in the stack navigator
   const { audioPlayer } = useAudioPlayer();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
 
   async function pauseAudio() {
     if (audioPlayer) {
@@ -53,7 +55,8 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
         options={{
           tabBarLabel: 'Game',
           tabBarIcon: () =>
-            <FontAwesome name="gamepad" size={24} color="deepskyblue" />
+            //@ts-ignore
+            <FontAwesome name="gamepad" size={24} color={themes[selectedTheme].button} />
         }}
       />
       <Tabs.Screen name="Home" component={HomeScreen} listeners={
@@ -67,7 +70,8 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
         options={{
           tabBarLabel: 'Swipe',
           tabBarIcon: () =>
-            <MaterialCommunityIcons name="cards" size={24} color="deepskyblue" />
+            //@ts-ignore
+            <MaterialCommunityIcons name="cards" size={24} color={themes[selectedTheme].button} />
         }}
       />
       <Tabs.Screen name="Settings" component={SettingsScreen} listeners={
@@ -81,7 +85,8 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
         options={{
           tabBarLabel: 'Settings',
           tabBarIcon: () =>
-            <FontAwesome name="cog" size={24} color="deepskyblue" />
+            //@ts-ignore
+            <FontAwesome name="cog" size={24} color={themes[selectedTheme].button} />
         }}
       />
     </Tabs.Navigator>
