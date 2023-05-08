@@ -75,7 +75,7 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#a80707",
          bottomGradient: "#0d0101",
          topCard: "#210502",
-         bottomCard: "#4d0f08",
+         bottomCard: "#67150c",
          button: "#a80707",
          misc: "",
          logo: "#FFFFFF",
@@ -191,18 +191,16 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
-      
       Atlantic: {
          topGradient: "#29527b", 
          bottomGradient: "#08121a", 
-         topCard: "#030e14",
-         bottomCard: "#0a2b3e",
+         topCard: "#071d29",
+         bottomCard: "#0c3045",
          button: "#29527b",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
-
       Mint: {
          topGradient: "#008080",
          bottomGradient: "#001b1b", 
@@ -213,7 +211,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
-
       F1: {
          topGradient: "#a80707",
          bottomGradient: "#FFFFFF", 
@@ -224,7 +221,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Aqua: {
          topGradient: "#29527b",
          bottomGradient: "#29527b", 
@@ -235,7 +231,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Brick: {
          topGradient: "#a80707",
          bottomGradient: "#a80707", 
@@ -246,7 +241,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Pine: {
          topGradient: "#2f6b2e",
          bottomGradient: "#2f6b2e", 
@@ -257,7 +251,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Royalty: {
          topGradient: "#64155b",
          bottomGradient: "#64155b", 
@@ -268,7 +261,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Cocoa: {
          topGradient: "#512b18",
          bottomGradient: "#512b18", 
@@ -279,7 +271,6 @@ export const ThemeProvider = ({children}) => {
          logo: "#FFFFFF",
          text: "#FFFFFF",
       },
-
       Tangerine: {
          topGradient: "#ff7303",
          bottomGradient: "#ff7303", 
@@ -289,8 +280,7 @@ export const ThemeProvider = ({children}) => {
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF",
-      },
-      
+      },    
       Null: {
          topGradient: "#000000", 
          bottomGradient: "#000000", 
