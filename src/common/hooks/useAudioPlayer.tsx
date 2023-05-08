@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { Audio, AVPlaybackStatus, AVPlaybackStatusSuccess } from "expo-av";
+import { Audio, AVPlaybackStatus } from "expo-av";
 import React from 'react';
 
 class AudioPlayer {
@@ -49,29 +49,24 @@ class AudioPlayer {
   }
 
   async play() {
-
-    if (!this.sound._loaded)
-    {
-      console.log("Sound not loaded");        
+    if (!this.sound._loaded) {
+      console.log("Sound not loaded");
     }
 
     await this.sound.playAsync().then((playbackStatus) => {
       this.playbackStatus = playbackStatus;
       console.log("Playing preview: " + this.currentTrack.name);
       this._isPlaying = true;
-
     }).catch((error) => {
       console.log(error);
     });
-      
-
   }
 
   async pause() {
     await this.sound.pauseAsync()
       .catch((error) => {
-      console.log(error);
-    });
+        console.log(error);
+      });
 
     this._isPlaying = false;
   }
@@ -79,15 +74,15 @@ class AudioPlayer {
   async stop() {
     await this.sound.stopAsync()
       .catch((error) => {
-      console.log(error);
-    });
+        console.log(error);
+      });
 
     this._isPlaying = false;
 
     await this.sound.unloadAsync()
       .catch((error) => {
-      console.log(error);
-    });
+        console.log(error);
+      });
   }
 
   async playPause() {
