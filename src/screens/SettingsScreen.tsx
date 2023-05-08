@@ -9,6 +9,8 @@ import SettingsButton from '@/common/components/SettingsButton';
 import { FontAwesome5 } from '@expo/vector-icons';
 import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 import useDeckManager from '@/common/hooks/useDeckManager';
+import useTheme from '@/common/hooks/useThemes';
+
 
 //Settings tab
 
@@ -18,6 +20,8 @@ const SettingsScreen = () => {
   const { user, logout } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
   const { deckManager } = useDeckManager();
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -61,7 +65,7 @@ const SettingsScreen = () => {
               width: 128,
               height: 65,
               resizeMode: 'contain',
-              tintColor: '#01b1f1'
+              tintColor: themes[selectedTheme].button
             }} />
 
             {/* Settings Button (but it's just an icon, button functionality removed)*/}
@@ -78,8 +82,8 @@ const SettingsScreen = () => {
               {
                 userImage !== null
                   ?
-                  <View className='rounded-full' style={{ borderWidth: 6, borderColor: '#01b1f1' }}>
-                    <Image source={{ uri: userImage }} className="w-48 h-48 rounded-full" style={{ borderWidth: 4, borderColor: 'white' }} />
+                  <View className='rounded-full' style={{ borderWidth: 0, borderColor: '#01b1f1' }}>
+                    <Image source={{ uri: userImage }} className="w-48 h-48 rounded-full" style={{ borderWidth: 5, borderColor: themes[selectedTheme].button }} />
                   </View>
                   :
                   <View>

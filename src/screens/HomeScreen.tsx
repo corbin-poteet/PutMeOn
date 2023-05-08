@@ -91,7 +91,7 @@ const HomeScreen = () => {
             {
               userImage !== null //Sets user image, if one exists, otherwise uses default blank image
                 ?
-                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
+                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: themes[selectedTheme].logo }} />
                 :
                 <View>
                   <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
