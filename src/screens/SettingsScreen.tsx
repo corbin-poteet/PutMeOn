@@ -43,7 +43,10 @@ const SettingsScreen = () => {
       Alert.alert("Data Deleted", "All of your data has been deleted.", [
         {
           text: "OK",
-          onPress: () => {}
+          onPress: () => {
+            //@ts-ignore
+            navigation.navigate('Decks')
+          }
         }
       ]);
     });

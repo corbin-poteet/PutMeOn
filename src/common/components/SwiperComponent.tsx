@@ -53,7 +53,7 @@ const SwiperComponent = () => {
       console.log(deckManager.getTracks.length);
     }
 
-    delay(1000).then(() => {
+    delay(2000).then(() => {
       forceUpdate();
     });
   }, [isFocused]);

@@ -194,9 +194,9 @@ export const ThemeProvider = ({children}) => {
       
       Atlantic: {
          topGradient: "#29527b", 
-         bottomGradient: "#08121a", 
-         topCard: "#030e14",
-         bottomCard: "#0a2b3e",
+         bottomGradient: "#050a0f", 
+         topCard: "#02080b",
+         bottomCard: "#0a2736",
          button: "#29527b",
          misc: "",
          logo: "#FFFFFF",

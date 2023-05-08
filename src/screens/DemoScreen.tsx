@@ -69,10 +69,10 @@ const WelcomeScreen = () => {
                 </Animated.View>
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
-                <TouchableOpacity className='flex-row px-12 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
+                <TouchableOpacity className='flex-row px-8 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
                     // @ts-ignore
                     onPress={() => { navigation.navigate('Tutorial') }}>
-                    <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={50} color="white" />
+                    <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={35} color="white" />
                 </TouchableOpacity>
             </Animated.View>
         </LinearGradient>
@@ -137,10 +137,10 @@ const TutorialScreen = () => {
                 </Animated.View>
             </View>
             <Animated.View style={{ opacity: fadeAnimThree, alignItems: 'center' }}>
-                <TouchableOpacity className='flex-row px-12 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
+                <TouchableOpacity className='flex-row px-8 py-1 m-2 rounded-3xl absolute bottom-10' style={{ backgroundColor: '#014871' }}
                     // @ts-ignore
                     onPress={() => { navigation.navigate('Finish') }}>
-                    <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={50} color="white" />
+                    <AntDesign style={{ marginRight: 12, marginLeft: 12 }} name="arrowright" size={35} color="white" />
                 </TouchableOpacity>
             </Animated.View>
         </LinearGradient>
