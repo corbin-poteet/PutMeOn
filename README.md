@@ -1,6 +1,6 @@
 # PutMeOn
 
-Beta 0.9.8 - The Put it away update
+Release 1.0 - The Put It Together update
 
 ### A music recommendation application
 
