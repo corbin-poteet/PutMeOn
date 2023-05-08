@@ -12,6 +12,8 @@ import SelectedSeed from '@/common/components/SelectedSeed';
 import { Tab } from '@rneui/themed';
 import ArtistSearchResult from '@/common/components/ArtistSearchResult';
 import SelectedArtistSeed from '@/common/components/SelectedArtistSeed';
+import useTheme from '@/common/hooks/useThemes';
+
 //👌😂👌 🔥 🔥 🔥
 
 var output: any[] = [];
@@ -35,6 +37,8 @@ const SearchScreen = () => {
   const [selectedSeedComponents, setSelectedSeedComponents] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
   const [searching, setSearching] = useState<boolean>(false); //keeps track of whether or not the user is actively searching
   const [index, setIndex] = React.useState(0);
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -225,7 +229,9 @@ const SearchScreen = () => {
             />
             {searching ?
               <View>
-                <Tab value={index} onChange={(e) => setIndex(e)} indicatorStyle={{ backgroundColor: '#01b1f1', height: 3 }} variant="default">
+                <Tab value={index} onChange={(e) => setIndex(e)} indicatorStyle={{ 
+                  //ts-ignore
+                  backgroundColor: themes[selectedTheme].button, height: 3 }} variant="default">
                   <Tab.Item title="Tracks" titleStyle={{ fontSize: 12, color: 'black' }} icon={{ name: 'music-note-quarter', type: 'material-community', color: 'black' }} />
                   <Tab.Item title="Artists" titleStyle={{ fontSize: 12, color: 'black' }} icon={{ name: 'account-music', type: 'material-community', color: 'black' }} />
                 </Tab>
@@ -260,7 +266,7 @@ const SearchScreen = () => {
                   setDialogVisible(true);
                 }}
                 style={{ alignSelf: 'center', width: '50%', marginVertical: 10 }}
-                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length >= 5}
+                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length > 5}
                 buttonStyle={{ backgroundColor: '#01b1f1', borderRadius: 30 }}
               />
             </View>
