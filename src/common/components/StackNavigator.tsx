@@ -54,6 +54,10 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
       }
         options={{
           tabBarLabel: 'Game',
+          //@ts-ignore
+          tabBarActiveTintColor: themes[selectedTheme].button,
+          //@ts-ignore
+          tabBarInactiveTintColor: themes[selectedTheme].bottomCard,
           tabBarIcon: () =>
             //@ts-ignore
             <FontAwesome name="gamepad" size={24} color={themes[selectedTheme].button} />
@@ -69,6 +73,10 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
       }
         options={{
           tabBarLabel: 'Swipe',
+          //@ts-ignore
+          tabBarActiveTintColor: themes[selectedTheme].button,
+          //@ts-ignore
+          tabBarInactiveTintColor: themes[selectedTheme].bottomCard,
           tabBarIcon: () =>
             //@ts-ignore
             <MaterialCommunityIcons name="cards" size={24} color={themes[selectedTheme].button} />
@@ -84,6 +92,10 @@ const Tab = () => { //Any screens that show the bottom navbar should be located 
       }
         options={{
           tabBarLabel: 'Settings',
+          //@ts-ignore
+          tabBarActiveTintColor: themes[selectedTheme].button,
+          //@ts-ignore
+          tabBarInactiveTintColor: themes[selectedTheme].bottomCard,
           tabBarIcon: () =>
             //@ts-ignore
             <FontAwesome name="cog" size={24} color={themes[selectedTheme].button} />
