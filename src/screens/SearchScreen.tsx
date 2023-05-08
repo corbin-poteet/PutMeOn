@@ -260,7 +260,7 @@ const SearchScreen = () => {
                   setDialogVisible(true);
                 }}
                 style={{ alignSelf: 'center', width: '50%', marginVertical: 10 }}
-                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length >= 5}
+                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length > 5}
                 buttonStyle={{ backgroundColor: '#01b1f1', borderRadius: 30 }}
               />
             </View>
