@@ -19,7 +19,7 @@ export const ThemeProvider = ({children}) => {
          button: "#01b1f1",
          misc: "",
          logo: "#01b1f1",
-         text: "#5A5A5A"
+         text: "#444444"
         },
       Classic: {
          topGradient: "#014871",
@@ -27,16 +27,6 @@ export const ThemeProvider = ({children}) => {
          topCard: "#183454",
          bottomCard: "#071c2a",
          button: "#014871",
-         misc: "",
-         logo: "#FFFFFF",
-         text: "#FFFFFF"
-        },
-      PMOBlue: {
-         topGradient: "#abc7f7",
-         bottomGradient: "#005eff",
-         topCard: "#3F3F3F",
-         bottomCard: "#000000",
-         button: "#abc7f7",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
@@ -54,8 +44,8 @@ export const ThemeProvider = ({children}) => {
       Mango: {
          topGradient: "#ff8c00",
          bottomGradient: "#4b941b",
-         topCard: "#824324",
-         bottomCard: "#3d0f04",
+         topCard: "#512b18",
+         bottomCard: "#2a0a03",
          button: "#ff8c00",
          misc: "",
          logo: "#FFFFFF",
@@ -63,10 +53,10 @@ export const ThemeProvider = ({children}) => {
         },
       Lemon: {
          topGradient: "#f5cc00",
-         bottomGradient: "#2f6b2e",
-         topCard: "#4a653c",
-         bottomCard: "#a7c989",
-         button: "#f5cc00",
+         bottomGradient: "#605000",
+         topCard: "#2f6b2e",
+         bottomCard: "#184318",
+         button: "#2f6b2e",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
@@ -75,7 +65,7 @@ export const ThemeProvider = ({children}) => {
          topGradient: "#8f34eb",
          bottomGradient: "#eb7434",
          topCard: "#3F3F3F",
-         bottomCard: "#111",
+         bottomCard: "#000000",
          button: "#8f34eb",
          misc: "",
          logo: "#FFFFFF",
@@ -83,9 +73,9 @@ export const ThemeProvider = ({children}) => {
         },
       Firestone: {
          topGradient: "#a80707",
-         bottomGradient: "#210502",
-         topCard: "#3d0000",
-         bottomCard: "#a80707",
+         bottomGradient: "#0d0101",
+         topCard: "#210502",
+         bottomCard: "#67150c",
          button: "#a80707",
          misc: "",
          logo: "#FFFFFF",
@@ -93,25 +83,25 @@ export const ThemeProvider = ({children}) => {
         },
       Volcano: {
          topGradient: "#e35e40",
-         bottomGradient: "#3d0f04",
-         topCard: "#3F3F3F",
-         bottomCard: "#6f2e2d",
-         button: "",
+         bottomGradient: "#24100b",
+         topCard: "#3d0f04",
+         bottomCard: "#611908",
+         button: "#750000",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
         },
-      Legacy: {
-         topGradient: "#696969",
-         bottomGradient: "#696969",
+      Channel: {
+         topGradient: "#ff7303",
+         bottomGradient: "#482000",
          topCard: "#3F3F3F",
-         bottomCard: "#3F3F3F",
-         button: "#82f252",
+         bottomCard: "#000000",
+         button: "#ff7303",
          misc: "",
-         logo: "#82f252",
-         text: "#82f252"
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
         },
-      Highcon: {
+      Contrast: {
          topGradient: "#000000",
          bottomGradient: "#000000",
          topCard: "#000000",
@@ -119,36 +109,6 @@ export const ThemeProvider = ({children}) => {
          button: "#0000ff",
          misc: "",
          logo: "#0000ff",
-         text: "#FFFFFF"
-      },
-      Midnight: {
-         topGradient: "#000000",
-         bottomGradient: "#000032",
-         topCard: "#1f1f1f",
-         bottomCard: "#121212",
-         button: "#2f2f2f",
-         misc: "",
-         logo: "#FFFFFF",
-         text: "#FFFFFF"
-      },
-      Spectre: {
-         topGradient: "#5b9a48", 
-         bottomGradient: "#1a3c0f", 
-         topCard: "#000000", 
-         bottomCard: "#0000", //Nick here, I found that leaving an incomplete hex value for the bottom gradient makes it transparent
-         button: "#5b9a48",
-         misc: "",
-         logo: "#5b9a48",
-         text: "#FFFFFF"
-      },
-      Desktop: {
-         topGradient: "#8dbcf4", 
-         bottomGradient: "#6e9123", 
-         topCard: "#1061cc", 
-         bottomCard: "#3e8ae8", 
-         button: "#198e19",
-         misc: "",
-         logo: "#FFFFFF",
          text: "#FFFFFF"
       },
       Kokomo: {
@@ -168,15 +128,55 @@ export const ThemeProvider = ({children}) => {
          bottomCard: "#0a0433", 
          button: "#f900f5",
          misc: "",
-         logo: "#fcb906",
+         logo: "#03e7fb",
          text: "#03e7fb"
       },
-      Gilded: {
-         topGradient: "#ffb302", 
-         bottomGradient: "#7a5e39", 
-         topCard: "#aa6c39",  
-         bottomCard: "#b8860b", 
-         button: "#b8860b",
+      Midnight: {
+         topGradient: "#000000",
+         bottomGradient: "#1541d8",
+         topCard: "#1f1f1f",
+         bottomCard: "#000000",
+         button: "#1f1f1f",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Spectre: {
+         topGradient: "#5b9a48", 
+         bottomGradient: "#1a3c0f", 
+         topCard: "#000000", 
+         bottomCard: "#0000", //Nick here, I found that leaving an incomplete hex value for the bottom gradient makes it transparent
+         button: "#5b9a48",
+         misc: "",
+         logo: "#5b9a48",
+         text: "#FFFFFF"
+      },
+      Desktop: {
+         topGradient: "#8dbcf4", 
+         bottomGradient: "#6e9123", 
+         topCard: "#1061cc", 
+         bottomCard: "#3e8ae8", 
+         button: "#1061cc",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      ZABA: {
+         topGradient: "#245c5d", 
+         bottomGradient: "#432b48", 
+         topCard: "#111",
+         bottomCard: "#3F3F3F", 
+         button: "#efa71c",
+         misc: "",
+         logo: "#efa71c",
+         text: "#FFFFFF"
+      },
+      RAM: {
+         topGradient: "#000000", 
+         bottomGradient: "#282828", 
+         topCard: "#b89900",
+         bottomCard: "#625100",
+         button: "#808080",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
@@ -184,13 +184,103 @@ export const ThemeProvider = ({children}) => {
       Ink: {
          topGradient: "#000000", 
          bottomGradient: "#000000", 
-         topCard: "#000000",  
-         bottomCard: "#000000", 
-         button: "#2f2f2f",
+         topCard: "#3F3F3F",
+         bottomCard: "#3F3F3F",
+         button: "#808080",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
       },
+      Atlantic: {
+         topGradient: "#29527b", 
+         bottomGradient: "#08121a", 
+         topCard: "#071d29",
+         bottomCard: "#0c3045",
+         button: "#29527b",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      Mint: {
+         topGradient: "#008080",
+         bottomGradient: "#001b1b", 
+         topCard: "#111",
+         bottomCard: "#3F3F3F",
+         button: "#008080",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF"
+      },
+      F1: {
+         topGradient: "#a80707",
+         bottomGradient: "#FFFFFF", 
+         topCard: "#2f6b2e",
+         bottomCard: "#184318",
+         button: "#2f6b2e",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Aqua: {
+         topGradient: "#29527b",
+         bottomGradient: "#29527b", 
+         topCard: "#3F3F3F",
+         button: "#3F3F3F",
+         bottomCard: "#000000",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Brick: {
+         topGradient: "#a80707",
+         bottomGradient: "#a80707", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#3F3F3F",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Pine: {
+         topGradient: "#2f6b2e",
+         bottomGradient: "#2f6b2e", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#3F3F3F",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Royalty: {
+         topGradient: "#64155b",
+         bottomGradient: "#64155b", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#3F3F3F",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Cocoa: {
+         topGradient: "#512b18",
+         bottomGradient: "#512b18", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#3F3F3F",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },
+      Tangerine: {
+         topGradient: "#ff7303",
+         bottomGradient: "#ff7303", 
+         topCard: "#3F3F3F",
+         bottomCard: "#000000",
+         button: "#3F3F3F",
+         misc: "",
+         logo: "#FFFFFF",
+         text: "#FFFFFF",
+      },    
       Null: {
          topGradient: "#000000", 
          bottomGradient: "#000000", 

@@ -150,12 +150,15 @@ const GameScreen = () => {
   }
 
   return (
+    // @ts-ignore
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={[themes[selectedTheme].topGradient, themes[selectedTheme].bottomGradient]} style={{ flex: 1, justifyContent: 'flex-start' }}>
       <View className='flex-1 items-center flex-1'>
+        {/*@ts-ignore*/}
         <Text style={{color: themes[selectedTheme].text}}className='text-4xl text-center px-1 my-16 font-bold'>Round {round}</Text>
       </View>
       {!(loaded) ?
         <View className='flex-1 justify-center'>
+          {/*@ts-ignore*/}
           <ActivityIndicator size="large" color={themes[selectedTheme].text} />
         </View>
         :
@@ -175,12 +178,14 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
+                  // @ts-ignore
                   style = {{color: themes[selectedTheme].text}}
                   className='text-2xl font-bold'>{(questionType == 'name') ? '???????' : correctTrack?.name}
                 </TextTicker>
               </View>
               {/* Artist Name */}
               <View className='flex-row items-center opacity-80 px-2'>
+                {/*@ts-ignore*/}
                 <FontAwesome5 name="user-alt" size={16} color = {themes[selectedTheme].text}  />
                 <TextTicker
                   scrollSpeed={speed}
@@ -189,6 +194,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
+                  // @ts-ignore
                   style = {{color: themes[selectedTheme].text}}
                   className='px-2 text-xl font-bold'>
                   {(questionType == 'artist name') ? '???????' : correctTrack?.artists?.map((artist: any) => artist?.name).join(', ')}
@@ -196,6 +202,7 @@ const GameScreen = () => {
               </View>
               {/* Album Name */}
               <View className='flex-row items-center opacity-80 px-2'>
+                {/*@ts-ignore*/}
                 <FontAwesome5 name="compact-disc" size={16} color = {themes[selectedTheme].text} />
                 <TextTicker
                   scrollSpeed={speed}
@@ -204,6 +211,7 @@ const GameScreen = () => {
                   animationType={'scroll'}
                   easing={Easing.linear}
                   repeatSpacer={25}
+                  // @ts-ignore
                   style = {{color: themes[selectedTheme].text}}
                   className='px-2 text-xl font-bold'>{(questionType == 'album name') ? '???????' : correctTrack?.album?.name}
                 </TextTicker>
@@ -213,10 +221,12 @@ const GameScreen = () => {
             {/*Question*/}
             <View className='flex-1 justify-center items-center'>
               <Text 
+                // @ts-ignore
                 style = {{color: themes[selectedTheme].text}} 
                 className='p-2 text-3xl font-bold'>What is the {questionType} for this track?</Text>
 
               {/*Button choices*/}
+              {/*@ts-ignore*/}
               <TouchableOpacity className="flex-row items-center justify-center my-2 px-8 rounded-3xl" style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(0); }}>
                 <Text numberOfLines={1}
@@ -224,6 +234,7 @@ const GameScreen = () => {
                 </Text>
               </TouchableOpacity>
 
+              {/*@ts-ignore*/}
               <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(1); }}>
                 <Text numberOfLines={1}
@@ -231,6 +242,7 @@ const GameScreen = () => {
                 </Text>
               </TouchableOpacity>
 
+              {/*@ts-ignore*/}
               <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(2); }}>
                 <Text numberOfLines={1}
@@ -238,6 +250,7 @@ const GameScreen = () => {
                 </Text>
               </TouchableOpacity>
 
+              {/*@ts-ignore*/}
               <TouchableOpacity className='flex-row items-center justify-center my-2 px-8 rounded-3xl' style={{ backgroundColor: themes[selectedTheme].button }}
                 onPress={() => { handleChoice(3); }}>
                 <Text numberOfLines={1}

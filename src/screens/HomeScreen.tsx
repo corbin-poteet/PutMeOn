@@ -20,24 +20,23 @@ import SwiperComponent from '@/common/components/SwiperComponent';
 import DeckManager from '@/common/components/DeckManager';
 import useAudioPlayer from '@/common/hooks/useAudioPlayer';
 import useTheme from '@/common/hooks/useThemes';
+import { async } from '@firebase/util';
+import useDeckManager from '@/common/hooks/useDeckManager';
 
 const HomeScreen = () => {
   const navigation = useNavigation(); //Establish stack navigation
   const [konami, setKonami] = React.useState<number>(0);
   const { user } = useAuth();
   const [userImage, setUserImage] = React.useState<string | null>(null);
-  const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [deckLoaded, setDeckLoaded] = React.useState<boolean>(false);
-  const [currentDeck, setCurrentDeck] = React.useState<string>();
   const isFocused = useIsFocused() //Checks if screen is being looked at
+  const { deckManager } = useDeckManager(); //Maintain deck manager
 
   const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
-  
-  const { selectedPlaylist, setSelectedPlaylist } = useContext(gameContext); //Maintain selected playlists
+
   const { audioPlayer } = useAudioPlayer(); //Maintain audio player
 
   var tracks: any | any[] = [];
-  
+
   const dbRef = ref(database); // load database
 
   React.useEffect(() => {
@@ -54,51 +53,22 @@ const HomeScreen = () => {
           setUserImage(user.images[0].url)
         }
       }
-
-      //setLoaded(true) //We know spotify user credentials are loaded whenever the user is loaded
-      checkDeck(); //Check for user's decks
     }
   }, [user, isFocused]);
-  
-  //React.useEffect(() => { //Load the selectedDeck upon spotify credentials loading, check user's current deck
-  //  if(loaded && user)
-  //    checkDeck();
-  //}, [loaded]);
-
-  //React.useEffect(() => { //Once our deck query is attempted (after loaded, when selectedDeck is altered)
-  //  if (loaded === true) {
-  //    setDeckLoaded(true);
-  //  }
-  //}, [selected])
 
   React.useEffect(() => {
-    if (deckLoaded === true) { //If decks are loaded, check user's current deck
-      if (currentDeck === undefined) {
-        console.log("MOVING TO DEMO") 
-        // @ts-ignore
-        navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
-      }
+    if (deckManager && deckManager.isInitialized) {
+      deckManager.getDecksFromDatabase().then((decks) => {
+        if (decks.length == 0) {
+          console.log("MOVING TO DEMO")
+          // @ts-ignore
+          navigation.navigate('Welcome'); //No selected deck in DB means that the user is brand new, send them to the demo!
+        }
+      }).catch((error) => {
+        console.log("ERROR GETTING DECKS: " + error)
+      })
     }
-  }, [deckLoaded]); //check for cached credentials so we know if this is first time load 
-
-  async function checkDeck() {
-    await get(child(dbRef, "SelectedDecks/" + user?.id)).then((snapshot) => { //When User is obtained, establish database array
-      if (snapshot.exists()) {
-        var value = snapshot.val();
-        //@ts-ignore
-        setSelectedPlaylist(value?.id); //set actual selected Deck value
-        setCurrentDeck(value?.id); //set current deck use state
-      } else {
-        set(ref(database, "Decks/" + user?.id +"/test"), { // temporary test value until playlists are unhooked from decks
-          name: "test"
-        });
-        setCurrentDeck("failed_db_connection"); //I hate this. It is needed to ensure navigation to the demo screen.
-        setCurrentDeck(undefined); //Ensures that we know the current deck doesn't exist, this is a new user
-      }
-    });
-
-    setDeckLoaded(true);
-  }
+  }, [deckManager]);
 
   return (
     //@ts-ignore
@@ -113,7 +83,7 @@ const HomeScreen = () => {
               if (audioPlayer) {
                 audioPlayer.pause();
               }
-              
+
               // @ts-ignore
               navigation.navigate('UserInfo')
             }
@@ -121,7 +91,7 @@ const HomeScreen = () => {
             {
               userImage !== null //Sets user image, if one exists, otherwise uses default blank image
                 ?
-                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
+                <Image source={{ uri: userImage }} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: themes[selectedTheme].logo }} />
                 :
                 <View>
                   <Image source={require('@assets/blank_user.png')} className="w-10 h-10 rounded-full" style={{ borderWidth: 2, borderColor: 'black' }} />
@@ -151,7 +121,7 @@ const HomeScreen = () => {
             }
           }>
             {/*@ts-ignore*/}
-            <MaterialCommunityIcons className='' name="cards-outline" size={40} color = {themes[selectedTheme].logo} />
+            <MaterialCommunityIcons className='' name="cards-outline" size={40} color={themes[selectedTheme].logo} />
           </TouchableOpacity>
         </View>
 
@@ -159,7 +129,6 @@ const HomeScreen = () => {
         <View className='flex-1 items-center justify-center'>
           <View className='h-full w-full px-2 pt-1 pb-2'>
             <SwiperComponent />
-
           </View>
         </View>
       </SafeAreaView>

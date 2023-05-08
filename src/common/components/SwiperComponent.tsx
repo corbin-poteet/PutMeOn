@@ -36,35 +36,25 @@ const SwiperComponent = () => {
   const [playbackPosition, setPlaybackPosition] = React.useState<number>(0);
   const [playbackDuration, setPlaybackDuration] = React.useState<number>(0);
 
+  const [currentDeckId, setCurrentDeckId] = React.useState<string>("");
+
   const [, updateState] = React.useState<any>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
-
 
   async function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+
   // this is hacky as fuck but it works for now to rerender
   React.useEffect(() => {
-
-    //setIsPlaying(!audioPlayer.isPlaying());
-    //console.log(!audioPlayer.isPlaying());
-    //forceUpdate();
-
     if (isFocused) {
       setIsPlaying(true);
       forceUpdate();
+      console.log(deckManager.getTracks.length);
     }
 
-
-
-
-    delay(1000).then(() => {
+    delay(2000).then(() => {
       forceUpdate();
-
-      if (isFocused) {
-        console.log("UPDATEDINRWONJKRFNJKREFBKREFN")
-      }
-
     });
   }, [isFocused]);
 
@@ -77,15 +67,41 @@ const SwiperComponent = () => {
             setPlaybackDuration(playbackStatus.durationMillis);
 
             //delay(2000).then(() => {    
-              if (playbackStatus.isPlaying != isPlaying) {
-                setIsPlaying(!playbackStatus.isPlaying);
-              }
+            if (playbackStatus.isPlaying != isPlaying) {
+              setIsPlaying(!playbackStatus.isPlaying);
+            }
             //});
           }
         }
       );
     }
   }, [audioPlayer]);
+
+  React.useEffect(() => {
+    if (deckManager.getTracks().length > 0) {
+      if (cardIndex == -1) {
+        // Deck has been loaded for the first time
+        console.log("Deck has been initialized");
+        setCurrentDeckId(deckManager.selectedDeck.id);
+        setCardIndex(0);
+      } else if (currentDeckId != deckManager.selectedDeck.id) {
+        // Deck has been changed
+        console.log("Deck has been changed");
+        setCurrentDeckId(deckManager.selectedDeck.id);
+        setCardIndex(0);
+        // We have to call this here because it doesn't work in the useMemo below when called from here because fuck me i guess
+        setPlaybackPosition(0);
+        audioPlayer.setTrack(deckManager.getTracks()[cardIndex]).then(() => {
+          audioPlayer.play();
+        });
+      }
+    } else if (cardIndex != -1) {
+      // Deck has been emptied
+      console.log("Deck has been emptied");
+      setCurrentDeckId("");
+      setCardIndex(-1);
+    }
+  }, [deckManager.getTracks()]);
 
   React.useMemo(async () => {
     setPlaybackPosition(0);
@@ -111,6 +127,7 @@ const SwiperComponent = () => {
           renderCard={(track: SpotifyApi.TrackObjectFull) => renderCard(track)}
         />
       ) : (
+        //@ts-ignore
         <ActivityIndicator size="large" color={themes[selectedTheme].text} />
       )}
     </View>
@@ -209,7 +226,9 @@ const SwiperComponent = () => {
                       totalDuration={
                         Math.ceil(playbackDuration / 1000)
                       }
+                      //@ts-ignore
                       trackColor={themes[selectedTheme].logo}
+                      //@ts-ignore
                       scrubbedColor={themes[selectedTheme].logo}
                     />
                   </View>

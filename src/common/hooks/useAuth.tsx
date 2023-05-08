@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { Platform } from "react-native";
 import {
-  AuthRequestPromptOptions,
-  makeRedirectUri,
   Prompt,
   ResponseType,
   useAuthRequest,

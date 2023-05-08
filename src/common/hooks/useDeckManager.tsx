@@ -13,6 +13,7 @@ export type Seed = {
   id: string
   name: string,
   type: SeedType,
+  image: string,
 }
 
 export type Deck = {
@@ -34,54 +35,65 @@ class DeckManager {
 
   tracks: SpotifyApi.TrackObjectFull[] = [];
 
-  id: string = "";
-  name: string = "";
-  seeds: Seed[] = [];
-  likedTracks: SpotifyApi.TrackObjectFull[] = [];
-  dislikedTracks: SpotifyApi.TrackObjectFull[] = [];
+  selectedDeck!: Deck;
+
+  public isInitialized: boolean = false;
 
   constructor(public spotify?: SpotifyWebApi.SpotifyWebApiJs, public user?: any) {
 
     if (!spotify || !user) {
       return;
     }
-
-    console.log("CONSTRUCTING DECK MANAGER");
-
+    this.isInitialized = true;
 
     this._spotify = spotify;
     this._user = user;
 
+    this.initializeSelectedDeck().then((deck) => {
+      this.setSelectedDeck(deck);
+    }).catch((error) => {
+      console.error(error);
+    });
+
+  }
+
+  /**
+   * Initializes the selected deck by querying the database for the selected deck.
+   * If no selected deck is found, the user's first deck is selected.
+   * If no deck is found, a default empty deck is created and selected.
+   */
+  public async initializeSelectedDeck(): Promise<Deck> {
+    // Set the selected deck
+    var deck: Deck = {
+      id: "",
+      name: "",
+      seeds: [],
+      likedTracks: [],
+      dislikedTracks: []
+    };
+
     console.log();
     console.log("==================== Querying Database ====================");
-    this.getDecksFromDatabase().then((decks) => {
+    const query = this.getDecksFromDatabase().then((decks) => {
       if (decks.length > 0) {
         console.log("Found " + decks.length + " decks in database");
         console.log("Decks: " + decks.map((deck) => deck.name + "(" + deck.id + ")").join(", "));
         console.log();
-        console.log("pulling from selected deck (first deck for now)");
+        console.log("pulling from selected deck (searching through loop for matching ID for now)");
         console.log();
-        //const selectedId = /** query selected deck id */
-        // const selected = decks.filter(deck => {
-        //   return deck.id === selectedId;
-        // });
-        //this.setSelectedDeck(/** The deck with the same id as selectedDeck */)
-        this.setSelectedDeck(decks[0]);
+
+        deck = decks[0];
       } else {
-        console.log("No decks found in database, selecting first deck");
-        //this.setSelectedDeck(decks[0]);
+        console.log("No decks found in database, creating default empty deck");
       }
 
-
-
-      
+      return deck;
+    }).catch((error) => {
+      console.error(error);
+      return deck;
     });
 
-
-
-
-
-
+    return query;
   }
 
 
@@ -89,39 +101,61 @@ class DeckManager {
 
     console.log("Setting selected deck: " + deck.name + "(" + deck.id + ")");
 
-    if (this.id) {
-      update(ref(database, "Decks/" + this.user.id + "/" + this.id), {
-        selected: false
-      });
+    // if (this.selectedDeck.id) {
+    //   update(ref(database, "Decks/" + this.user.id + "/" + this.selectedDeck.id), {
+    //     selected: false
+    //   });
+    // }
+
+    const newDeck = {
+      id: deck.id,
+      name: deck.name,
+      seeds: deck.seeds,
+      likedTracks: deck.likedTracks,
+      dislikedTracks: deck.dislikedTracks,
     }
 
-    this.id = deck.id;
-    this.name = deck.name;
-    this.seeds = deck.seeds;
-    this.likedTracks = deck.likedTracks;
-    this.dislikedTracks = deck.dislikedTracks;
+    this.selectedDeck = newDeck;
 
     this.tracks = [];
 
-    console.log("Loaded Seeds: " + this.seeds.map((seed) => seed.name).join(", "));
-    console.log("Loaded Liked Tracks: " + this.likedTracks.map((track) => track.name).join(", "));
-    console.log("Loaded Disliked Tracks: " + this.dislikedTracks.map((track) => track.name).join(", "));
+    console.log("Loaded Seeds: " + this.selectedDeck.seeds.map((seed) => seed.name).join(", "));
+    console.log("Loaded Liked Tracks: " + this.selectedDeck.likedTracks.map((track) => track.name).join(", "));
+    console.log("Loaded Disliked Tracks: " + this.selectedDeck.dislikedTracks.map((track) => track.name).join(", "));
 
     this.addNewTracksFromSpotify(5);
 
     //const db = getDatabase();
-    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
-      id: this.id
+    const p = set(ref(database, "SelectedDecks/" + this.user?.id), {
+      id: this.selectedDeck.id
     });
 
   }
 
-  private getTracksFromSpotify(ids: string[]): Promise<SpotifyApi.TrackObjectFull[]> {
-    return this._spotify.getTracks(ids).then((tracks) => {
-      return tracks.tracks;
+  /**
+   * Removes all of the data of the current user from the database
+   */
+  public async deleteData() {
+    const db = getDatabase();
+    console.log("USER TO DELETE: " + this.user.id)
+    await set(ref(db, "Decks/" + this.user.id), null).catch((error) => {
+      console.error(error);
     });
-  }
+    await set(ref(db, "SelectedDecks/" + this.user.id), null).catch((error) => {
+      console.error(error);
+    });
 
+    this.selectedDeck = {
+      id: "",
+      name: "",
+      seeds: [],
+      likedTracks: [],
+      dislikedTracks: []
+    };
+
+    this.tracks = [];
+
+  }
 
 
   /**
@@ -129,31 +163,94 @@ class DeckManager {
    * @param finalSize the size of the deck after filtering
    * @param responseSize the size of the response from the spotify api
    */
-  public async initializeDeck(name: string, seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
-
-    console.log("Initializing deck");
-    console.log(this.user.id);
-
+  public async createNewDeck(name: string, seeds: Seed[], finalSize: number = 5, responseSize: number = 50) {
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
-
       this.tracks = tracks as SpotifyApi.TrackObjectFull[];
 
-      this.name = name;
+      // Create new deck
+      const newDeck: Deck = {
+        id: "",
+        name: name,
+        seeds: seeds,
+        likedTracks: [],
+        dislikedTracks: []
+      };
 
-      this.seeds = seeds;
-      this.likedTracks = [];
-      this.dislikedTracks = [];
-
-      const push = this.pushToDatabase();
+      // Push new deck to database
+      this.pushDeckToDatabase(newDeck).then((id) => {
+        newDeck.id = id;
+        this.setSelectedDeck(newDeck);
+        console.log("Setting selected deck: " + newDeck.name + "(" + newDeck.id + ")");
+      }).catch((error) => {
+        console.error(error);
+      });
     }).catch((error) => {
       console.error(error);
     });
+  }
 
-    //const db = getDatabase();
-    const p = push(ref(database, "SelectedDecks/" + this.user?.id), {
-      id: this.id
+  /**
+ * Pushes the given deck to the database and returns the id of the deck
+ * @param deck the deck to push to the database
+ * @returns the newly assigned id of the deck
+ */
+  private async pushDeckToDatabase(deck: Deck): Promise<string> {
+    const p = push(ref(database, "Decks/" + this.user.id), {
+      name: deck.name,
+      seeds: deck.seeds,
+      likedTracks: deck.likedTracks,
+      dislikedTracks: deck.dislikedTracks,
+      selected: true,
+    }).catch((error) => {
+      console.error(error);
+      return null;
+    }).then((ref) => {
+      const dbRef = ref as DatabaseReference;
+      const id = dbRef.key as string;
+      return id;
+    });
+    return p;
+  }
+
+  public async getDeckFromDatabase(id: string): Promise<Deck | null> {
+    const userId = this.user.id;
+    const db = getDatabase();
+    const deck = await get(child(this.dbRef, `Decks/${userId}/${id}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const deck = snapshot.val() as Deck;
+        deck.id = id;
+        return deck;
+      } else {
+        console.log("No data available");
+        return null;
+      }
+    }).catch((error) => {
+      console.error(error);
+      return null;
     });
 
+    if (!deck) {
+      console.log("No deck found");
+      return null;
+    }
+
+    return deck;
+  }
+
+
+
+  public async getSelectedDeck() {
+    const userId = this.user.id;
+    const db = getDatabase();
+    get(child(this.dbRef, `Decks/${userId}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        snapshot.forEach((deckEntry) => {
+          let deck = deckEntry.val();
+          return deck.id;
+        })
+      }
+    });
+    return "Error failed to retrieve selected deck";
   }
 
   public async getDecksFromDatabase(): Promise<Deck[]> {
@@ -205,19 +302,7 @@ class DeckManager {
   }
 
 
-  private async pushToDatabase() {
-    const p = push(ref(database, "Decks/" + this.user.id), {
-      name: this.name,
-      seeds: this.seeds,
-      selected: true,
-    }).catch((error) => {
-      console.error(error);
-    }).then((ref) => {
-      const r = ref as DatabaseReference;
-      this.id = r.key as string;
-      console.log("Pushed deck to database");
-    });
-  }
+
 
 
   /**
@@ -234,16 +319,16 @@ class DeckManager {
 
   private selectSeeds(): Seed[] {
     // if there are no liked tracks, use the last 5 tracks in the deck
-    // if (this.likedTracks.length == 0) {
+    // if (this.selectedDeck.likedTracks.length == 0) {
     //   return this.getTrackSeeds().slice(Math.max(this.tracks.length - 5, 0), this.tracks.length);
     // }
 
-    if (this.likedTracks.length == 0) {
-      return this.seeds;
+    if (this.selectedDeck.likedTracks.length == 0) {
+      return this.selectedDeck.seeds;
     }
 
-    const likedTrackIds = this.mapTracksToSeeds(this.likedTracks);
-    const lastLikedTrackIds = likedTrackIds.slice(Math.max(this.likedTracks.length - 5, 0), this.likedTracks.length);
+    const likedTrackIds = this.mapTracksToSeeds(this.selectedDeck.likedTracks);
+    const lastLikedTrackIds = likedTrackIds.slice(Math.max(this.selectedDeck.likedTracks.length - 5, 0), this.selectedDeck.likedTracks.length);
     return lastLikedTrackIds;
   }
 
@@ -255,14 +340,7 @@ class DeckManager {
    */
   public async addNewTracksFromSpotify(finalSize: number = 1, responseSize: number = 50) {
 
-    //var seed_tracks = this.selectSeedTracks();
-    //var seed_artists = this.selectSeedArtists();
-
     var seeds = this.selectSeeds();
-
-
-
-
 
     await this.getTrackRecommendationsFromSpotify(seeds, finalSize, responseSize).then((tracks) => {
       this.addTracks(tracks as SpotifyApi.TrackObjectFull[]);
@@ -273,16 +351,13 @@ class DeckManager {
       console.log("TRACK" + (t.length > 1 ? "S" : "") + ": [" + t.map((track: { name: any; }) => track.name).join(", ") + "]");
       console.log("SEEDS USED: [" + seeds.map((seed) => seed.name).join(", ") + "]");
 
-
       return tracks;
     });
   }
 
   /**
    * Calls the spotify api to get track recommendations then filters them
-   * @param seed_tracks the seed tracks
-   * @param seed_genres the seed genres
-   * @param seed_artists the seed artists
+   * @param seeds the seeds to use for the spotify api
    * @param finalSize the size of the final array
    * @param responseSize the size of the response from the spotify api
    * @returns the array of filtered tracks
@@ -327,7 +402,9 @@ class DeckManager {
    * @returns array of filtered tracks
    */
   public filterTracks(tracks: SpotifyApi.TrackObjectFull[]): SpotifyApi.TrackObjectFull[] {
-    return tracks.filter((track) => track.preview_url != null);
+    return tracks.filter((track) => track.preview_url != null
+      && this.selectedDeck.likedTracks.findIndex((likedTrack) => likedTrack.id == track.id) == -1
+      && this.selectedDeck.dislikedTracks.findIndex((dislikedTrack) => dislikedTrack.id == track.id) == -1);
   }
 
   /***
@@ -347,9 +424,12 @@ class DeckManager {
         name: track.name,
         type: "track",
         id: track.id,
+        image: track.album.images[0].url,
       }
     });
   }
+
+  
 
   public addTrack(track: SpotifyApi.TrackObjectFull) {
     this.tracks.push(track);
@@ -372,14 +452,6 @@ class DeckManager {
     return this.tracks;
   }
 
-  private getTrackAsSeed(track: SpotifyApi.TrackObjectFull): Seed {
-    return {
-      name: track.name,
-      type: "track",
-      id: track.id,
-    }
-  }
-
   public async handleSwipe(index: number, liked: boolean) {
     if (liked) {
       this.handleLike(index);
@@ -394,7 +466,7 @@ class DeckManager {
     const trackId = track.id;
 
     // add this track id to the liked tracks in the database
-    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/likedTracks/" + track.id), {
+    set(ref(database, "Decks/" + this.user?.id + "/" + this.selectedDeck.id + "/likedTracks/" + track.id), {
       album: track.album,
       artists: track.artists,
       available_markets: track.available_markets,
@@ -412,9 +484,11 @@ class DeckManager {
       track_number: track.track_number,
       type: track.type,
       uri: track.uri,
+    }).catch((error) => {
+      console.log(error);
     });
 
-    this.likedTracks.push(track);
+    this.selectedDeck.likedTracks.push(track);
   }
 
   private handleDislike(index: number) {
@@ -422,7 +496,7 @@ class DeckManager {
     const trackId = track.id;
 
     // add this track id to the disliked tracks in the database
-    set(ref(database, "Decks/" + this.user?.id + "/" + this.id + "/dislikedTracks/" + trackId), {
+    set(ref(database, "Decks/" + this.user?.id + "/" + this.selectedDeck.id + "/dislikedTracks/" + trackId), {
       album: track.album,
       artists: track.artists,
       available_markets: track.available_markets,
@@ -440,9 +514,11 @@ class DeckManager {
       track_number: track.track_number,
       type: track.type,
       uri: track.uri,
+    }).catch((error) => {
+      console.log(error);
     });
 
-    this.dislikedTracks.push(track);
+    this.selectedDeck.dislikedTracks.push(track);
   }
 
 }
