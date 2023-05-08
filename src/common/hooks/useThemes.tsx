@@ -82,11 +82,11 @@ export const ThemeProvider = ({children}) => {
          text: "#FFFFFF"
         },
       Volcano: {
-         topGradient: "#e35e40",
-         bottomGradient: "#24100b",
-         topCard: "#3d0f04",
-         bottomCard: "#611908",
-         button: "#750000",
+         topGradient: "#222",
+         bottomGradient: "#000000",
+         topCard: "#450b0b",
+         bottomCard: "#761616",
+         button: "#761616",
          misc: "",
          logo: "#FFFFFF",
          text: "#FFFFFF"
