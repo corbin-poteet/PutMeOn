@@ -45,7 +45,7 @@ const SwiperComponent = () => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // this is hacky as fuck but it works for now to rerender
+  // re renders swiper component on isFocused change
   React.useEffect(() => {
     if (isFocused) {
       setIsPlaying(true);
@@ -89,7 +89,7 @@ const SwiperComponent = () => {
         console.log("Deck has been changed");
         setCurrentDeckId(deckManager.selectedDeck.id);
         setCardIndex(0);
-        // We have to call this here because it doesn't work in the useMemo below when called from here because fuck me i guess
+        // We have to call this here because it doesn't work in the useMemo below when called from here
         setPlaybackPosition(0);
         audioPlayer.setTrack(deckManager.getTracks()[cardIndex]).then(() => {
           audioPlayer.play();
