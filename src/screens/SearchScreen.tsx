@@ -1,4 +1,4 @@
-import { View, Text, Platform} from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import React, { useState, useLayoutEffect } from 'react'
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,6 +12,8 @@ import SelectedSeed from '@/common/components/SelectedSeed';
 import { Tab } from '@rneui/themed';
 import ArtistSearchResult from '@/common/components/ArtistSearchResult';
 import SelectedArtistSeed from '@/common/components/SelectedArtistSeed';
+import useTheme from '@/common/hooks/useThemes';
+
 //👌😂👌 🔥 🔥 🔥
 
 var output: any[] = [];
@@ -35,6 +37,8 @@ const SearchScreen = () => {
   const [selectedSeedComponents, setSelectedSeedComponents] = useState<any>([]); //component handler for showing/removing seeds (lmao component handler 2)
   const [searching, setSearching] = useState<boolean>(false); //keeps track of whether or not the user is actively searching
   const [index, setIndex] = React.useState(0);
+  const { themes, selectedTheme } = useTheme(); //Allows dynamic theme color changing
+
 
   useLayoutEffect(() => { //hide header
     navigation.setOptions({
@@ -178,38 +182,33 @@ const SearchScreen = () => {
     }
   }, [dialogVisible]);
 
+  function createNewDeck() {
+    const seeds = [] as Seed[];
+    for (var i = 0; i < selectedTracks.length; i++) {
+      seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name, image: selectedTracks[i].album.images[0].url });
+    }
+    for (var i = 0; i < selectedArtists.length; i++) {
+      seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name, image: selectedArtists[i].images[0].url });
+    }
+    setDialogVisible(false);
+    deckManager.createNewDeck(deckName, seeds);
+
+    // @ts-ignore
+    navigation.navigate('Home');
+  }
+
   return (
     <LinearGradient start={{ x: -0.5, y: 0 }} colors={['#f0f2f4', '#f0f2f4']} style={{ flex: 1, justifyContent: 'flex-start' }}>
-      <Dialog
-        isVisible={dialogVisible}
-        onBackdropPress={() => { setDialogVisible(false) }}
-      >
+      <Dialog isVisible={dialogVisible} onBackdropPress={() => { setDialogVisible(false) }} >
         <Dialog.Title title='Give your deck a name' />
-        <Input
-          placeholder='Deck name'
-          onChangeText={text => setDeckName(text)}
-          value={deckName}
-        />
+        <Input placeholder='Deck name' onChangeText={text => setDeckName(text)} value={deckName} />
         <Dialog.Actions>
-          <Button onPress={() => {
-            const seeds = [] as Seed[];
-            for (var i = 0; i < selectedTracks.length; i++) {
-              seeds.push({ type: 'track', id: selectedTracks[i].id, name: selectedTracks[i].name, image: selectedTracks[i].album.images[0].url });
-            }
-            for (var i = 0; i < selectedArtists.length; i++) {
-              seeds.push({ type: 'artist', id: selectedArtists[i].id, name: selectedArtists[i].name, image: selectedArtists[i].images[0].url });
-            }
-            setDialogVisible(false);
-            deckManager.createNewDeck(deckName, seeds);
-            navigation.navigate('Home');
-          }}
-            disabled={deckName == ''}
-          >Create</Button>
+          <Button onPress={createNewDeck} disabled={deckName == ''}>Create</Button>
         </Dialog.Actions>
       </Dialog>
       <SafeAreaView className='flex-1 pt-5 bg-white' >
         <View className='flex-1 bg-white'>
-          <View >
+          <View>
             {!searching ?
               <Text className='text-3xl font-bold text-start px-5' style={{ color: '#000000' }}>Search</Text>
               : <></>}
@@ -230,34 +229,19 @@ const SearchScreen = () => {
             />
             {searching ?
               <View>
-                <Tab
-                  value={index}
-                  onChange={(e) => setIndex(e)}
-                  indicatorStyle={{
-                    backgroundColor: '#01b1f1',
-                    height: 3,
-                  }}
-                  variant="default"
-                >
-                  <Tab.Item
-                    title="Tracks"
-                    titleStyle={{ fontSize: 12, color: 'black' }}
-                    icon={{ name: 'music-note-quarter', type: 'material-community', color: 'black' }}
-                  />
-                  <Tab.Item
-                    title="Artists"
-                    titleStyle={{ fontSize: 12, color: 'black' }}
-                    icon={{ name: 'account-music', type: 'material-community', color: 'black' }}
-                  />
+                <Tab value={index} onChange={(e) => setIndex(e)} indicatorStyle={{ 
+                  //ts-ignore
+                  backgroundColor: themes[selectedTheme].button, height: 3 }} variant="default">
+                  <Tab.Item title="Tracks" titleStyle={{ fontSize: 12, color: 'black' }} icon={{ name: 'music-note-quarter', type: 'material-community', color: 'black' }} />
+                  <Tab.Item title="Artists" titleStyle={{ fontSize: 12, color: 'black' }} icon={{ name: 'account-music', type: 'material-community', color: 'black' }} />
                 </Tab>
               </View>
               : <></>}
             <Divider />
-
           </View>
-
           {searching ?
             <View className='flex-1'>
+              {/* @ts-ignore */}
               <TabView value={index} onChange={setIndex} animationType="timing" animationConfig={{ duration: 100 }} >
                 <TabView.Item style={{ backgroundColor: '#f0f2f4', width: '100%' }}>
                   <ScrollView>
@@ -282,13 +266,10 @@ const SearchScreen = () => {
                   setDialogVisible(true);
                 }}
                 style={{ alignSelf: 'center', width: '50%', marginVertical: 10 }}
-                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length < 5}
+                disabled={(selectedTracks.length == 0 && selectedArtists.length == 0) || selectedTracks.length + selectedArtists.length > 5}
                 buttonStyle={{ backgroundColor: '#01b1f1', borderRadius: 30 }}
               />
             </View>
-
-
-
           }
         </View>
       </SafeAreaView>

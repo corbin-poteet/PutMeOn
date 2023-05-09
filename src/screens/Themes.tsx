@@ -25,7 +25,7 @@ const Themes = () => {
     { id: '5', label: 'Lemon', colors: ['#f5cc00', '#2f6b2e'] },
     { id: '6', label: 'Sunset', colors: ['#8f34eb', '#eb7434'] },
     { id: '7', label: 'Firestone', colors: ['#a80707', '#210502'] },
-    { id: '8', label: 'Volcano', colors: ['#e35e40', '#3d0f04'] },
+    { id: '8', label: 'Volcano', colors: ['#222', '#761616'] },
     { id: '9', label: 'Channel', colors: ['#ff7303', '#482000']},
     { id: '10', label: 'Kokomo', colors: ['#ab7d4a', '#64155b'] },
     { id: '11', label: 'Retro', colors: ['#0f011a', '#1e146e'], labelColor: '#03e7fb' },
