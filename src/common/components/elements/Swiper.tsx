@@ -111,8 +111,6 @@ const Swiper = () => {
 
     // this was throwing an error
     // so i made it catch the error
-    // then commented that out because we don't actually care
-    // get fucked
     const recResponse = await spotify.getRecommendations({
       seed_artists: topArtistsIds,
       limit: 20,

@@ -322,7 +322,7 @@ const SwiperComponent = () => {
   function renderNoMoreCard() {
     return (
       <View className="flex-1 justify-center items-center">
-        <Text className="text-white text-5xl font-bold">Fuck.</Text>
+        <Text className="text-white text-5xl font-bold">Out of Cards.</Text>
       </View>
     )
   }

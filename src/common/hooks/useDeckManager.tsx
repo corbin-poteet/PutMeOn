@@ -253,6 +253,7 @@ class DeckManager {
     return "Error failed to retrieve selected deck";
   }
 
+  //load's a user's deck from the database
   public async getDecksFromDatabase(): Promise<Deck[]> {
     const userId = this.user.id;
     const db = getDatabase();
@@ -263,7 +264,6 @@ class DeckManager {
           const deck = value as Deck;
           deck.id = key;
 
-          //this took so fucking long to figure out
           const v = value as any;
           if (v.likedTracks) {
             const likedTracks = Object.entries(v.likedTracks).map(([key, value]) => {
